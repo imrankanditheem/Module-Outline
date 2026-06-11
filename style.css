@@ -1,0 +1,1022 @@
+:root {
+    --primary-color: #003366;
+    --secondary-color: #00509e;
+    --bg-color: #f4f7f6;
+    --border-color: #ddd;
+    --text-color: #333;
+    --danger-color: #d9534f;
+    --success-color: #28a745;
+    --warning-color: #f0ad4e;
+    --accent-highlight: #e8f5e9;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+    display: flex;
+    gap: 20px;
+}
+
+/* Main content container */
+.main-container {
+    flex: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Right side pane */
+.side-pane {
+    width: 320px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 40px);
+    position: sticky;
+    top: 20px;
+}
+
+.pane-header {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 12px;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.pane-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.pane-btn {
+    padding: 16px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    height: 56px;
+}
+
+.pane-btn i {
+    font-size: 20px;
+}
+
+.btn-new {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-save {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-outlines {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-export {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.pane-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    filter: brightness(110%);
+}
+
+.outlines-preview {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 15px;
+    display: none;
+    background: #fafafa;
+}
+
+.outlines-preview.active {
+    display: block;
+}
+
+.outline-category {
+    margin-bottom: 20px;
+}
+
+.category-title {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.outline-item {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+}
+
+.outline-item:hover {
+    background-color: #f0f7ff;
+    border-color: var(--secondary-color);
+    transform: translateX(2px);
+}
+
+.outline-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.outline-meta {
+    font-size: 0.85em;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.outline-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.outline-action-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.outline-action-btn:hover {
+    background: #f8f9fa;
+}
+
+.btn-delete {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-download {
+    color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.empty-state {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-cancel:hover {
+    background-color: #e9ecef;
+}
+
+.btn-confirm {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-confirm:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Validation Warning Modal */
+.validation-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.validation-modal.active {
+    display: flex;
+}
+
+.validation-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.validation-header {
+    color: var(--danger-color);
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.validation-header i {
+    font-size: 1.5rem;
+}
+
+.validation-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 15px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 5px;
+}
+
+.validation-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    color: #666;
+}
+
+.validation-item:last-child {
+    border-bottom: none;
+}
+
+.validation-item strong {
+    color: var(--primary-color);
+}
+
+/* Notification Popup */
+.notification-popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background-color: var(--success-color);
+    color: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.notification-popup.error {
+    background-color: var(--danger-color);
+}
+
+.notification-popup.warning {
+    background-color: var(--warning-color);
+}
+
+.notification-popup.info {
+    background-color: var(--secondary-color);
+}
+
+.notification-popup i {
+    font-size: 20px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Rest of your existing styles */
+h1 {
+    text-align: center;
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+}
+
+h2 {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    border-left: 5px solid var(--secondary-color);
+    padding-left: 10px;
+}
+
+.section {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 6px;
+    transition: box-shadow 0.3s;
+}
+
+.section:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+input[type=text],
+input[type=number],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.col {
+    flex: 1;
+    min-width: 250px;
+}
+
+/* MNQF CSS */
+.mnqf-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    background-color: white;
+    margin-top: 5px;
+}
+
+.mnqf-container input {
+    border: none;
+    outline: none;
+    width: 50px;
+    margin-top: 0;
+    font-size: 16px;
+}
+
+.mnqf-label {
+    color: #555;
+    font-style: italic;
+    margin-left: 5px;
+    white-space: nowrap;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0;
+    font-size: 14px;
+    height: 100%;
+}
+
+th,
+td {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background-color: #f8f9fa;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.total-row td {
+    background-color: #e9ecef;
+    font-weight: bold;
+}
+
+/* --- 11.3 Layout Consistency Styles --- */
+.equal-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+.equal-col {
+    flex: 1 1 0;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.calc-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #f0f8ff;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #b8daff;
+}
+
+.calc-input {
+    background-color: #e9ecef;
+    color: #555;
+    font-weight: bold;
+}
+
+.dist-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Auto-resize textarea styles */
+textarea.auto-resize {
+    overflow: hidden;
+    resize: none;
+}
+
+/* Assessment wrapper styles */
+.assessment-wrapper {
+    font-family: Arial, sans-serif;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.assessment-wrapper * {
+    box-sizing: border-box;
+}
+
+.assessment-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    table-layout: fixed;
+}
+
+.assessment-wrapper th,
+.assessment-wrapper td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    vertical-align: top;
+}
+
+.assessment-wrapper th {
+    background-color: #f2f2f2;
+    text-align: left;
+    font-size: 14px;
+}
+
+.assessment-wrapper input[type="text"],
+.assessment-wrapper input[type="number"],
+.assessment-wrapper select {
+    width: 100%;
+    padding: 5px;
+    height: 35px;
+    border: 1px solid #999;
+    border-radius: 3px;
+}
+
+.assessment-wrapper textarea {
+    width: 100%;
+    padding: 5px;
+    resize: none;
+    overflow: hidden;
+    min-height: 35px;
+    font-family: Arial, sans-serif;
+    border: 1px solid #999;
+    border-radius: 3px;
+    display: block;
+    line-height: 1.4;
+}
+
+/* Outcome table styles */
+.outcome-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.outcome-table th,
+.outcome-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    vertical-align: middle;
+}
+
+.outcome-table th:first-child,
+.outcome-table td:first-child {
+    width: 350px;
+    min-width: 300px;
+}
+
+.vertical-header {
+    width: 30px; /* narrow column for vertical header */
+    padding: 0;
+    vertical-align: middle;
+    text-align: center;
+    /* Ensure enough height for rotated text */
+    height: auto;
+}
+
+.vertical-header div {
+    /* Use transform rotation for better PDF rendering */
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    white-space: nowrap;
+    margin: 0;
+    /* Optional: adjust spacing */
+    padding: 5px 0;
+}
+
+.checkbox-cell {
+    text-align: center;
+    width: 1%;
+}
+
+.outcome-input-wrapper {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.outcome-input-wrapper span {
+    margin-right: 8px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.outcome-input-wrapper textarea {
+    flex: 1;
+    padding: 5px;
+    resize: vertical;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    line-height: 1.4;
+    overflow: auto;
+}
+
+.add-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.add-btn:hover {
+    background-color: #218838;
+}
+
+/* Progress bar styles for assessment */
+.summary-box {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.summary-stats-col {
+    flex: 1;
+}
+
+.summary-warning-col {
+    flex: 0 0 300px;
+    display: flex;
+    align-items: center;
+}
+
+.warning-text {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 0.9em;
+    display: none;
+}
+
+.progress-container {
+    position: relative;
+    height: 30px;
+    background: #e9ecef;
+    border-radius: 4px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.marker-50 {
+    position: absolute;
+    left: 50%;
+    height: 100%;
+    width: 2px;
+    background: #dc3545;
+    z-index: 1;
+}
+
+.progress-bar-controlled {
+    position: absolute;
+    height: 100%;
+    background: #007bff;
+    transition: width 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.progress-bar-uncontrolled {
+    position: absolute;
+    height: 100%;
+    background: #6c757d;
+    transition: width 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.bar-label {
+    color: white;
+    font-weight: bold;
+    font-size: 0.8em;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.btn-green {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-red {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Print styles for PDF export */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+    }
+
+    .side-pane,
+    .pane-btn,
+    .add-btn,
+    button,
+    .modal,
+    .notification-popup,
+    .dist-box {
+        display: none !important;
+    }
+
+    .container {
+        box-shadow: none !important;
+        padding: 10px !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .main-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+
+    /* Page break control for PDF */
+    .page-break {
+        page-break-before: always;
+    }
+
+    /* Remove all borders from sections */
+    .section {
+        background: white !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 10px 0 !important;
+        margin-bottom: 15px !important;
+        page-break-inside: avoid;
+    }
+
+    /* Remove colored backgrounds */
+    .calc-box {
+        background: white !important;
+        border: none !important;
+        padding: 10px 0 !important;
+    }
+
+    .calc-input,
+    th,
+    .total-row td {
+        background: white !important;
+    }
+
+    /* Hide specific elements */
+    #controlledWarning,
+    .warning-text {
+        display: none !important;
+    }
+
+    /* Remove background color from 11.10 section */
+    .assessment-wrapper .section {
+        background: white !important;
+    }
+
+    /* Remove yellow background from assessment note */
+    .assessment-wrapper>.section>div[style*="background: #fff3cd"] {
+        background: white !important;
+        border: 1px solid #ddd !important;
+    }
+
+    /* Style for headers */
+    h1 {
+        color: black !important;
+        border-bottom: 1px solid #000 !important;
+        font-size: 18px !important;
+        margin-bottom: 15px !important;
+        padding-bottom: 5px !important;
+    }
+
+    h2 {
+        color: black !important;
+        border-left: 3px solid #666 !important;
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+        padding-left: 5px !important;
+    }
+
+    /* Reduce font size proportionally */
+    body,
+    input,
+    textarea,
+    select,
+    label,
+    th,
+    td {
+        font-size: 11px !important;
+    }
+
+    /* Fix for outcome table headers - make them horizontal */
+    .vertical-header {
+        height: auto !important;
+        width: auto !important;
+        white-space: normal !important;
+        text-align: center !important;
+    }
+
+    .vertical-header div {
+        writing-mode: horizontal-tb !important;
+        transform: none !important;
+        width: 100% !important;
+        height: auto !important;
+        padding: 3px !important;
+        font-size: 10px !important;
+    }
+
+    /* Input field styling for PDF */
+    input,
+    textarea,
+    select {
+        border: 1px solid #999 !important;
+        background: white !important;
+        box-shadow: none !important;
+        outline: none !important;
+        color: black !important;
+        font-size: 11px !important;
+        padding: 4px !important;
+        margin-top: 2px !important;
+    }
+
+    input[readonly],
+    textarea[readonly] {
+        background: #f9f9f9 !important;
+    }
+
+    table {
+        border: 1px solid #ddd !important;
+        font-size: 11px !important;
+    }
+
+    th,
+    td {
+        border: 1px solid #ddd !important;
+        color: black !important;
+        padding: 4px !important;
+        font-size: 11px !important;
+    }
+
+    /* Hide the main title "Module Outline Form" */
+    h1:first-of-type {
+        display: none !important;
+    }
+
+    /* Page break before section 11.9 */
+    #section11_9 {
+        page-break-before: always;
+    }
+
+    /* Adjust table sizes for smaller font */
+    .outcome-table th:first-child,
+    .outcome-table td:first-child {
+        width: 200px !important;
+        min-width: 200px !important;
+    }
+
+    /* Reduce padding in tables */
+    .outcome-table th,
+    .outcome-table td {
+        padding: 4px !important;
+    }
+
+    /* Adjust textarea heights */
+    textarea {
+        min-height: 25px !important;
+    }
+
+    /* Adjust row spacing */
+    .row {
+        gap: 10px !important;
+    }
+
+    .col {
+        min-width: 150px !important;
+    }
+
+    /* Hide contact and non-contact distribution tables */
+    .dist-box {
+        display: none !important;
+    }
+
+    /* Hide progress bars and summary boxes in PDF */
+    .summary-box,
+    .progress-container {
+        display: none !important;
+    }
+}

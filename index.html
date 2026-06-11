@@ -1,2931 +1,489 @@
 <!DOCTYPE html>
-<html lang="en" class=""><head><script>window.livecodes = window.livecodes || {};</script><title>Untitled Project</title><meta name="title" content="Untitled Project"><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><style id="__livecodes_styles__">
-    :root {
-      --primary-color: #003366;
-      --secondary-color: #00509e;
-      --bg-color: #f4f7f6;
-      --border-color: #ddd;
-      --text-color: #333;
-      --danger-color: #d9534f;
-      --success-color: #28a745;
-      --accent-highlight: #e8f5e9;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 20px;
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 40px;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      text-align: center;
-      color: var(--primary-color);
-      border-bottom: 3px solid var(--primary-color);
-      padding-bottom: 10px;
-      margin-bottom: 30px;
-    }
-
-    h2 {
-      color: var(--primary-color);
-      font-size: 1.2rem;
-      margin-bottom: 15px;
-      border-left: 5px solid var(--secondary-color);
-      padding-left: 10px;
-    }
-
-    .section {
-      background: #fff;
-      border: 1px solid var(--border-color);
-      padding: 20px;
-      margin-bottom: 25px;
-      border-radius: 6px;
-      transition: box-shadow 0.3s;
-    }
-
-    .section:hover {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: #444;
-    }
-
-    input[type=text],
-    input[type=number],
-    textarea,
-    select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-      font-size: 14px;
-    }
-
-    .row {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .col {
-      flex: 1;
-      min-width: 250px;
-    }
-
-    /* MNQF CSS */
-    .mnqf-container {
-      display: flex;
-      align-items: center;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 5px;
-      background-color: white;
-      margin-top: 5px;
-    }
-
-    .mnqf-container input {
-      border: none;
-      outline: none;
-      width: 50px;
-      margin-top: 0;
-      font-size: 16px;
-    }
-
-    .mnqf-label {
-      color: #555;
-      font-style: italic;
-      margin-left: 5px;
-      white-space: nowrap;
-    }
-
-    /* Table Styles */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 0;
-      font-size: 14px;
-      height: 100%;
-    }
-
-    th,
-    td {
-      border: 1px solid var(--border-color);
-      padding: 8px;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    th {
-      background-color: #f8f9fa;
-      color: var(--primary-color);
-      font-weight: bold;
-    }
-
-    .total-row td {
-      background-color: #e9ecef;
-      font-weight: bold;
-    }
-
-    /* --- 11.3 Layout Consistency Styles --- */
-    .equal-row {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      align-items: stretch;
-      /* Ensures all columns stretch to the same height */
-    }
-
-    .equal-col {
-      flex: 1 1 0;
-      /* Forces all columns to be exactly the same width */
-      min-width: 300px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .calc-box {
-      flex: 1;
-      /* Stretches to fill column height */
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background: #f0f8ff;
-      padding: 20px;
-      border-radius: 5px;
-      border: 1px solid #b8daff;
-    }
-
-    .calc-input {
-      background-color: #e9ecef;
-      color: #555;
-      font-weight: bold;
-    }
-
-    .dist-box {
-      flex: 1;
-      /* Stretches to fill column height */
-      display: flex;
-      flex-direction: column;
-      background: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      border: 1px solid #ddd;
-    }
-  
-          /* Styles for the layout */
-          .section {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            /* Optional: outlines the section */
-          }
-
-          .row {
-            display: flex;
-            gap: 20px;
-            /* Space between columns */
-            margin-bottom: 10px;
-          }
-
-          .col {
-            flex: 1;
-            /* Makes columns equal width */
-            display: flex;
-            flex-direction: column;
-          }
-
-          label {
-            font-weight: bold;
-            margin-bottom: 5px;
-          }
-
-          /* Style to make textarea look like an input but expandable */
-          .section textarea {
-            width: 100%;
-            box-sizing: border-box;
-            /* Ensures padding doesn't break layout */
-            padding: 8px;
-            border: 1px solid #999;
-            border-radius: 3px;
-            resize: none;
-            /* Removes manual resize handle */
-            overflow: hidden;
-            /* Hides scrollbar */
-            min-height: 38px;
-            /* Starting height similar to a standard input */
-            font-family: Arial, sans-serif;
-            line-height: 1.4;
-          }
-        
-      .section {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        background-color: #fff;
-      }
-
-      h2 {
-        font-size: 18px;
-        margin-bottom: 15px;
-      }
-
-      .equal-row {
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
-      }
-
-      .equal-col {
-        flex: 1;
-        min-width: 300px;
-      }
-
-      /* Calculation Box Styling */
-      .calc-box {
-        background-color: #e9ecef;
-        padding: 15px;
-        border-radius: 5px;
-        height: 100%;
-        box-sizing: border-box;
-      }
-
-      .calc-box div {
-        margin-bottom: 10px;
-      }
-
-      .calc-box label {
-        display: block;
-        font-weight: bold;
-        font-size: 12px;
-        margin-bottom: 5px;
-      }
-
-      .calc-box input {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-      }
-
-      .calc-input {
-        background-color: #e2e6ea;
-        color: #495057;
-        pointer-events: none;
-      }
-
-      /* Distribution Box Styling */
-      .dist-box table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
-      }
-
-      .dist-box th {
-        background-color: #007bff;
-        color: white;
-        padding: 8px;
-        text-align: left;
-      }
-
-      .dist-box td {
-        border: 1px solid #dee2e6;
-        padding: 6px;
-      }
-
-      .dist-box input {
-        width: 100%;
-        border: none;
-        padding: 5px;
-        box-sizing: border-box;
-        text-align: center;
-      }
-
-      .total-row {
-        background-color: #f8f9fa;
-        font-weight: bold;
-      }
-
-      .total-row input {
-        font-weight: bold;
-        background-color: transparent;
-      }
-    
-      /* Basic Table Styling */
-      .section {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-      }
-
-      .outcome-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 15px;
-      }
-
-      .outcome-table th,
-      .outcome-table td {
-        border: 1px solid #ccc;
-        padding: 8px;
-      }
-
-      /* --- Column Width Logic --- */
-      /* 1. Make the first column (Outcome Statement) take up all remaining space */
-      .outcome-table th:first-child,
-      .outcome-table td:first-child {
-        width: auto;
-      }
-
-      /* 2. Make all other columns (headers with class vertical-header and cells) very narrow */
-      .vertical-header {
-        width: 1%;
-        /* Forces minimum width */
-        white-space: nowrap;
-        vertical-align: bottom;
-        text-align: center;
-        height: 150px;
-        /* Height to accommodate vertical text */
-      }
-
-      .vertical-header div {
-        /* Rotates text vertically to save horizontal space */
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-        margin: 0 auto;
-      }
-
-      .checkbox-cell {
-        text-align: center;
-        width: 1%;
-        /* Minimal width for checkboxes */
-      }
-
-      /* Input Styling */
-      .outcome-input-wrapper {
-        display: flex;
-        align-items: center;
-        width: 100%;
-      }
-
-      .outcome-input-wrapper span {
-        margin-right: 8px;
-        font-weight: bold;
-      }
-
-      .outcome-input-wrapper input {
-        flex: 1;
-        /* Input takes up remaining space */
-        padding: 5px;
-      }
-
-      /* Button Styling */
-      .add-btn {
-        background-color: #28a745;
-        /* Green Color */
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: bold;
-      }
-
-      .add-btn:hover {
-        background-color: #218838;
-        /* Darker green on hover */
-      }
-    
-        /* Basic Table Styling */
-        .section {
-          font-family: Arial, sans-serif;
-          margin: 20px;
-        }
-
-        .outcome-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-bottom: 15px;
-        }
-
-        .outcome-table th,
-        .outcome-table td {
-          border: 1px solid #ccc;
-          padding: 8px;
-          vertical-align: middle;
-          /* Aligns content to middle vertically */
-        }
-
-        /* Column Logic */
-        .outcome-table th:first-child,
-        .outcome-table td:first-child {
-          width: auto;
-        }
-
-        /* Vertical Headers Styling */
-        .vertical-header {
-          width: 1%;
-          white-space: nowrap;
-          vertical-align: bottom;
-          text-align: center;
-          height: 150px;
-        }
-
-        .vertical-header div {
-          writing-mode: vertical-rl;
-          transform: rotate(180deg);
-          margin: 0 auto;
-        }
-
-        .checkbox-cell {
-          text-align: center;
-          width: 1%;
-        }
-
-        /* Input Wrapper Styling */
-        .outcome-input-wrapper {
-          display: flex;
-          align-items: flex-start;
-          /* Aligns number to top of text area */
-          width: 100%;
-        }
-
-        .outcome-input-wrapper span {
-          margin-right: 8px;
-          font-weight: bold;
-          margin-top: 6px;
-          /* slight adjustment to align with text top */
-        }
-
-        /* TEXTAREA STYLING (The Change) */
-        .outcome-input-wrapper textarea {
-          flex: 1;
-          padding: 5px;
-          resize: vertical;
-          /* Allows vertical resizing if user wants more space */
-          font-family: Arial, sans-serif;
-          min-height: 45px;
-          /* Ensures enough height for 2 lines */
-          box-sizing: border-box;
-          line-height: 1.4;
-        }
-
-        /* Button Styling */
-        .add-btn {
-          background-color: #28a745;
-          color: white;
-          padding: 10px 20px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-          font-weight: bold;
-        }
-
-        .add-btn:hover {
-          background-color: #218838;
-        }
-      
-          /* Basic Table Styling */
-          .section {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-          }
-
-          .outcome-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-          }
-
-          .outcome-table th,
-          .outcome-table td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            vertical-align: middle;
-          }
-
-          /* --- Column Width Logic --- */
-          /* 1. First Column (Outcome Statement): Reduced width to 350px */
-          .outcome-table th:first-child,
-          .outcome-table td:first-child {
-            width: 350px;
-            min-width: 300px;
-            /* Prevents it from getting too small on mobile */
-          }
-
-          /* 2. Vertical Headers: Keep them narrow */
-          .vertical-header {
-            width: 1%;
-            white-space: nowrap;
-            vertical-align: bottom;
-            text-align: center;
-            height: 150px;
-          }
-
-          .vertical-header div {
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
-            margin: 0 auto;
-          }
-
-          .checkbox-cell {
-            text-align: center;
-            width: 1%;
-          }
-
-          /* Input Wrapper Styling */
-          .outcome-input-wrapper {
-            display: flex;
-            align-items: flex-start;
-            /* Aligns number to the top */
-            width: 100%;
-          }
-
-          .outcome-input-wrapper span {
-            margin-right: 8px;
-            font-weight: bold;
-            margin-top: 5px;
-            /* Aligns number with the first line of text */
-          }
-
-          /* Textarea Styling for 2 Lines */
-          .outcome-input-wrapper textarea {
-            flex: 1;
-            padding: 5px;
-            resize: vertical;
-            /* Allows vertical resizing */
-            font-family: Arial, sans-serif;
-            box-sizing: border-box;
-            line-height: 1.4;
-            overflow: auto;
-          }
-
-          /* Button Styling */
-          .add-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-          }
-
-          .add-btn:hover {
-            background-color: #218838;
-          }
-        
-        body {
-          font-family: Arial, sans-serif;
-          padding: 20px;
-        }
-
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 10px;
-        }
-
-        th,
-        td {
-          border: 1px solid #ccc;
-          padding: 8px;
-          vertical-align: top;
-        }
-
-        th {
-          background-color: #f2f2f2;
-          text-align: left;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        textarea {
-          width: 100%;
-          box-sizing: border-box;
-        }
-
-        textarea {
-          resize: vertical;
-        }
-
-        /* Style for the vertical stack of inputs */
-        .vertical-input-group {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          /* Space between the two inputs */
-        }
-      
-          body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-          }
-
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-          }
-
-          th,
-          td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            vertical-align: top;
-          }
-
-          th {
-            background-color: #f2f2f2;
-            text-align: left;
-          }
-
-          input[type="text"],
-          input[type="number"],
-          textarea {
-            width: 100%;
-            box-sizing: border-box;
-          }
-
-          textarea {
-            resize: vertical;
-          }
-
-          /* Style for the vertical stack of inputs */
-          .vertical-input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            /* Space between the two inputs */
-          }
-        
-            body {
-              font-family: Arial, sans-serif;
-              padding: 20px;
-            }
-
-            /* Table Styling */
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-top: 10px;
-              margin-bottom: 20px;
-            }
-
-            th,
-            td {
-              border: 1px solid #ccc;
-              padding: 8px;
-              vertical-align: middle;
-            }
-
-            th {
-              background-color: #f2f2f2;
-              text-align: left;
-            }
-
-            input[type="text"],
-            input[type="number"],
-            select {
-              width: 100%;
-              box-sizing: border-box;
-              padding: 5px;
-            }
-
-            /* Summary Box Styling */
-            .summary-box {
-              display: flex;
-              gap: 20px;
-              margin-bottom: 15px;
-              padding: 10px;
-              background-color: #f9f9f9;
-              border: 1px solid #ddd;
-            }
-
-            /* Button Styling */
-            .btn {
-              padding: 10px 20px;
-              color: white;
-              border: none;
-              border-radius: 4px;
-              cursor: pointer;
-              font-size: 14px;
-              margin-right: 10px;
-            }
-
-            .btn-green {
-              background-color: #28a745;
-            }
-
-            .btn-green:hover {
-              background-color: #218838;
-            }
-
-            .btn-red {
-              background-color: #dc3545;
-            }
-
-            .btn-red:hover {
-              background-color: #c82333;
-            }
-
-            /* Warning Text */
-            .warning-text {
-              color: red;
-              font-weight: bold;
-              display: none;
-              /* Hidden by default */
-              margin-top: 5px;
-            }
-          
-              /* --- SCOPED STYLES: These only affect the assessment section --- */
-              /* Wrapper to isolate styles from the rest of your page */
-              .assessment-wrapper {
-                font-family: Arial, sans-serif;
-                padding: 10px;
-              }
-
-              /* Scoped Table Styling */
-              .assessment-wrapper table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 10px;
-                margin-bottom: 20px;
-                table-layout: fixed;
-                /* Important for textarea auto-sizing */
-              }
-
-              .assessment-wrapper th,
-              .assessment-wrapper td {
-                border: 1px solid #ccc;
-                padding: 8px;
-                vertical-align: top;
-              }
-
-              .assessment-wrapper th {
-                background-color: #f2f2f2;
-                text-align: left;
-              }
-
-              /* Scoped Input/Select Styling */
-              .assessment-wrapper input[type="text"],
-              .assessment-wrapper input[type="number"],
-              .assessment-wrapper select {
-                width: 100%;
-                box-sizing: border-box;
-                padding: 5px;
-                height: 35px;
-                border: 1px solid #999;
-                border-radius: 3px;
-              }
-
-              /* Scoped Textarea Styling - This enables the vertical expansion look */
-              .assessment-wrapper textarea {
-                width: 100%;
-                box-sizing: border-box;
-                padding: 5px;
-                resize: none;
-                /* Disables manual resize handle */
-                overflow: hidden;
-                /* Hides scrollbar */
-                min-height: 35px;
-                font-family: Arial, sans-serif;
-                border: 1px solid #999;
-                border-radius: 3px;
-                display: block;
-                line-height: 1.4;
-              }
-
-              /* Scoped Summary Box */
-              .assessment-wrapper .summary-box {
-                display: flex;
-                gap: 20px;
-                margin-bottom: 15px;
-                padding: 10px;
-                background-color: #f9f9f9;
-                border: 1px solid #ddd;
-              }
-
-              /* Scoped Buttons */
-              .assessment-wrapper .btn {
-                padding: 10px 20px;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-                margin-right: 10px;
-              }
-
-              .assessment-wrapper .btn-green {
-                background-color: #28a745;
-              }
-
-              .assessment-wrapper .btn-green:hover {
-                background-color: #218838;
-              }
-
-              .assessment-wrapper .btn-red {
-                background-color: #dc3545;
-              }
-
-              .assessment-wrapper .btn-red:hover {
-                background-color: #c82333;
-              }
-
-              /* Scoped Warning Text */
-              .assessment-wrapper .warning-text {
-                color: red;
-                font-weight: bold;
-                display: none;
-                margin-top: 5px;
-              }
-            
-                /* --- SCOPED STYLES: These only affect the assessment section --- */
-                /* Wrapper to isolate styles */
-                .assessment-wrapper {
-                  font-family: Arial, sans-serif;
-                  padding: 10px;
-                  /* Ensures the wrapper itself handles sizing correctly */
-                  box-sizing: border-box;
-                }
-
-                /* Global box-sizing fix within the wrapper to prevent overflow */
-                .assessment-wrapper * {
-                  box-sizing: border-box;
-                }
-
-                /* Scoped Table Styling */
-                .assessment-wrapper table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-top: 10px;
-                  margin-bottom: 20px;
-                  table-layout: fixed;
-                  /* Keeps columns stable */
-                }
-
-                .assessment-wrapper th,
-                .assessment-wrapper td {
-                  border: 1px solid #ccc;
-                  padding: 8px;
-                  vertical-align: top;
-                }
-
-                .assessment-wrapper th {
-                  background-color: #f2f2f2;
-                  text-align: left;
-                  font-size: 14px;
-                }
-
-                /* Scoped Input/Select Styling */
-                .assessment-wrapper input[type="text"],
-                .assessment-wrapper input[type="number"],
-                .assessment-wrapper select {
-                  width: 100%;
-                  padding: 5px;
-                  height: 35px;
-                  border: 1px solid #999;
-                  border-radius: 3px;
-                }
-
-                /* Scoped Textarea Styling */
-                .assessment-wrapper textarea {
-                  width: 100%;
-                  padding: 5px;
-                  resize: none;
-                  overflow: hidden;
-                  min-height: 35px;
-                  font-family: Arial, sans-serif;
-                  border: 1px solid #999;
-                  border-radius: 3px;
-                  display: block;
-                  line-height: 1.4;
-                }
-
-                /* Scoped Summary Box */
-                .assessment-wrapper .summary-box {
-                  display: flex;
-                  gap: 20px;
-                  margin-bottom: 15px;
-                  padding: 10px;
-                  background-color: #f9f9f9;
-                  border: 1px solid #ddd;
-                }
-
-                /* Scoped Buttons */
-                .assessment-wrapper .btn {
-                  padding: 10px 20px;
-                  color: white;
-                  border: none;
-                  border-radius: 4px;
-                  cursor: pointer;
-                  font-size: 14px;
-                  margin-right: 10px;
-                }
-
-                .assessment-wrapper .btn-green {
-                  background-color: #28a745;
-                }
-
-                .assessment-wrapper .btn-green:hover {
-                  background-color: #218838;
-                }
-
-                .assessment-wrapper .btn-red {
-                  background-color: #dc3545;
-                }
-
-                .assessment-wrapper .btn-red:hover {
-                  background-color: #c82333;
-                }
-
-                /* Scoped Warning Text */
-                .assessment-wrapper .warning-text {
-                  color: red;
-                  font-weight: bold;
-                  display: none;
-                  margin-top: 5px;
-                }
-              
-                  /* --- SCOPED STYLES: These only affect the assessment section --- */
-                  .assessment-wrapper {
-                    font-family: Arial, sans-serif;
-                    padding: 10px;
-                    box-sizing: border-box;
-                  }
-
-                  .assessment-wrapper * {
-                    box-sizing: border-box;
-                  }
-
-                  /* Scoped Table Styling */
-                  .assessment-wrapper table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin-top: 10px;
-                    margin-bottom: 20px;
-                    table-layout: fixed;
-                  }
-
-                  .assessment-wrapper th,
-                  .assessment-wrapper td {
-                    border: 1px solid #ccc;
-                    padding: 8px;
-                    vertical-align: top;
-                  }
-
-                  .assessment-wrapper th {
-                    background-color: #f2f2f2;
-                    text-align: left;
-                    font-size: 14px;
-                  }
-
-                  /* Scoped Input/Select Styling */
-                  .assessment-wrapper input[type="text"],
-                  .assessment-wrapper input[type="number"],
-                  .assessment-wrapper select {
-                    width: 100%;
-                    padding: 5px;
-                    height: 35px;
-                    border: 1px solid #999;
-                    border-radius: 3px;
-                  }
-
-                  .assessment-wrapper textarea {
-                    width: 100%;
-                    padding: 5px;
-                    resize: none;
-                    overflow: hidden;
-                    min-height: 35px;
-                    font-family: Arial, sans-serif;
-                    border: 1px solid #999;
-                    border-radius: 3px;
-                    display: block;
-                    line-height: 1.4;
-                  }
-
-                  /* --- UPDATED SUMMARY BOX STYLING --- */
-                  .assessment-wrapper .summary-box {
-                    display: flex;
-                    justify-content: space-between;
-                    /* Pushes content to left and right */
-                    align-items: flex-start;
-                    /* Aligns items to top */
-                    margin-bottom: 15px;
-                    padding: 15px;
-                    background-color: #f9f9f9;
-                    border: 1px solid #ddd;
-                    gap: 20px;
-                  }
-
-                  /* Left Side: Stats and Bar */
-                  .assessment-wrapper .summary-stats-col {
-                    flex: 1;
-                    /* Takes up available space */
-                    display: flex;
-                    flex-direction: column;
-                    gap: 5px;
-                  }
-
-                  .assessment-wrapper .summary-stats-col p {
-                    margin: 0;
-                    font-size: 14px;
-                    line-height: 1.5;
-                  }
-
-                  /* Right Side: Warning Text */
-                  .assessment-wrapper .summary-warning-col {
-                    flex: 0 0 auto;
-                    /* Auto width based on content */
-                    display: flex;
-                    align-items: center;
-                    height: 100%;
-                  }
-
-                  .assessment-wrapper .warning-text {
-                    color: red;
-                    font-weight: bold;
-                    font-size: 14px;
-                    display: none;
-                    /* Hidden by default */
-                  }
-
-                  /* --- PROGRESS BAR STYLING --- */
-                  .assessment-wrapper .progress-container {
-                    width: 100%;
-                    height: 20px;
-                    background-color: #e0e0e0;
-                    /* Light Grey for unfilled */
-                    border-radius: 10px;
-                    margin-top: 10px;
-                    position: relative;
-                    overflow: hidden;
-                    display: flex;
-                  }
-
-                  .assessment-wrapper .progress-bar-controlled {
-                    height: 100%;
-                    background-color: #dc3545;
-                    /* Red */
-                    width: 0%;
-                    transition: width 0.3s ease;
-                  }
-
-                  .assessment-wrapper .progress-bar-uncontrolled {
-                    height: 100%;
-                    background-color: #28a745;
-                    /* Green ("Free") */
-                    width: 0%;
-                    transition: width 0.3s ease;
-                  }
-
-                  /* 50% Marker Line */
-                  .assessment-wrapper .marker-50 {
-                    position: absolute;
-                    left: 50%;
-                    top: 0;
-                    bottom: 0;
-                    border-left: 2px dashed #333;
-                    z-index: 5;
-                  }
-
-                  .assessment-wrapper .marker-label {
-                    position: absolute;
-                    left: 50%;
-                    top: -20px;
-                    /* Position text above bar if needed, or tooltip */
-                    transform: translateX(-50%);
-                    font-size: 10px;
-                    color: #666;
-                  }
-
-                  /* Scoped Buttons */
-                  .assessment-wrapper .btn {
-                    padding: 10px 20px;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 14px;
-                    margin-right: 10px;
-                  }
-
-                  .assessment-wrapper .btn-green {
-                    background-color: #28a745;
-                  }
-
-                  .assessment-wrapper .btn-green:hover {
-                    background-color: #218838;
-                  }
-
-                  .assessment-wrapper .btn-red {
-                    background-color: #dc3545;
-                  }
-
-                  .assessment-wrapper .btn-red:hover {
-                    background-color: #c82333;
-                  }
-                
-                    /* --- SCOPED STYLES: These only affect the assessment section --- */
-                    .assessment-wrapper {
-                      font-family: Arial, sans-serif;
-                      padding: 10px;
-                      box-sizing: border-box;
-                    }
-
-                    .assessment-wrapper * {
-                      box-sizing: border-box;
-                    }
-
-                    /* Scoped Table Styling */
-                    .assessment-wrapper table {
-                      width: 100%;
-                      border-collapse: collapse;
-                      margin-top: 10px;
-                      margin-bottom: 20px;
-                      table-layout: fixed;
-                    }
-
-                    .assessment-wrapper th,
-                    .assessment-wrapper td {
-                      border: 1px solid #ccc;
-                      padding: 8px;
-                      vertical-align: top;
-                    }
-
-                    .assessment-wrapper th {
-                      background-color: #f2f2f2;
-                      text-align: left;
-                      font-size: 14px;
-                    }
-
-                    /* Scoped Input/Select Styling */
-                    .assessment-wrapper input[type="text"],
-                    .assessment-wrapper input[type="number"],
-                    .assessment-wrapper select {
-                      width: 100%;
-                      padding: 5px;
-                      height: 35px;
-                      border: 1px solid #999;
-                      border-radius: 3px;
-                    }
-
-                    .assessment-wrapper textarea {
-                      width: 100%;
-                      padding: 5px;
-                      resize: none;
-                      overflow: hidden;
-                      min-height: 35px;
-                      font-family: Arial, sans-serif;
-                      border: 1px solid #999;
-                      border-radius: 3px;
-                      display: block;
-                      line-height: 1.4;
-                    }
-
-                    /* --- SUMMARY BOX STYLING --- */
-                    .assessment-wrapper .summary-box {
-                      display: flex;
-                      justify-content: space-between;
-                      align-items: flex-start;
-                      margin-bottom: 15px;
-                      padding: 15px;
-                      background-color: #f9f9f9;
-                      border: 1px solid #ddd;
-                      gap: 20px;
-                    }
-
-                    /* Left Side: Stats and Bar */
-                    .assessment-wrapper .summary-stats-col {
-                      flex: 1;
-                      display: flex;
-                      flex-direction: column;
-                      gap: 5px;
-                    }
-
-                    .assessment-wrapper .summary-stats-col p {
-                      margin: 0;
-                      font-size: 14px;
-                      line-height: 1.5;
-                    }
-
-                    /* Right Side: Warning Text */
-                    .assessment-wrapper .summary-warning-col {
-                      flex: 0 0 auto;
-                      display: flex;
-                      align-items: center;
-                      height: 100%;
-                    }
-
-                    .assessment-wrapper .warning-text {
-                      color: red;
-                      font-weight: bold;
-                      font-size: 14px;
-                      display: none;
-                    }
-
-                    /* --- PROGRESS BAR STYLING --- */
-                    .assessment-wrapper .progress-container {
-                      width: 100%;
-                      height: 24px;
-                      /* Increased slightly for text visibility */
-                      background-color: #e0e0e0;
-                      border-radius: 12px;
-                      margin-top: 10px;
-                      position: relative;
-                      overflow: hidden;
-                      display: flex;
-                      font-size: 11px;
-                      font-weight: bold;
-                      line-height: 24px;
-                      /* Vertically center text */
-                    }
-
-                    .assessment-wrapper .progress-bar-controlled {
-                      height: 100%;
-                      background-color: #dc3545;
-                      /* Red */
-                      width: 0%;
-                      transition: width 0.3s ease;
-                      text-align: center;
-                      color: white;
-                      white-space: nowrap;
-                      overflow: hidden;
-                    }
-
-                    .assessment-wrapper .progress-bar-uncontrolled {
-                      height: 100%;
-                      background-color: #28a745;
-                      /* Green */
-                      width: 0%;
-                      transition: width 0.3s ease;
-                      text-align: center;
-                      color: white;
-                      white-space: nowrap;
-                      overflow: hidden;
-                    }
-
-                    /* Class for the text labels inside the bar */
-                    .assessment-wrapper .bar-label {
-                      padding: 0 5px;
-                      display: inline-block;
-                    }
-
-                    /* 50% Marker Line */
-                    .assessment-wrapper .marker-50 {
-                      position: absolute;
-                      left: 50%;
-                      top: 0;
-                      bottom: 0;
-                      border-left: 2px dashed #333;
-                      z-index: 5;
-                      opacity: 0.6;
-                    }
-
-                    /* Scoped Buttons */
-                    .assessment-wrapper .btn {
-                      padding: 10px 20px;
-                      color: white;
-                      border: none;
-                      border-radius: 4px;
-                      cursor: pointer;
-                      font-size: 14px;
-                      margin-right: 10px;
-                    }
-
-                    .assessment-wrapper .btn-green {
-                      background-color: #28a745;
-                    }
-
-                    .assessment-wrapper .btn-green:hover {
-                      background-color: #218838;
-                    }
-
-                    .assessment-wrapper .btn-red {
-                      background-color: #dc3545;
-                    }
-
-                    .assessment-wrapper .btn-red:hover {
-                      background-color: #c82333;
-                    }
-                  
-                      /* --- SCOPED STYLES: These only affect the assessment section --- */
-                      .assessment-wrapper {
-                        font-family: Arial, sans-serif;
-                        padding: 10px;
-                        box-sizing: border-box;
-                      }
-
-                      .assessment-wrapper * {
-                        box-sizing: border-box;
-                      }
-
-                      /* Scoped Table Styling */
-                      .assessment-wrapper table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin-top: 10px;
-                        margin-bottom: 20px;
-                        table-layout: fixed;
-                      }
-
-                      .assessment-wrapper th,
-                      .assessment-wrapper td {
-                        border: 1px solid #ccc;
-                        padding: 8px;
-                        vertical-align: top;
-                      }
-
-                      .assessment-wrapper th {
-                        background-color: #f2f2f2;
-                        text-align: left;
-                        font-size: 14px;
-                      }
-
-                      /* Scoped Input/Select Styling */
-                      .assessment-wrapper input[type="text"],
-                      .assessment-wrapper input[type="number"],
-                      .assessment-wrapper select {
-                        width: 100%;
-                        padding: 5px;
-                        height: 35px;
-                        border: 1px solid #999;
-                        border-radius: 3px;
-                      }
-
-                      .assessment-wrapper textarea {
-                        width: 100%;
-                        padding: 5px;
-                        resize: none;
-                        overflow: hidden;
-                        min-height: 35px;
-                        font-family: Arial, sans-serif;
-                        border: 1px solid #999;
-                        border-radius: 3px;
-                        display: block;
-                        line-height: 1.4;
-                      }
-
-                      /* --- SUMMARY BOX STYLING --- */
-                      .assessment-wrapper .summary-box {
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: flex-start;
-                        margin-bottom: 15px;
-                        padding: 15px;
-                        background-color: #f9f9f9;
-                        border: 1px solid #ddd;
-                        gap: 20px;
-                      }
-
-                      /* Left Side: Stats and Bar */
-                      .assessment-wrapper .summary-stats-col {
-                        flex: 1;
-                        display: flex;
-                        flex-direction: column;
-                        gap: 5px;
-                      }
-
-                      .assessment-wrapper .summary-stats-col p {
-                        margin: 0;
-                        font-size: 14px;
-                        line-height: 1.5;
-                      }
-
-                      /* Right Side: Warning Text */
-                      .assessment-wrapper .summary-warning-col {
-                        flex: 0 0 auto;
-                        display: flex;
-                        align-items: center;
-                        height: 100%;
-                      }
-
-                      .assessment-wrapper .warning-text {
-                        color: red;
-                        font-weight: bold;
-                        font-size: 14px;
-                        display: none;
-                      }
-
-                      /* --- PROGRESS BAR STYLING --- */
-                      .assessment-wrapper .progress-container {
-                        width: 100%;
-                        height: 24px;
-                        background-color: #e0e0e0;
-                        border-radius: 12px;
-                        margin-top: 10px;
-                        position: relative;
-                        overflow: hidden;
-                        display: flex;
-                        font-size: 11px;
-                        font-weight: bold;
-                        line-height: 24px;
-                      }
-
-                      .assessment-wrapper .progress-bar-controlled {
-                        height: 100%;
-                        background-color: #dc3545;
-                        /* Red */
-                        width: 0%;
-                        transition: width 0.3s ease;
-                        text-align: center;
-                        color: white;
-                        white-space: nowrap;
-                        overflow: hidden;
-                      }
-
-                      .assessment-wrapper .progress-bar-uncontrolled {
-                        height: 100%;
-                        background-color: #28a745;
-                        /* Green */
-                        width: 0%;
-                        transition: width 0.3s ease;
-                        text-align: center;
-                        color: white;
-                        white-space: nowrap;
-                        overflow: hidden;
-                      }
-
-                      .assessment-wrapper .bar-label {
-                        padding: 0 5px;
-                        display: inline-block;
-                      }
-
-                      /* 50% Marker Line */
-                      .assessment-wrapper .marker-50 {
-                        position: absolute;
-                        left: 50%;
-                        top: 0;
-                        bottom: 0;
-                        border-left: 2px dashed #333;
-                        z-index: 5;
-                        opacity: 0.6;
-                      }
-
-                      /* Scoped Buttons */
-                      .assessment-wrapper .btn {
-                        padding: 10px 20px;
-                        color: white;
-                        border: none;
-                        border-radius: 4px;
-                        cursor: pointer;
-                        font-size: 14px;
-                        margin-right: 10px;
-                      }
-
-                      .assessment-wrapper .btn-green {
-                        background-color: #28a745;
-                      }
-
-                      .assessment-wrapper .btn-green:hover {
-                        background-color: #218838;
-                      }
-
-                      .assessment-wrapper .btn-red {
-                        background-color: #dc3545;
-                      }
-
-                      .assessment-wrapper .btn-red:hover {
-                        background-color: #c82333;
-                      }
-                    
-                        /* --- SCOPED STYLES: These only affect the assessment section --- */
-                        .assessment-wrapper {
-                          font-family: Arial, sans-serif;
-                          padding: 10px;
-                          box-sizing: border-box;
-                        }
-
-                        .assessment-wrapper * {
-                          box-sizing: border-box;
-                        }
-
-                        /* Scoped Table Styling */
-                        .assessment-wrapper table {
-                          width: 100%;
-                          border-collapse: collapse;
-                          margin-top: 10px;
-                          margin-bottom: 20px;
-                          table-layout: fixed;
-                        }
-
-                        .assessment-wrapper th,
-                        .assessment-wrapper td {
-                          border: 1px solid #ccc;
-                          padding: 8px;
-                          vertical-align: top;
-                        }
-
-                        .assessment-wrapper th {
-                          background-color: #f2f2f2;
-                          text-align: left;
-                          font-size: 14px;
-                        }
-
-                        /* Scoped Input/Select Styling */
-                        .assessment-wrapper input[type="text"],
-                        .assessment-wrapper input[type="number"],
-                        .assessment-wrapper select {
-                          width: 100%;
-                          padding: 5px;
-                          height: 35px;
-                          border: 1px solid #999;
-                          border-radius: 3px;
-                        }
-
-                        .assessment-wrapper textarea {
-                          width: 100%;
-                          padding: 5px;
-                          resize: none;
-                          overflow: hidden;
-                          min-height: 35px;
-                          font-family: Arial, sans-serif;
-                          border: 1px solid #999;
-                          border-radius: 3px;
-                          display: block;
-                          line-height: 1.4;
-                        }
-
-                        /* --- SUMMARY BOX STYLING --- */
-                        .assessment-wrapper .summary-box {
-                          display: flex;
-                          justify-content: space-between;
-                          align-items: flex-start;
-                          margin-bottom: 15px;
-                          padding: 15px;
-                          background-color: #f9f9f9;
-                          border: 1px solid #ddd;
-                          gap: 20px;
-                        }
-
-                        /* Left Side: Stats and Bar */
-                        .assessment-wrapper .summary-stats-col {
-                          flex: 1;
-                          display: flex;
-                          flex-direction: column;
-                          gap: 5px;
-                        }
-
-                        .assessment-wrapper .summary-stats-col p {
-                          margin: 0;
-                          font-size: 14px;
-                          line-height: 1.5;
-                        }
-
-                        /* Right Side: Warning Text */
-                        .assessment-wrapper .summary-warning-col {
-                          flex: 0 0 auto;
-                          display: flex;
-                          align-items: center;
-                          height: 100%;
-                        }
-
-                        .assessment-wrapper .warning-text {
-                          color: red;
-                          font-weight: bold;
-                          font-size: 14px;
-                          display: none;
-                        }
-
-                        /* --- PROGRESS BAR STYLING --- */
-                        .assessment-wrapper .progress-container {
-                          width: 100%;
-                          height: 24px;
-                          background-color: #e0e0e0;
-                          border-radius: 12px;
-                          margin-top: 10px;
-                          position: relative;
-                          overflow: hidden;
-                          display: flex;
-                          font-size: 11px;
-                          font-weight: bold;
-                          line-height: 24px;
-                        }
-
-                        .assessment-wrapper .progress-bar-controlled {
-                          height: 100%;
-                          background-color: #dc3545;
-                          /* Red */
-                          width: 0%;
-                          transition: width 0.3s ease;
-                          text-align: center;
-                          color: white;
-                          white-space: nowrap;
-                          overflow: hidden;
-                        }
-
-                        .assessment-wrapper .progress-bar-uncontrolled {
-                          height: 100%;
-                          background-color: #28a745;
-                          /* Green */
-                          width: 0%;
-                          transition: width 0.3s ease;
-                          text-align: center;
-                          color: white;
-                          white-space: nowrap;
-                          overflow: hidden;
-                        }
-
-                        .assessment-wrapper .bar-label {
-                          padding: 0 5px;
-                          display: inline-block;
-                        }
-
-                        /* 50% Marker Line */
-                        .assessment-wrapper .marker-50 {
-                          position: absolute;
-                          left: 50%;
-                          top: 0;
-                          bottom: 0;
-                          border-left: 2px dashed #333;
-                          z-index: 5;
-                          opacity: 0.6;
-                        }
-
-                        /* Scoped Buttons */
-                        .assessment-wrapper .btn {
-                          padding: 10px 20px;
-                          color: white;
-                          border: none;
-                          border-radius: 4px;
-                          cursor: pointer;
-                          font-size: 14px;
-                          margin-right: 10px;
-                        }
-
-                        .assessment-wrapper .btn-green {
-                          background-color: #28a745;
-                        }
-
-                        .assessment-wrapper .btn-green:hover {
-                          background-color: #218838;
-                        }
-
-                        .assessment-wrapper .btn-red {
-                          background-color: #dc3545;
-                        }
-
-                        .assessment-wrapper .btn-red:hover {
-                          background-color: #c82333;
-                        }
-                      </style><script src="https://cdn.jsdelivr.net/npm/es-module-shims@1.10.0/dist/es-module-shims.js" async=""></script><script type="importmap">{
-  "imports": {}
-}</script></head><body>
-
-
-
-  
-
-
-
-
-  <div class="container">
-    <form id="moduleForm">
-      <h1>Module Outline Form</h1>
-      
-      
-
-      
-        
-      
-
-      
-
-        <div class="section">
-          <h2>11.1 Module Name</h2>
-          <div class="row">
-            <div class="col">
-              <label>English Name:</label>
-              <textarea name="module_name_en" rows="1" oninput="autoResize(this)"></textarea>
-            </div>
-            <div class="col">
-              <label>Dhivehi Name:</label>
-              <textarea name="module_name_dhivehi" dir="rtl" rows="1" oninput="autoResize(this)" style="font-family: 'MV Typewriter'; direction: rtl;"></textarea>
-            </div>
-            <div class="col">
-              <label>Arabic Name:</label>
-              <textarea name="module_name_arabic" dir="rtl" rows="1" oninput="autoResize(this)" style="direction: rtl;"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <script>
-          // Function to automatically expand the text area vertically
-          function autoResize(textarea) {
-            textarea.style.height = 'auto'; // Reset height
-            textarea.style.height = textarea.scrollHeight + 'px'; // Expand to fit content
-          }
-        </script>
-
-      
-
-      
-  
-  
-  <div class="section">
-  <label>Module Description:</label>
-  <textarea name="module_description" rows="4"></textarea>
-  </div>
-
-  <!-- 11.2 Module Code -->
-  <div class="section">
-    <h2>11.2 Module Code</h2>
-    <div class="row">
-      <div class="col">
-        <label>Module Code:</label>
-        <input type="text" name="module_code">
-      </div>
-      <div class="col">
-        <label>Module Level (MNQF):</label>
-        <div class="mnqf-container">
-          <input type="number" id="mnqfInput" name="module_level" min="1" max="10" placeholder="#" oninput="updateLevelName()">
-          <span id="mnqfLabel" class="mnqf-label"></span>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
-
-  
-    
-  
-
-  
-
-    
-      <div class="section">
-        <h2>11.3 Credit &amp; Hours Distribution</h2>
-        <div class="equal-row">
-          <div class="equal-col">
-            <div class="calc-box">
-              <div>
-                <label style="margin-top:0;">Number of Credits:</label>
-                <input type="number" id="creditsInput" name="contact_credits" placeholder="e.g. 15" style="background: #fff;" oninput="calculateHours()" onkeyup="calculateHours()" onchange="calculateHours()">
-              </div>
-
-              <hr style="border: 0; border-top: 1px solid #b8daff; margin: 15px 0;">
-
-              <div>
-                <label>Total Learning Hours</label>
-                <input type="number" id="totalLearningHours" name="contact_total_learning_hours" class="calc-input" readonly="">
-              </div>
-
-              <div>
-                <label>Contact Hours</label>
-                <input type="number" id="maxContactHours" name="contact_hours" class="calc-input" readonly="">
-              </div>
-
-              <div>
-                <label>Non-contact Hours</label>
-                <input type="number" id="maxNonContactHours" name="non_contact_hours" class="calc-input" readonly="">
-              </div>
-            </div>
-          </div>
-
-          <div class="equal-col">
-            <div class="dist-box">
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="2">Contact Hour Distribution</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td width="70%">Lecture</td>
-                    <td><input type="number" class="contact-dist-input" id="f2f_lecture" name="f2f_lecture" value="0" readonly="" style="background-color: #f9f9f9;"></td>
-                  </tr>
-                  <tr>
-                    <td>Tutorials</td>
-                    <td><input type="number" class="contact-dist-input" id="f2f_tutorials" name="f2f_tutorials" value="0" readonly="" style="background-color: #f9f9f9;"></td>
-                  </tr>
-                  <tr>
-                    <td>Group Work</td>
-                    <td><input type="number" class="contact-dist-input" id="f2f_groupwork" name="f2f_groupwork" value="0" readonly="" style="background-color: #f9f9f9;"></td>
-                  </tr>
-                  <tr>
-                    <td style="padding:0;">
-                      <input type="text" placeholder="Other (Specify method)" name="f2f_other_desc" style="border:none; background:transparent; padding:8px; margin:0; font-style:italic; width:100%;">
-                    </td>
-                    <td><input type="number" class="contact-dist-input" id="f2f_other" name="f2f_other" value="0" oninput="distributeContactHours()"></td>
-                  </tr>
-                  <tr class="total-row">
-                    <td><b>Total</b></td>
-                    <td>
-                      <input type="number" id="f2f_total" name="f2f_total" value="0" readonly="">
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="equal-col">
-            <div class="dist-box">
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="2">Non-Contact Hour Distribution</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td width="70%">Self-Study</td>
-                    <td><input type="number" class="non-contact-dist-input" id="nonf2f_selfstudy" name="nonf2f_selfstudy" value="0" readonly="" style="background-color: #f9f9f9;"></td>
-                  </tr>
-                  <tr>
-                    <td>Assignments</td>
-                    <td><input type="number" class="non-contact-dist-input" id="nonf2f_assignments" name="nonf2f_assignments" value="0" readonly="" style="background-color: #f9f9f9;"></td>
-                  </tr>
-                  <tr>
-                    <td>Research</td>
-                    <td><input type="number" class="non-contact-dist-input" id="nonf2f_research" name="nonf2f_research" value="0" readonly="" style="background-color: #f9f9f9;"></td>
-                  </tr>
-                  <tr>
-                    <td style="padding:0;">
-                      <input type="text" placeholder="Other (Specify method)" name="nonf2f_other_desc" style="border:none; background:transparent; padding:8px; margin:0; font-style:italic; width:100%;">
-                    </td>
-                    <td><input type="number" class="non-contact-dist-input" id="nonf2f_other" name="nonf2f_other" value="0" oninput="distributeNonContactHours()"></td>
-                  </tr>
-                  <tr class="total-row">
-                    <td><b>Total</b></td>
-                    <td>
-                      <input type="number" id="nonf2f_total" name="nonf2f_total" value="0" readonly="">
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    
-
-    <script>
-      // Run once on load to catch existing values
-      window.addEventListener('DOMContentLoaded', (event) => {
-        if (document.getElementById('creditsInput').value) {
-          calculateHours();
-        }
-      });
-      // Main Calculation Function
-      function calculateHours() {
-        const creditsInput = document.getElementById('creditsInput');
-        const credits = parseFloat(creditsInput.value) || 0;
-        // 1. Calculate Total Learning Hours (Credits * 10)
-        const totalHours = Math.round(credits * 10);
-        document.getElementById('totalLearningHours').value = totalHours;
-        // 2. Calculate Contact Hours (approx 1/3 of total)
-        const contactHours = Math.floor(totalHours / 3);
-        document.getElementById('maxContactHours').value = contactHours;
-        // 3. Calculate Non-Contact Hours (Balance)
-        const nonContactHours = totalHours - contactHours;
-        document.getElementById('maxNonContactHours').value = nonContactHours;
-        // 4. Trigger BOTH distribution functions immediately
-        distributeContactHours();
-        distributeNonContactHours();
-      }
-
-      function distributeContactHours() {
-        const totalContact = parseInt(document.getElementById('maxContactHours').value) || 0;
-        // Ensure Other Value is a number, default to 0
-        let otherVal = parseInt(document.getElementById('f2f_other').value);
-        if (isNaN(otherVal)) otherVal = 0;
-        if (otherVal > totalContact) {
-          alert("Other contact hours cannot exceed Total Contact Hours");
-          document.getElementById('f2f_other').value = 0;
-          otherVal = 0;
-        }
-        const remaining = totalContact - otherVal;
-        // Split logic
-        const part1 = Math.floor(remaining / 3);
-        const part2 = Math.floor(remaining / 3);
-        const part3 = remaining - part1 - part2;
-        document.getElementById('f2f_lecture').value = part1;
-        document.getElementById('f2f_tutorials').value = part2;
-        document.getElementById('f2f_groupwork').value = part3;
-        document.getElementById('f2f_total').value = part1 + part2 + part3 + otherVal;
-      }
-
-      function distributeNonContactHours() {
-        const totalNonContact = parseInt(document.getElementById('maxNonContactHours').value) || 0;
-        // Ensure Other Value is a number, default to 0
-        let otherVal = parseInt(document.getElementById('nonf2f_other').value);
-        if (isNaN(otherVal)) otherVal = 0;
-        if (otherVal > totalNonContact) {
-          alert("Other non-contact hours cannot exceed Total Non-Contact Hours");
-          document.getElementById('nonf2f_other').value = 0;
-          otherVal = 0;
-        }
-        const remaining = totalNonContact - otherVal;
-        // Split logic: Assignments (50%), Self-Study (25%), Research (Remainder)
-        const assignments = Math.floor(remaining * 0.5);
-        const selfStudy = Math.floor(remaining * 0.25);
-        const research = remaining - assignments - selfStudy;
-        document.getElementById('nonf2f_assignments').value = assignments;
-        document.getElementById('nonf2f_selfstudy').value = selfStudy;
-        document.getElementById('nonf2f_research').value = research;
-        // Update Total
-        document.getElementById('nonf2f_total').value = assignments + selfStudy + research + otherVal;
-      }
-    </script>
-
-  
-BREAK
-<div class="section">
-  <h2>11.4 Delivery Modality</h2>
-
-  <label>Mode:</label>
-  <div style="display:flex; gap:20px;">
-    <label style="font-weight:normal;">
-      <input type="checkbox" name="delivery_mode" value="f2f" onclick="updateDeliveryMethods()"> Face to Face
-    </label>
-
-    <label style="font-weight:normal;">
-      <input type="checkbox" name="delivery_mode" value="blended" onclick="updateDeliveryMethods()"> Blended
-    </label>
-
-    <label style="font-weight:normal;">
-      <input type="checkbox" name="delivery_mode" value="elearning" onclick="updateDeliveryMethods()"> E-Learning
-    </label>
-  </div>
-
-  <label>Methods of Delivery:</label>
-
-  <!-- Auto-expanding textarea -->
-  <textarea id="delivery_methods" name="delivery_methods" style="width:100%; height:80px; overflow:hidden; resize:none;" oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px';"></textarea>
-</div>
-
-<script>
-// Text blocks for each modality
-const deliveryTexts = {
-  f2f: `Face-to-face learning takes place through direct, in-person interaction where students and lecturers physically attend scheduled classes, labs, and workshops. All contact hours are fully met through this physical presence, allowing learners to engage in lectures, discussions, group activities, and hands-on tasks while receiving real-time guidance and feedback.`,
-
-  blended: `Blended learning combines in-person instruction with online engagement, allowing students to learn through multiple modes. In this approach, one-third of the contact hours are delivered face to face through students and lecturers physically attending scheduled classes. Another one-third is conducted online through synchronous (real-time) virtual sessions, while the remaining one-third is completed asynchronously through structured online tasks, activities, and self-paced study.`,
-
-  elearning: `E-learning in college is delivered entirely online, allowing students to participate in their coursework without needing to attend physical classes. In this modality, two-thirds of the contact hours are conducted through synchronous (real-time) virtual sessions using Google Meet or similar video-conferencing tools, enabling direct interaction between students and lecturers. The remaining one-third of the learning takes place asynchronously through structured online activities, digital resources, and self-paced study. `
-};
-
-// Update textarea based on selected checkboxes
-function updateDeliveryMethods() {
-  const selectedModes = [];
-  document.querySelectorAll('input[name="delivery_mode"]:checked').forEach(cb => {
-    selectedModes.push(cb.value);
-  });
-
-  // Build combined text with a blank line between each
-  let combinedText = selectedModes
-    .map(mode => deliveryTexts[mode])
-    .join("\n\n");
-
-  const textArea = document.getElementById('delivery_methods');
-  textArea.value = combinedText;
-
-  // auto expand
-  textArea.style.height = 'auto';
-  textArea.style.height = textArea.scrollHeight + 'px';
-}
-</script>
-BREAK
-  <div class="section">
-    <h2>11.5 Minimum Qualification</h2>
-    <input type="text" name="instructor_qualification">
-  </div>
-BREAK
-  <div class="row">
-    <div class="col">
-      <div class="section">
-        <h2>11.6 Prerequisite</h2>
-        <input type="text" name="prerequisite">
-      </div>
-    </div>
-    <div class="col">
-      <div class="section">
-        <h2>11.7 Corequisites</h2>
-        <input type="text" name="corequisites">
-      </div>
-    </div>
-  </div>
-  
-  
-
-  
-    
-  
-
-  
-    
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-      
-
-      
-
-        <div class="section">
-          <h2>11.8 Expected Learning Outcomes</h2>
-          <table class="outcome-table" id="outcomesTable">
-            <thead>
-              <tr>
-                <th style="text-align: left;">Outcome Statement</th>
-                <th class="vertical-header">
-                  <div>Knowledge &amp; understanding</div>
-                </th>
-                <th class="vertical-header">
-                  <div>Practice: Applied Knowledge and Understanding</div>
-                </th>
-                <th class="vertical-header">
-                  <div>Generic Cognitive Skills</div>
-                </th>
-                <th class="vertical-header">
-                  <div>Communication, ICT and Numeracy Skills</div>
-                </th>
-                <th class="vertical-header">
-                  <div>Autonomy, Accountability and Working with Others</div>
-                </th>
-              </tr>
-            </thead>
-            <tbody id="outcomesBody">
-              <tr>
-                <td>
-                  <div class="outcome-input-wrapper">
-                    <span class="outcome-number">1.</span>
-                    <input type="text" name="outcome1">
-                  </div>
-                </td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <button type="button" class="add-btn" onclick="addOutcome()">+ Add Outcome</button>
-        </div>
-
-        <script>
-          function addOutcome() {
-            var tbody = document.getElementById("outcomesBody");
-            var nextNumber = tbody.rows.length + 1;
-            var newRow = document.createElement("tr");
-            // Javascript also adds a textarea with rows="2"
-            newRow.innerHTML = `
-                <td>
-                    <div class="outcome-input-wrapper">
-                        <span class="outcome-number">${nextNumber}.</span>
-                        <textarea name="outcome${nextNumber}" rows="2"></textarea>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Outline Form</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+    <!-- Main content -->
+    <div class="main-container">
+        <div class="container">
+            <form id="moduleForm">
+                <!-- Your existing form content starts here -->
+                <h1>Module Outline Form</h1>
+
+                <!-- Section 11.1 Module Name -->
+                <div class="section" id="section11_1">
+                    <h2>11.1 Module Name</h2>
+                    <div class="row">
+                        <div class="col">
+                            <label>English Name:</label>
+                            <textarea name="module_name_en" rows="1" class="auto-resize"
+                                oninput="autoResize(this)"></textarea>
+                        </div>
+                        <div class="col">
+                            <label>Dhivehi Name:</label>
+                            <textarea name="module_name_dhivehi" dir="rtl" rows="1" class="auto-resize"
+                                oninput="autoResize(this)"
+                                style="font-family: 'MV Typewriter'; direction: rtl;"></textarea>
+                        </div>
+                        <div class="col">
+                            <label>Arabic Name:</label>
+                            <textarea name="module_name_arabic" dir="rtl" rows="1" class="auto-resize"
+                                oninput="autoResize(this)" style="direction: rtl;"></textarea>
+                        </div>
                     </div>
-                </td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-            `;
-            tbody.appendChild(newRow);
-          }
-        </script>
+                </div>
 
-      
+                <!-- Module Description -->
+                <div class="section" id="section11_desc">
+                    <label>Module Description:</label>
+                    <textarea name="module_description" rows="4"></textarea>
+                </div>
 
-      
-      <script>
-        function addOutcome() {
-          var tbody = document.getElementById("outcomesBody");
-          var nextNumber = tbody.rows.length + 1;
-          var newRow = document.createElement("tr");
-          // Updated JavaScript to create a Textarea instead of Input
-          newRow.innerHTML = `
-                <td>
-                    <div class="outcome-input-wrapper">
-                        <span class="outcome-number">${nextNumber}.</span>
-                        <textarea name="outcome${nextNumber}" rows="2"></textarea>
+                <!-- Section 11.2 Module Code -->
+                <div class="section" id="section11_2">
+                    <h2>11.2 Module Code</h2>
+                    <div class="row">
+                        <div class="col">
+                            <label>Module Code:</label>
+                            <input type="text" name="module_code">
+                        </div>
+                        <div class="col">
+                            <label>Module Level (MNQF):</label>
+                            <div class="mnqf-container">
+                                <input type="number" id="mnqfInput" name="module_level" min="1" max="10" placeholder="#"
+                                    oninput="updateLevelName()">
+                                <span id="mnqfLabel" class="mnqf-label"></span>
+                            </div>
+                        </div>
                     </div>
-                </td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-            `;
-          tbody.appendChild(newRow);
-        }
-      </script>
+                </div>
 
-    
+                <!-- Section 11.3 Credit & Hours Distribution -->
+                <div class="section" id="section11_3">
+                    <h2>11.3 Credit & Hours Distribution</h2>
+                    <div class="equal-row">
+                        <div class="equal-col">
+                            <div class="calc-box">
+                                <div>
+                                    <label style="margin-top:0;">Number of Credits:</label>
+                                    <input type="number" id="creditsInput" name="contact_credits" placeholder="e.g. 15"
+                                        style="background: #fff;" oninput="calculateHours()" onkeyup="calculateHours()"
+                                        onchange="calculateHours()">
+                                </div>
 
-    
-    <script>
-      function addOutcome() {
-        // Get the table body
-        var tbody = document.getElementById("outcomesBody");
-        // Calculate the next number based on current row count
-        var nextNumber = tbody.rows.length + 1;
-        // Create a new row
-        var newRow = document.createElement("tr");
-        // HTML content for the new row
-        newRow.innerHTML = `
-                <td>
-                    <div class="outcome-input-wrapper">
-                        <span class="outcome-number">${nextNumber}.</span>
-                        <input type="text" name="outcome${nextNumber}">
+                                <hr style="border: 0; border-top: 1px solid #b8daff; margin: 15px 0;">
+
+                                <div>
+                                    <label>Total Learning Hours</label>
+                                    <input type="number" id="totalLearningHours" name="contact_total_learning_hours"
+                                        class="calc-input" readonly>
+                                </div>
+
+                                <div>
+                                    <label>Contact Hours</label>
+                                    <input type="number" id="maxContactHours" name="contact_hours" class="calc-input"
+                                        readonly>
+                                </div>
+
+                                <div>
+                                    <label>Non-contact Hours</label>
+                                    <input type="number" id="maxNonContactHours" name="non_contact_hours"
+                                        class="calc-input" readonly>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-                <td class="checkbox-cell"><input type="checkbox"></td>
-            `;
-        // Append the new row to the table body
-        tbody.appendChild(newRow);
-      }
-    </script>
-    
-    
+                </div>
 
-    
-      
-    
+                <!-- Section 11.4 Delivery Modality -->
+                <div class="section" id="section11_4">
+                    <h2>11.4 Delivery Modality</h2>
 
-    
-      
-      
+                    <label>Mode:</label>
+                    <div style="display:flex; gap:20px;">
+                        <label style="font-weight:normal;">
+                            <input type="checkbox" name="delivery_mode" value="f2f" onclick="updateDeliveryMethods()">
+                            Face to Face
+                        </label>
 
-      
-        
-      
+                        <label style="font-weight:normal;">
+                            <input type="checkbox" name="delivery_mode" value="blended"
+                                onclick="updateDeliveryMethods()"> Blended
+                        </label>
 
-      
-BREAK
-        <div class="section">
-          <h2>11.9 Curricular Content</h2>
-          <label>Curricular Content in terms of topics and a summary of content planned</label>
+                        <label style="font-weight:normal;">
+                            <input type="checkbox" name="delivery_mode" value="elearning"
+                                onclick="updateDeliveryMethods()"> E-Learning
+                        </label>
+                    </div>
 
-          <table id="curricularTable">
-            <thead>
-              <tr>
-                <th style="width:5%">Week</th>
-                <th style="width:40%">Main Topic &amp; Details</th>
-                <th style="width:15%">Pedagogy</th>
-                <th style="width:15%">Resources</th>
-                <th style="width:1%; white-space:nowrap;">Credit</th>
-                <th style="width:8%">Total Learning Hours</th>
-                <th style="width:8%">Contact Hours</th>
-              </tr>
-            </thead>
-            <tbody id="curricularBody">
-              <tr>
-                <td style="text-align:center; font-weight:bold; background-color:#f9f9f9; vertical-align: middle;">
-                  <span class="week-display">1</span>
-                </td>
-                <td>
-                  <div class="vertical-input-group">
-                    <label style="font-size: 0.8em; color: #666;">Main Topic:</label>
-                    <input type="text" name="topic1" placeholder="Enter Main Topic">
+                    <label>Methods of Delivery:</label>
+                    <textarea id="delivery_methods" name="delivery_methods"
+                        style="width:100%; height:80px; overflow:hidden; resize:none;"
+                        oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px';"></textarea>
+                </div>
 
-                    <label style="font-size: 0.8em; color: #666;">Details:</label>
-                    <textarea name="details1" style="height:60px" placeholder="Enter Details"></textarea>
-                  </div>
-                </td>
-                <td><textarea name="pedagogy1" style="height:100%"></textarea></td>
-                <td><textarea name="resources1" style="height:100%"></textarea></td>
-                <td><input type="text" name="credit1" class="curr-credit-field" readonly="" style="background-color:#fff; text-align:center; min-width:40px;"></td>
-                <td><input type="number" name="hours1" class="curr-hours-field" readonly=""></td>
-                <td><input type="number" name="contact1" class="curr-contact-field" readonly=""></td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr class="total-row">
-                <td colspan="4" style="text-align:right;">TOTAL (Sum of 15 Weeks)</td>
-                <td id="totalCreditsFooter" style="text-align:center; font-weight:bold;">0</td>
-                <td id="totalHoursFooter">0</td>
-                <td id="totalContactFooter">0</td>
-              </tr>
-            </tfoot>
-          </table>
+                <!-- Section 11.5 Minimum Qualification -->
+                <div class="section" id="section11_5">
+                    <h2>11.5 Minimum Qualification</h2>
+                    <input type="text" name="instructor_qualification">
+                </div>
 
-          <div style="margin-top: 15px;">
-            <button id="addWeekBtn" type="button" onclick="addWeek()" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
-              + Add More Week
-            </button>
+                <!-- Sections 11.6 and 11.7 -->
+                <div class="row">
+                    <div class="col">
+                        <div class="section" id="section11_6">
+                            <h2>11.6 Prerequisite</h2>
+                            <input type="text" name="prerequisite">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="section" id="section11_7">
+                            <h2>11.7 Corequisites</h2>
+                            <input type="text" name="corequisites">
+                        </div>
+                    </div>
+                </div>
 
-            <button id="deleteWeekBtn" type="button" onclick="deleteWeek()" style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">
-              Delete Week
-            </button>
-          </div>
-        </div>
+                <!-- Section 11.8 Expected Learning Outcomes -->
+                <div class="section" id="section11_8">
+                    <h2>11.8 Expected Learning Outcomes</h2>
+                    <table class="outcome-table" id="outcomesTable">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left;">Outcome Statement</th>
+                                <th class="vertical-header">
+                                    <div>Knowledge & understanding</div>
+                                </th>
+                                <th class="vertical-header">
+                                    <div>Practice: Applied Knowledge and Understanding</div>
+                                </th>
+                                <th class="vertical-header">
+                                    <div>Generic Cognitive Skills</div>
+                                </th>
+                                <th class="vertical-header">
+                                    <div>Communication, ICT and Numeracy Skills</div>
+                                </th>
+                                <th class="vertical-header">
+                                    <div>Autonomy, Accountability and Working with Others</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="outcomesBody">
+                            <tr>
+                                <td>
+                                    <div class="outcome-input-wrapper">
+                                        <span class="outcome-number">1.</span>
+                                        <textarea name="outcome1" rows="2"></textarea>
+                                    </div>
+                                </td>
+                                <td class="checkbox-cell"><input type="checkbox"></td>
+                                <td class="checkbox-cell"><input type="checkbox"></td>
+                                <td class="checkbox-cell"><input type="checkbox"></td>
+                                <td class="checkbox-cell"><input type="checkbox"></td>
+                                <td class="checkbox-cell"><input type="checkbox"></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-        <div style="display:none;">
-          <input id="creditsInput" value="0">
-          <input id="totalLearningHours" value="0">
-          <input id="maxContactHours" value="0">
-          <input id="maxNonContactHours" value="0">
-          <input name="f2f_lecture"><input name="f2f_tutorials"><input name="f2f_groupwork"><input id="f2f_total">
-          <input name="nonf2f_lecture"><input name="nonf2f_tutorials"><input name="nonf2f_groupwork"><input id="nonf2f_total">
-        </div>
+                    <button type="button" class="add-btn" onclick="addOutcome()">+ Add Outcome</button>
+                </div>
 
-        <script>
-          // --- MNQF Level Logic ---
-          const mnqfLevels = {
-            1: "Certificate Level 1",
-            2: "Certificate Level 2",
-            3: "Certificate Level 3",
-            4: "Advanced Certificate",
-            5: "Diploma",
-            6: "Advanced Diploma / Associate Degree",
-            7: "Bachelor’s Degree",
-            8: "Post-Graduate Diploma ",
-            9: "Masters Degree",
-            10: "Doctoral Degree"
-          };
+                <!-- Section 11.9 Curricular Content -->
+                <div class="section page-break" id="section11_9">
+                    <h2>11.9 Curricular Content</h2>
+                    <label>Curricular Content in terms of topics and a summary of content planned</label>
 
-          function updateLevelName() {
-            const input = document.getElementById('mnqfInput');
-            const label = document.getElementById('mnqfLabel');
-            if (!input || !label) return;
-            const level = parseInt(input.value);
-            if (mnqfLevels[level]) {
-              label.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- " + mnqfLevels[level];
-              label.style.color = "#333";
-            } else if (input.value === "") {
-              label.innerHTML = "";
-            } else {
-              label.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Invalid Level)";
-              label.style.color = "red";
-            }
-          }
-          // --- Calculation Logic ---
-          const creditsInputRef = document.getElementById('creditsInput');
-          // NEW MAP for Special Contact Hours
-          const contactHourMap = {
-            9: 30,
-            10: 33,
-            12: 45,
-            15: 50,
-            18: 60,
-            20: 67
-          };
-          if (creditsInputRef) {
-            creditsInputRef.addEventListener('input', function() {
-              let credits = parseFloat(this.value) || 0;
-              // 1. Calculate 11.3 Totals (Targets)
-              let totalLearning = credits * 10;
-              // Determine Contact Hours based on Map OR Formula
-              let totalContact = 0;
-              if (contactHourMap[credits]) {
-                totalContact = contactHourMap[credits];
-              } else {
-                totalContact = Math.round(totalLearning / 3);
-              }
-              let totalNonContact = totalLearning - totalContact;
-              // Update 11.3 Target fields
-              const tlh = document.getElementById('totalLearningHours');
-              const mch = document.getElementById('maxContactHours');
-              const mnch = document.getElementById('maxNonContactHours');
-              if (tlh) tlh.value = totalLearning;
-              if (mch) mch.value = totalContact;
-              if (mnch) mnch.value = totalNonContact;
-              // 2. Trigger 11.9 Calculation to update table
-              calculateWeeklyDistribution();
-            });
-          }
+                    <table id="curricularTable">
+                        <thead>
+                            <tr>
+                                <th style="width:5%">Week</th>
+                                <th style="width:40%">Main Topic & Details</th>
+                                <th style="width:15%">Pedagogy</th>
+                                <th style="width:15%">Resources</th>
+                                <th style="width:1%; white-space:nowrap;">Credit</th>
+                                <th style="width:8%">Total Learning Hours</th>
+                                <th style="width:8%">Contact Hours</th>
+                            </tr>
+                        </thead>
+                        <tbody id="curricularBody">
+                            <tr>
+                                <td
+                                    style="text-align:center; font-weight:bold; background-color:#f9f9f9; vertical-align: middle;">
+                                    <span class="week-display">1</span>
+                                </td>
+                                <td>
+                                    <div class="vertical-input-group">
+                                        <label style="font-size: 0.8em; color: #666;">Main Topic:</label>
+                                        <input type="text" name="topic1" placeholder="Enter Main Topic">
 
-          function calculateWeeklyDistribution() {
-            const tlhInput = document.getElementById('totalLearningHours');
-            const mchInput = document.getElementById('maxContactHours');
-            if (!tlhInput || !mchInput) return;
-            const totalLearning = parseFloat(tlhInput.value) || 0;
-            const totalContact = parseFloat(mchInput.value) || 0;
-            // Calculate per week and ROUND UP
-            const weeklyLearning = Math.ceil(totalLearning / 15);
-            const weeklyContact = Math.ceil(totalContact / 15);
-            // Update rows in 11.9
-            const rows = document.querySelectorAll('#curricularBody tr');
-            let sumLearning = 0;
-            let sumContact = 0;
-            rows.forEach(row => {
-              const hoursInput = row.querySelector('.curr-hours-field');
-              const contactInput = row.querySelector('.curr-contact-field');
-              const creditInput = row.querySelector('.curr-credit-field');
-              if (hoursInput) {
-                hoursInput.value = weeklyLearning;
-                sumLearning += weeklyLearning;
-              }
-              if (contactInput) {
-                contactInput.value = weeklyContact;
-                sumContact += weeklyContact;
-              }
-              if (creditInput) {
-                creditInput.value = "";
-              }
-            });
-            // Update Footer in 11.9
-            document.getElementById('totalHoursFooter').innerText = sumLearning;
-            document.getElementById('totalContactFooter').innerText = sumContact;
-            // Update Footer Credit Cell (from 11.3 input)
-            const creditSource = document.getElementById('creditsInput');
-            const creditTarget = document.getElementById('totalCreditsFooter');
-            if (creditSource && creditTarget) {
-              creditTarget.innerText = creditSource.value || "0";
-            }
-            // ============================================
-            // DISTRIBUTION LOGIC
-            // ============================================
-            const actualC = sumContact;
-            const lec = Math.round(actualC * 0.50);
-            const tut = Math.round(actualC * 0.25);
-            const grp = Math.round(actualC * 0.25);
-            const f2f_lecture = document.querySelector('input[name="f2f_lecture"]');
-            if (f2f_lecture) {
-              f2f_lecture.value = lec;
-              document.querySelector('input[name="f2f_tutorials"]').value = tut;
-              document.querySelector('input[name="f2f_groupwork"]').value = grp;
-              document.getElementById('f2f_total').value = lec + tut + grp;
-            }
-            const nonContactInput = document.getElementById('maxNonContactHours');
-            const nonC = parseFloat(nonContactInput.value) || 0;
-            const assign = Math.round(nonC * 0.50);
-            const self = Math.round(nonC * 0.25);
-            const res = Math.round(nonC * 0.25);
-            const nonf2f_lecture = document.querySelector('input[name="nonf2f_lecture"]');
-            if (nonf2f_lecture) {
-              nonf2f_lecture.value = self;
-              document.querySelector('input[name="nonf2f_tutorials"]').value = assign;
-              document.querySelector('input[name="nonf2f_groupwork"]').value = res;
-              document.getElementById('nonf2f_total').value = self + assign + res;
-            }
-          }
+                                        <label style="font-size: 0.8em; color: #666;">Details:</label>
+                                        <textarea name="details1" style="height:60px"
+                                            placeholder="Enter Details"></textarea>
+                                    </div>
+                                </td>
+                                <td><textarea name="pedagogy1" style="height:100%"></textarea></td>
+                                <td><textarea name="resources1" style="height:100%"></textarea></td>
+                                <td><input type="text" name="credit1" class="curr-credit-field" readonly
+                                        style="background-color:#fff; text-align:center; min-width:40px;"></td>
+                                <td><input type="number" name="hours1" class="curr-hours-field" readonly></td>
+                                <td><input type="number" name="contact1" class="curr-contact-field" readonly></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="4" style="text-align:right;">TOTAL (Sum of 15 Weeks)</td>
+                                <td id="totalCreditsFooter" style="text-align:center; font-weight:bold;">0</td>
+                                <td id="totalHoursFooter">0</td>
+                                <td id="totalContactFooter">0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
 
-          function addWeek() {
-            const tableBody = document.getElementById('curricularBody');
-            const rowCount = tableBody.rows.length + 1;
-            const firstRow = tableBody.rows[0];
-            const newRow = firstRow.cloneNode(true);
-            const weekDisplay = newRow.querySelector('.week-display');
-            if (weekDisplay) weekDisplay.innerText = rowCount;
-            const inputs = newRow.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-              if (!input.classList.contains('curr-hours-field') && !input.classList.contains('curr-contact-field')) {
-                input.value = '';
-              }
-              let namePart = input.name.replace(/\d+$/, '');
-              input.name = namePart + rowCount;
-            });
-            tableBody.appendChild(newRow);
-            calculateWeeklyDistribution();
-          }
+                    <div style="margin-top: 15px;">
+                        <button id="addWeekBtn" type="button" onclick="addWeek()"
+                            style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            + Add More Week
+                        </button>
 
-          function deleteWeek() {
-            const tableBody = document.getElementById('curricularBody');
-            const rowCount = tableBody.rows.length;
-            if (rowCount > 1) {
-              tableBody.deleteRow(-1);
-              calculateWeeklyDistribution();
-            } else {
-              alert("Cannot delete Week 1. At least one week is required.");
-            }
-          }
-        </script>
+                        <button id="deleteWeekBtn" type="button" onclick="deleteWeek()"
+                            style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">
+                            Delete Week
+                        </button>
+                    </div>
+                </div>
 
-        
-        
-BREAK
-        
-          
-        
+                <!-- Section 11.10 Assessment Methods and Grading -->
+                <div class="assessment-wrapper page-break">
+                    <div class="section" id="section11_10">
+                        <h2>11.10 Assessment Methods and Grading</h2>
 
-        
-
-          
-          
-
-          
-            
-          
-
-          
-            
-            
-
-            
-              
-            
-
-            
-              
-              
-
-              
-                
-              
-
-              
-                
-                
-
-                
-                  
-                
-
-                
-                  BREAK
-                  
-                  
-
-                  
-                    
-                  
-
-                  
-                    
-                    
-
-                    
-                      
-                    
-
-                    
-
-                      <div class="assessment-wrapper">
-                        <div class="section">
-                          <h2>11.10 Assessment Methods and Grading</h2>
-
-                          <div style="background: #fff3cd; color: #856404; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+                        <div
+                            style="background: #fff3cd; color: #856404; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
                             Assessment Methods for Face-to-Face , Blended Mode and E-Learning Delivery<br>
-                            <span style="font-size: 0.9em; color: #555;">In E-learning and Blended modality all the exams will be conducted in face-face under the supervision of Invigilators</span>
-                          </div>
+                            <span style="font-size: 0.9em; color: #555;">In E-learning and Blended modality all the
+                                exams will be conducted in face-face under the supervision of Invigilators</span>
+                        </div>
 
-                          <div style="margin-bottom:10px; font-weight:bold;">Students must obtain 50% from all controlled assessments to pass.</div>
+                        <div style="margin-bottom:10px; font-weight:bold;">Students must obtain 50% from all controlled
+                            assessments to pass.</div>
 
-                          <div class="summary-box">
+                        <div class="summary-box">
                             <div class="summary-stats-col">
-                              <div>Controlled Assessment Weightage: <b><span id="controlledTotal">0</span>%</b></div>
-                              <div>Uncontrolled Assessment Weightage: <b><span id="uncontrolledTotal">0</span>%</b></div>
-
-                              <div class="progress-container">
-                                <div class="marker-50" title="50% Requirement"></div>
-
-                                <div class="progress-bar-controlled" id="barControlled">
-                                  <span class="bar-label" id="labelControlled"></span>
+                                <div>Controlled Assessment Weightage: <b><span id="controlledTotal">0</span>%</b></div>
+                                <div>Uncontrolled Assessment Weightage: <b><span id="uncontrolledTotal">0</span>%</b>
                                 </div>
 
-                                <div class="progress-bar-uncontrolled" id="barUncontrolled">
-                                  <span class="bar-label" id="labelUncontrolled"></span>
+                                <div class="progress-container">
+                                    <div class="marker-50" title="50% Requirement"></div>
+
+                                    <div class="progress-bar-controlled" id="barControlled">
+                                        <span class="bar-label" id="labelControlled"></span>
+                                    </div>
+
+                                    <div class="progress-bar-uncontrolled" id="barUncontrolled">
+                                        <span class="bar-label" id="labelUncontrolled"></span>
+                                    </div>
                                 </div>
-                              </div>
                             </div>
 
                             <div class="summary-warning-col">
-                              <p id="controlledWarning" class="warning-text">* Controlled Assessments' Weightage must be ≥ 50%</p>
+                                <p id="controlledWarning" class="warning-text">* Controlled Assessments' Weightage must
+                                    be ≥ 50%</p>
                             </div>
-                          </div>
+                        </div>
 
-                          <table id="assessmentTable">
+                        <table id="assessmentTable">
                             <thead>
-                              <tr>
-                                <th style="width:40px; text-align:center;">#</th>
-                                <th style="width:20%">Task Title</th>
-                                <th>Details</th>
-                                <th style="width:15%">Form</th>
-                                <th style="width:10%">Length (Words)</th>
-                                <th style="width:95px;">Weight (%)</th>
-                              </tr>
+                                <tr>
+                                    <th style="width:40px; text-align:center;">#</th>
+                                    <th style="width:20%">Task Title</th>
+                                    <th>Details</th>
+                                    <th style="width:15%">Form</th>
+                                    <th style="width:10%">Length (Words)</th>
+                                    <th style="width:95px;">Weight (%)</th>
+                                </tr>
                             </thead>
                             <tbody id="assessmentBody">
-                              <tr>
-                                <td class="row-number" style="text-align:center;">1</td>
-                                <td><textarea name="assessment1_title" oninput="autoResize(this)" rows="1"></textarea></td>
-                                <td><textarea name="assessment1_details" oninput="autoResize(this)" rows="1"></textarea></td>
-                                <td>
-                                  <select name="assessment1_form" class="form-select" onchange="updateAssessmentCalc()">
-                                    <option value="Controlled">Controlled</option>
-                                    <option value="Uncontrolled">Uncontrolled</option>
-                                  </select>
-                                </td>
-                                <td><input type="text" name="assessment1_length"></td>
-                                <td><input type="number" name="assessment1_weight" class="weight-input" oninput="validateWeight(this)" min="0" max="100"></td>
-                              </tr>
+                                <tr>
+                                    <td class="row-number" style="text-align:center;">1</td>
+                                    <td><textarea name="assessment1_title" oninput="autoResizeTextarea(this)"
+                                            rows="1"></textarea></td>
+                                    <td><textarea name="assessment1_details" oninput="autoResizeTextarea(this)"
+                                            rows="1"></textarea></td>
+                                    <td>
+                                        <select name="assessment1_form" class="form-select"
+                                            onchange="updateAssessmentCalc()">
+                                            <option value="Controlled">Controlled</option>
+                                            <option value="Uncontrolled">Uncontrolled</option>
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="assessment1_length"></td>
+                                    <td><input type="number" name="assessment1_weight" class="weight-input"
+                                            oninput="validateWeight(this)" min="0" max="100"></td>
+                                </tr>
                             </tbody>
                             <tfoot>
-                              <tr class="total-row">
-                                <td colspan="5" style="text-align:right; font-weight: bold; vertical-align: middle;">Total Weightage (%)</td>
-                                <td><input type="number" id="totalWeight" readonly="" style="font-weight:bold; background-color: #eee; text-align: center;"></td>
-                              </tr>
+                                <tr class="total-row">
+                                    <td colspan="5"
+                                        style="text-align:right; font-weight: bold; vertical-align: middle;">Total
+                                        Weightage (%)</td>
+                                    <td><input type="number" id="totalWeight" readonly
+                                            style="font-weight:bold; background-color: #eee; text-align: center;"></td>
+                                </tr>
                             </tfoot>
-                          </table>
+                        </table>
 
-                          <div>
-                            <button type="button" class="btn btn-green" onclick="addAssessmentRow()">+ Add More Tasks</button>
-                            <button type="button" class="btn btn-red" onclick="deleteAssessmentRow()">Delete Task</button>
-                          </div>
+                        <div>
+                            <button type="button" class="btn btn-green" onclick="addAssessmentRow()">+ Add More
+                                Tasks</button>
+                            <button type="button" class="btn btn-red" onclick="deleteAssessmentRow()">Delete
+                                Task</button>
                         </div>
-                      </div>
-
-                      <script>
-                        // --- Auto Resize Function ---
-                        function autoResize(textarea) {
-                          textarea.style.height = 'auto';
-                          textarea.style.height = textarea.scrollHeight + 'px';
-                        }
-                        // --- VALIDATION FUNCTION (Prevents > 100%) ---
-                        function validateWeight(input) {
-                          const tbody = document.getElementById('assessmentBody');
-                          const rows = tbody.getElementsByTagName('tr');
-                          let otherTotal = 0;
-                          // Calculate sum of ALL OTHER rows
-                          for (let i = 0; i < rows.length; i++) {
-                            const weightInput = rows[i].querySelector('.weight-input');
-                            // Skip the input currently being edited
-                            if (weightInput !== input) {
-                              otherTotal += parseFloat(weightInput.value) || 0;
-                            }
-                          }
-                          // Calculate how much space is left
-                          const remaining = 100 - otherTotal;
-                          let currentVal = parseFloat(input.value);
-                          // If input is not a number (e.g. empty), treat as 0 for calculation but don't overwrite user typing yet
-                          if (isNaN(currentVal)) currentVal = 0;
-                          // If user tries to enter a value that makes total > 100
-                          if (currentVal > remaining) {
-                            // Force value to be the remaining amount
-                            input.value = Math.max(0, remaining);
-                          }
-                          // Also prevent negative numbers
-                          if (currentVal < 0) {
-                            input.value = 0;
-                          }
-                          // After validation, run the calculations
-                          updateAssessmentCalc();
-                        }
-                        // 1. Function to Calculate Totals
-                        function updateAssessmentCalc() {
-                          const tbody = document.getElementById('assessmentBody');
-                          const rows = tbody.getElementsByTagName('tr');
-                          let totalWeight = 0;
-                          let controlledWeight = 0;
-                          let uncontrolledWeight = 0;
-                          for (let i = 0; i < rows.length; i++) {
-                            const weightInput = rows[i].querySelector('.weight-input');
-                            const formSelect = rows[i].querySelector('.form-select');
-                            const weight = parseFloat(weightInput.value) || 0;
-                            const formType = formSelect.value;
-                            totalWeight += weight;
-                            if (formType === 'Controlled') {
-                              controlledWeight += weight;
-                            } else {
-                              uncontrolledWeight += weight;
-                            }
-                          }
-                          // Update Text Displays
-                          document.getElementById('totalWeight').value = totalWeight;
-                          document.getElementById('controlledTotal').innerText = controlledWeight;
-                          document.getElementById('uncontrolledTotal').innerText = uncontrolledWeight;
-                          // Update Progress Bar Widths
-                          // Clamp percentages to avoid overflow issues visually
-                          let controlledPct = Math.min(controlledWeight, 100);
-                          let uncontrolledPct = Math.min(uncontrolledWeight, 100);
-                          // Handle edge case if logical total somehow exceeds 100 (validation prevents this, but for safety)
-                          if (totalWeight > 100) {
-                            controlledPct = (controlledWeight / totalWeight) * 100;
-                            uncontrolledPct = (uncontrolledWeight / totalWeight) * 100;
-                          }
-                          // Update Widths
-                          document.getElementById('barControlled').style.width = controlledPct + '%';
-                          document.getElementById('barUncontrolled').style.width = uncontrolledPct + '%';
-                          // Update Text Inside Bars
-                          document.getElementById('labelControlled').innerText = controlledWeight > 0 ? 'Controlled ' + controlledWeight + '%' : '';
-                          document.getElementById('labelUncontrolled').innerText = uncontrolledWeight > 0 ? 'Uncontrolled ' + uncontrolledWeight + '%' : '';
-                          // Warning Logic
-                          const warningMsg = document.getElementById('controlledWarning');
-                          if (controlledWeight < 50) {
-                            warningMsg.style.display = 'block';
-                          } else {
-                            warningMsg.style.display = 'none';
-                          }
-                        }
-                        // 2. Function to Add a New Row
-                        function addAssessmentRow() {
-                          const tbody = document.getElementById('assessmentBody');
-                          const rowCount = tbody.rows.length + 1;
-                          const newRow = document.createElement('tr');
-                          // UPDATED: Added oninput="validateWeight(this)" to the new row
-                          newRow.innerHTML = `
-                <td class="row-number" style="text-align:center;">${rowCount}</td>
-                <td><textarea name="assessment${rowCount}_title" oninput="autoResize(this)" rows="1"></textarea></td>
-                <td><textarea name="assessment${rowCount}_details" oninput="autoResize(this)" rows="1"></textarea></td>
-                <td>
-                    <select name="assessment${rowCount}_form" class="form-select" onchange="updateAssessmentCalc()">
-                        <option value="Controlled">Controlled</option>
-                        <option value="Uncontrolled">Uncontrolled</option>
-                    </select>
-                </td>
-                <td><input type="text" name="assessment${rowCount}_length"></td>
-                <td><input type="number" name="assessment${rowCount}_weight" class="weight-input" oninput="validateWeight(this)" min="0" max="100"></td>
-            `;
-                          tbody.appendChild(newRow);
-                          updateAssessmentCalc();
-                        }
-                        // 3. Function to Delete the Last Row
-                        function deleteAssessmentRow() {
-                          const tbody = document.getElementById('assessmentBody');
-                          const rowCount = tbody.rows.length;
-                          if (rowCount > 1) {
-                            tbody.deleteRow(rowCount - 1);
-                            updateAssessmentCalc();
-                          } else {
-                            alert("You must have at least one assessment task.");
-                          }
-                        }
-                        // Initialize on load
-                        window.onload = updateAssessmentCalc;
-                      </script>
-
-                    
-
-                    
-                    <div class="section">
-                      <h2>11.11 Reference Materials</h2>
-                      <label>Core Texts (APA format):</label>
-                      <textarea name="core_texts"></textarea>
-                      <label>Additional References:</label>
-                      <textarea name="additional_references"></textarea>
                     </div>
+                </div>
 
-                    <div class="section">
-                      <h2>Developed By</h2>
-                      <div class="row">
+                <!-- Section 11.11 Reference Materials -->
+                <div class="section" id="section11_11">
+                    <h2>11.11 Reference Materials</h2>
+                    <label>Core Texts:</label>
+                    <textarea name="core_texts"></textarea>
+                    <label>Additional References:</label>
+                    <textarea name="additional_references"></textarea>
+                </div>
+
+                <!-- Developed By Section -->
+                <div class="section" id="section_dev">
+                    <h2>Developed By</h2>
+                    <div class="row">
                         <div class="col">
-                          <label>Full Name:</label><input type="text" name="developer_name">
+                            <label>Full Name:</label><input type="text" name="developer_name">
                         </div>
                         <div class="col">
-                          <label>Highest Qualification:</label><input type="text" name="qualification">
+                            <label>Highest Qualification:</label><input type="text" name="qualification">
                         </div>
-                      </div>
-                      <div class="row">
-                        <div class="col">
-                          <label>Designation and Office:</label><input type="text" name="designation">
-                        </div>
-                        <div class="col">
-                          <label>Email ID:</label><input type="text" name="email_contact">
-                        </div>
-                      </div>
                     </div>
+                    <div class="row">
+                        <div class="col">
+                            <label>Designation and Office:</label><input type="text" name="designation">
+                        </div>
+                        <div class="col">
+                            <label>Email ID:</label><input type="text" name="email_contact">
+                        </div>
+                    </div>
+                </div>
 
-                    <button type="submit">Save Module Outline</button>
-                    
-                    
+                <button type="submit"
+                    style="padding: 12px 30px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 20px;">Save
+                    Module Outline</button>
+            </form>
+        </div>
+    </div>
 
-                    <script>
-                      // --- 11.2 MNQF Logic ---
-                      const mnqfInput = document.getElementById('mnqfInput');
-                      const mnqfLabel = document.getElementById('mnqfLabel');
-                      const mnqfLevels = {
-                        1: "Certificate Level 1",
-                        2: "Certificate Level 2",
-                        3: "Certificate Level 3",
-                        4: "Advanced Certificate",
-                        5: "Diploma",
-                        6: "Associate Degree",
-                        7: "Bachelors Degree",
-                        8: "Postgraduate Certificate",
-                        9: "Masters Degree",
-                        10: "P.hD"
-                      };
-                      mnqfInput.addEventListener('input', function() {
-                        const val = parseInt(this.value);
-                        if (mnqfLevels[val]) {
-                          mnqfLabel.textContent = mnqfLevels[val];
-                          mnqfLabel.style.color = "#00509e";
-                        } else {
-                          mnqfLabel.textContent = "";
-                        }
-                      });
-                      // --- 11.3 Credit and Hour Calculation Logic ---
-                      const creditsInput = document.getElementById('creditsInput');
-                      const totalLearningHours = document.getElementById('totalLearningHours');
-                      const maxContactHours = document.getElementById('maxContactHours');
-                      const maxNonContactHours = document.getElementById('maxNonContactHours');
-                      const contactInputs = document.querySelectorAll('.contact-dist-input');
-                      const nonContactInputs = document.querySelectorAll('.non-contact-dist-input');
-                      const f2fTotal = document.getElementById('f2f_total');
-                      const nonf2fTotal = document.getElementById('nonf2f_total');
-                      const contactWarning = document.getElementById('contactWarning');
-                      const nonContactWarning = document.getElementById('nonContactWarning');
-                      creditsInput.addEventListener('input', () => {
-                        calculateBaseHours();
-                        updateCurricularTotals(); // Check mismatch in table
-                      });
-                      contactInputs.forEach(input => input.addEventListener('input', validateContactDist));
-                      nonContactInputs.forEach(input => input.addEventListener('input', validateNonContactDist));
+    <!-- Right Side Pane -->
+    <div class="side-pane">
+        <h2 class="pane-header">Module Outline Manager</h2>
 
-                      function calculateBaseHours() {
-                        const credits = parseFloat(creditsInput.value) || 0;
-                        const total = credits * 10;
-                        const contact = Math.round(total / 3);
-                        const nonContact = total - contact;
-                        totalLearningHours.value = total;
-                        maxContactHours.value = contact;
-                        maxNonContactHours.value = nonContact;
-                        validateContactDist();
-                        validateNonContactDist();
-                      }
+        <div class="pane-buttons">
+            <button class="pane-btn btn-new" onclick="createNewOutline()">
+                <i class="fas fa-plus-circle"></i>
+                <span>Create New</span>
+            </button>
 
-                      function validateDistribution(inputs, totalField, maxField, warningEl) {
-                        let sum = 0;
-                        inputs.forEach(i => sum += parseFloat(i.value) || 0);
-                        const max = parseFloat(maxField.value) || 0;
-                        totalField.value = sum;
-                        if (sum > max) {
-                          warningEl.style.display = 'block';
-                          inputs.forEach(i => i.classList.add('input-error'));
-                        } else {
-                          warningEl.style.display = 'none';
-                          inputs.forEach(i => i.classList.remove('input-error'));
-                        }
-                      }
+            <button class="pane-btn btn-save" onclick="saveDraft()">
+                <i class="fas fa-save"></i>
+                <span>Save Draft</span>
+            </button>
 
-                      function validateContactDist(e) {
-                        validateDistribution(contactInputs, f2fTotal, maxContactHours, contactWarning);
-                      }
+            <button class="pane-btn btn-outlines" onclick="showMyOutlines()">
+                <i class="fas fa-list-alt"></i>
+                <span>My Outlines</span>
+            </button>
 
-                      function validateNonContactDist(e) {
-                        validateDistribution(nonContactInputs, nonf2fTotal, maxNonContactHours, nonContactWarning);
-                      }
-                      // --- 11.8 Learning Outcomes Logic ---
-                      let outcomeCount = 5;
+            <button class="pane-btn btn-export" onclick="openExportModal()">
+                <i class="fas fa-file-pdf"></i>
+                <span>Export Outline</span>
+            </button>
+        </div>
 
-                      function addOutcome() {
-                        outcomeCount++;
-                        const container = document.getElementById('outcomesContainer');
-                        const div = document.createElement('div');
-                        div.className = 'outcome-row';
-                        div.innerHTML = `<span>${outcomeCount}.</span><input type="text" name="outcome${outcomeCount}">`;
-                        container.appendChild(div);
-                      }
-                      // --- 11.9 Curricular Content Logic ---
-                      let weekCount = 1;
-                      const maxWeeks = 15;
-                      const curricularBody = document.getElementById("curricularBody");
-                      const addWeekBtn = document.getElementById("addWeekBtn");
+        <div class="outlines-preview" id="outlinesPreview">
+            <h3 style="margin-top: 0; color: var(--primary-color);">Saved Outlines</h3>
+            <div id="outlinesList">
+                <!-- Outlines will be loaded here -->
+            </div>
+        </div>
+    </div>
 
-                      function updateCurricularTotals() {
-                        let totalHours = 0;
-                        let totalContact = 0;
-                        let totalCredits = 0;
-                        // 1. Loop through rows to calculate Credits based on Hours and Sum totals
-                        const rows = curricularBody.querySelectorAll("tr");
-                        rows.forEach(row => {
-                          const hoursInput = row.querySelector(".curr-hours-field");
-                          const creditInput = row.querySelector(".curr-credit-field");
-                          const contactInput = row.querySelector(".curr-contact-field");
-                          const hours = parseFloat(hoursInput.value) || 0;
-                          const contact = parseFloat(contactInput.value) || 0;
-                          // Calculate Credit for this row (10 hours = 1 Credit)
-                          const rowCredit = hours / 10;
-                          if (creditInput) creditInput.value = rowCredit > 0 ? rowCredit : "";
-                          totalHours += hours;
-                          totalContact += contact;
-                          totalCredits += rowCredit;
-                        });
-                        // 2. Update Footer Displays
-                        document.getElementById("totalHours").textContent = totalHours;
-                        document.getElementById("totalContact").textContent = totalContact;
-                        document.getElementById("totalCreditsDisplay").textContent = totalCredits.toFixed(1);
-                        // 3. Validation: Check if Table Credits match Section 11.3 Credits
-                        const mainCredits = parseFloat(creditsInput.value) || 0;
-                        const warning = document.getElementById("creditSumWarning");
-                        // Use a small epsilon for floating point comparison
-                        if (Math.abs(totalCredits - mainCredits) > 0.01) {
-                          warning.style.display = "block";
-                          document.getElementById("totalCreditsDisplay").style.color = "#d9534f"; // Red
-                        } else {
-                          warning.style.display = "none";
-                          document.getElementById("totalCreditsDisplay").style.color = "#28a745"; // Green
-                        }
-                      }
-                      // Attach listeners to initial row
-                      document.querySelectorAll(".curr-hours-field, .curr-contact-field").forEach(i =>
-                        i.addEventListener("input", updateCurricularTotals)
-                      );
-                      addWeekBtn.addEventListener("click", function() {
-                        if (weekCount >= maxWeeks) {
-                          alert("Maximum of 15 weeks allowed.");
-                          return;
-                        }
-                        weekCount++;
-                        const newRow = document.createElement("tr");
-                        // Sequence number in value attribute matches the counter
-                        newRow.innerHTML = `
-            <td><input type="number" name="week${weekCount}" value="${weekCount}" readonly style="text-align:center;"></td>
-            <td><input type="text" name="topic${weekCount}"></td>
-            <td><textarea name="details${weekCount}" style="height:50px"></textarea></td>
-            <td><textarea name="pedagogy${weekCount}" style="height:50px"></textarea></td>
-            <td><textarea name="resources${weekCount}" style="height:50px"></textarea></td>
-            <td><input type="number" name="credit${weekCount}" class="curr-credit-field" readonly placeholder="Auto"></td>
-            <td><input type="number" name="hours${weekCount}" class="curr-hours-field" value="0"></td>
-            <td><input type="number" name="contact${weekCount}" class="curr-contact-field" value="0"></td>
-        `;
-                        curricularBody.appendChild(newRow);
-                        // Add event listeners to new inputs
-                        newRow.querySelectorAll(".curr-hours-field, .curr-contact-field").forEach(i =>
-                          i.addEventListener("input", updateCurricularTotals)
-                        );
-                      });
-                      // --- 11.10 Assessment Logic ---
-                      let taskCount = 1;
+    <!-- Save Draft Modal -->
+    <div class="modal" id="saveModal">
+        <div class="modal-content">
+            <h3 class="modal-header">Save Draft</h3>
+            <div class="form-group">
+                <label for="outlineTitle">Outline Title:</label>
+                <input type="text" id="outlineTitle" placeholder="Enter a title for this outline">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn btn-confirm" onclick="confirmSave()">Save Draft</button>
+            </div>
+        </div>
+    </div>
 
-                      function addAssessmentRow() {
-                        taskCount++;
-                        const tbody = document.querySelector("#assessmentTable tbody");
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-            <td>${taskCount}</td>
-            <td><input type="text" name="assessment${taskCount}_title"></td>
-            <td><input type="text" name="assessment${taskCount}_details"></td>
-            <td>
-                <select name="assessment${taskCount}_form" onchange="updateAssessmentCalc()">
-                    <option value="Controlled">Controlled</option>
-                    <option value="Uncontrolled">Uncontrolled</option>
-                </select>
-            </td>
-            <td><input type="text" name="assessment${taskCount}_length"></td>
-            <td><input type="number" name="assessment${taskCount}_weight" class="weight-input" oninput="updateAssessmentCalc()"></td>
-        `;
-                        tbody.appendChild(row);
-                      }
+    <!-- Load Draft Modal -->
+    <div class="modal" id="loadModal">
+        <div class="modal-content">
+            <h3 class="modal-header">Load Outline</h3>
+            <p>Are you sure you want to load this outline? Any unsaved changes will be lost.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn btn-confirm" onclick="confirmLoad()">Load Outline</button>
+            </div>
+        </div>
+    </div>
 
-                      function updateAssessmentCalc() {
-                        let total = 0,
-                          controlled = 0,
-                          uncontrolled = 0;
-                        const rows = document.querySelectorAll("#assessmentTable tbody tr");
-                        rows.forEach(row => {
-                          const weightInput = row.querySelector(".weight-input");
-                          const formSelect = row.querySelector("select");
-                          if (weightInput && formSelect) {
-                            const weight = parseFloat(weightInput.value) || 0;
-                            const form = formSelect.value;
-                            total += weight;
-                            if (form === "Controlled") controlled += weight;
-                            else uncontrolled += weight;
-                          }
-                        });
-                        document.getElementById("totalWeight").value = total;
-                        document.getElementById("controlledTotal").innerText = controlled;
-                        document.getElementById("uncontrolledTotal").innerText = uncontrolled;
-                        const warning = document.getElementById("controlledWarning");
-                        const totalWeightInput = document.getElementById("totalWeight");
-                        if (controlled < 50 && total > 0) {
-                          warning.style.display = "block";
-                        } else {
-                          warning.style.display = "none";
-                        }
-                        if (total > 100) {
-                          totalWeightInput.style.backgroundColor = "#ffdddd";
-                        } else {
-                          totalWeightInput.style.backgroundColor = "#e9ecef";
-                        }
-                      }
-                    </script>
+    <!-- Export PDF Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <h3 class="modal-header">Export Outline as PDF</h3>
+            <div class="form-group">
+                <label for="exportTitle">PDF File Name:</label>
+                <input type="text" id="exportTitle" placeholder="Enter a name for the PDF file">
+                <small style="color: #666; display: block; margin-top: 5px;">This name will appear in the Exported
+                    Outlines list</small>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn btn-confirm" onclick="confirmExport()">Export PDF</button>
+            </div>
+        </div>
+    </div>
 
-                  
+    <!-- Validation Warning Modal -->
+    <div class="validation-modal" id="validationModal">
+        <div class="validation-content">
+            <h3 class="validation-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Fill all Required Information!</span>
+            </h3>
+            <p>Please fill in the following required sections before exporting:</p>
+            <div class="validation-list" id="validationList">
+                <!-- Missing sections will be listed here -->
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" onclick="closeValidationModal()">Close</button>
+            </div>
+        </div>
+    </div>
 
-                  </form></div>
-</body></html>
+    <script src="index.js"></script>
+</body>
+
+</html>
