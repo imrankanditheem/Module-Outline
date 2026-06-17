@@ -250,6 +250,379 @@ function sanitizeFilename(value) {
     return `${cleaned || 'module_outline'}.pdf`;
 }
 
+function getDeliveryModesText(data) {
+    return (data.delivery_modes || []).map(mode => {
+        if (mode === 'f2f') return 'Face to Face';
+        if (mode === 'blended') return 'Blended';
+        if (mode === 'elearning') return 'E-Learning';
+        return String(mode || '');
+    }).filter(Boolean).join(', ');
+}
+
+function cleanPDFText(value) {
+    if (value === null || value === undefined) return '';
+    return String(value).replace(/\r\n/g, '\n').trim();
+}
+
+function createModuleOutlinePDF(data) {
+    const doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const marginX = 18;
+    const topMargin = 18;
+    const headerHeight = 14; // space reserved for page header
+    const bottomMargin = 18;
+    const tableWidth = pageWidth - (marginX * 2);
+    const colWidths = [16, 44, tableWidth - 60];
+    const rowFill = [191, 191, 191];
+    const headerFill = [217, 217, 217];
+    const lineColor = [0, 0, 0];
+    const bodyFontSize = 11;
+    const innerFontSize = 7.8;
+    const bodyLineHeight = 5;
+    const innerLineHeight = 3.5;
+    const paddingX = 2.2;
+    const paddingY = 2.2;
+    let y = topMargin + headerHeight;
+
+    function addHeader() {
+        const title = cleanPDFText(data.module_name_en) || 'Module Outline';
+        const code = cleanPDFText(data.module_code) || '';
+        doc.setFont('times', 'bold');
+        doc.setFontSize(14);
+        doc.text(title, pageWidth / 2, topMargin - 4, { align: 'center' });
+        if (code) {
+            doc.setFont('times', 'normal');
+            doc.setFontSize(10);
+            doc.text(code, marginX, topMargin - 4);
+        }
+        doc.setDrawColor(...lineColor);
+        doc.setLineWidth(0.6);
+        doc.line(marginX, topMargin + 2, pageWidth - marginX, topMargin + 2);
+    }
+
+    doc.setProperties({
+        title: cleanPDFText(data.module_name_en) || 'Module Outline',
+        subject: 'Module Outline',
+        creator: 'Module Outline Form'
+    });
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(...lineColor);
+
+    function setBodyFont(style = 'normal') {
+        doc.setFont('times', style);
+        doc.setFontSize(bodyFontSize);
+        doc.setTextColor(0, 0, 0);
+    }
+
+    function setInnerFont(style = 'normal') {
+        doc.setFont('times', style);
+        doc.setFontSize(innerFontSize);
+        doc.setTextColor(0, 0, 0);
+    }
+
+    function splitLines(text, width, isInner = false) {
+        const parts = cleanPDFText(text).split('\n');
+        const lines = [];
+        if (isInner) {
+            setInnerFont();
+        } else {
+            setBodyFont();
+        }
+
+        parts.forEach(part => {
+            const wrapped = doc.splitTextToSize(part || ' ', Math.max(width, 2));
+            if (wrapped.length) {
+                lines.push(...wrapped);
+            } else {
+                lines.push('');
+            }
+        });
+
+        return lines.length ? lines : [''];
+    }
+
+    function ensurePageSpace(height) {
+        if (y + height <= pageHeight - bottomMargin) return;
+        if (y <= topMargin + 0.1) return;
+        doc.addPage();
+        addHeader();
+        y = topMargin + headerHeight;
+    }
+
+    function drawFilledCell(x, yPos, width, height, fill) {
+        doc.setDrawColor(...lineColor);
+        doc.setFillColor(...fill);
+        doc.rect(x, yPos, width, height, 'FD');
+    }
+
+    function drawTextLines(lines, x, yPos, width, height, style = 'normal', isInner = false, align = 'left') {
+        if (isInner) {
+            setInnerFont(style);
+        } else {
+            setBodyFont(style);
+        }
+
+        const lineHeight = isInner ? innerLineHeight : bodyLineHeight;
+        const textX = align === 'center' ? x + (width / 2) : x + paddingX;
+        let textY = yPos + paddingY + (isInner ? 2.2 : 3.4);
+
+        lines.forEach(line => {
+            doc.text(String(line), textX, textY, { align });
+            textY += lineHeight;
+        });
+    }
+
+    function drawTextRow(sectionNo, label, value) {
+        const valueLines = splitLines(value, colWidths[2] - (paddingX * 2));
+        let firstChunk = true;
+        let remaining = valueLines.slice();
+
+        while (remaining.length || firstChunk) {
+            const sectionLines = splitLines(firstChunk ? sectionNo : '', colWidths[0] - (paddingX * 2));
+            const labelLines = splitLines(firstChunk ? label : '', colWidths[1] - (paddingX * 2));
+            const availableHeight = pageHeight - bottomMargin - y;
+            const maxValueLines = Math.max(1, Math.floor((availableHeight - (paddingY * 2)) / bodyLineHeight));
+            const chunkLines = remaining.length ? remaining.splice(0, maxValueLines) : [''];
+            let rowHeight = Math.max(sectionLines.length, labelLines.length, chunkLines.length) * bodyLineHeight + (paddingY * 2);
+            rowHeight = Math.max(rowHeight, 10);
+
+            if (rowHeight > availableHeight && y > topMargin) {
+                remaining = chunkLines.concat(remaining);
+                doc.addPage();
+                addHeader();
+                y = topMargin + headerHeight;
+                continue;
+            }
+
+            const x0 = marginX;
+            const x1 = x0 + colWidths[0];
+            const x2 = x1 + colWidths[1];
+            drawFilledCell(x0, y, colWidths[0], rowHeight, rowFill);
+            drawFilledCell(x1, y, colWidths[1], rowHeight, rowFill);
+            drawFilledCell(x2, y, colWidths[2], rowHeight, [255, 255, 255]);
+            drawTextLines(sectionLines, x0, y, colWidths[0], rowHeight, 'bold', false, 'center');
+            drawTextLines(labelLines, x1, y, colWidths[1], rowHeight, 'bold');
+            drawTextLines(chunkLines, x2, y, colWidths[2], rowHeight);
+            y += rowHeight;
+            firstChunk = false;
+        }
+    }
+
+    function getInnerRowHeight(cells, widths, isHeader = false) {
+        const lineCounts = cells.map((cell, index) => {
+            if (isHeader) setInnerFont('bold');
+            const lines = splitLines(cell, widths[index] - 2, true);
+            return lines.length;
+        });
+        return Math.max(7, Math.max(...lineCounts) * innerLineHeight + 3);
+    }
+
+    function drawInnerTable(x, yPos, widths, headers, rows) {
+        let currentY = yPos;
+        const headerHeight = getInnerRowHeight(headers, widths, true);
+        let currentX = x;
+
+        headers.forEach((header, index) => {
+            drawFilledCell(currentX, currentY, widths[index], headerHeight, headerFill);
+            drawTextLines(splitLines(header, widths[index] - 2, true), currentX, currentY, widths[index], headerHeight, 'bold', true, 'center');
+            currentX += widths[index];
+        });
+        currentY += headerHeight;
+
+        rows.forEach(row => {
+            const rowHeight = getInnerRowHeight(row, widths);
+            currentX = x;
+            row.forEach((cell, index) => {
+                drawFilledCell(currentX, currentY, widths[index], rowHeight, [255, 255, 255]);
+                const align = index === 0 || cell === '✔' ? 'center' : 'left';
+                drawTextLines(splitLines(cell, widths[index] - 2, true), currentX, currentY, widths[index], rowHeight, 'normal', true, align);
+                currentX += widths[index];
+            });
+            currentY += rowHeight;
+        });
+    }
+
+    function chunkRowsForPage(headers, rows, widths, labelLines, sectionLines, startIndex) {
+        const availableHeight = pageHeight - bottomMargin - y;
+        const headerHeight = getInnerRowHeight(headers, widths, true);
+        const labelHeight = Math.max(sectionLines.length, labelLines.length) * bodyLineHeight + (paddingY * 2);
+        let usedHeight = headerHeight;
+        const chunk = [];
+        let index = startIndex;
+
+        while (index < rows.length) {
+            const rowHeight = getInnerRowHeight(rows[index], widths);
+            if (usedHeight + rowHeight > availableHeight && chunk.length > 0) break;
+            if (usedHeight + rowHeight > availableHeight && y > topMargin) break;
+            usedHeight += rowHeight;
+            chunk.push(rows[index]);
+            index += 1;
+        }
+
+        if (!chunk.length && index < rows.length && y > topMargin) {
+            return { rows: [], height: 0, nextIndex: index };
+        }
+
+        return {
+            rows: chunk.length ? chunk : [headers.map((_, headerIndex) => headerIndex === 0 ? 'No information entered.' : '')],
+            height: Math.max(usedHeight, labelHeight, 10),
+            nextIndex: index
+        };
+    }
+
+    function drawNestedTableRow(sectionNo, label, headers, rows, widths) {
+        let index = 0;
+        let firstChunk = true;
+        const tableRows = rows.length
+            ? rows
+            : [headers.map((_, headerIndex) => headerIndex === 0 ? 'No information entered.' : '')];
+
+        while (index < tableRows.length) {
+            const sectionLines = splitLines(firstChunk ? sectionNo : '', colWidths[0] - (paddingX * 2));
+            const labelLines = splitLines(firstChunk ? label : '', colWidths[1] - (paddingX * 2));
+            const chunk = chunkRowsForPage(headers, tableRows, widths, labelLines, sectionLines, index);
+
+            if (!chunk.rows.length) {
+                doc.addPage();
+                addHeader();
+                y = topMargin + headerHeight;
+                continue;
+            }
+
+            ensurePageSpace(chunk.height);
+            const x0 = marginX;
+            const x1 = x0 + colWidths[0];
+            const x2 = x1 + colWidths[1];
+            drawFilledCell(x0, y, colWidths[0], chunk.height, rowFill);
+            drawFilledCell(x1, y, colWidths[1], chunk.height, rowFill);
+            drawFilledCell(x2, y, colWidths[2], chunk.height, [255, 255, 255]);
+            drawTextLines(sectionLines, x0, y, colWidths[0], chunk.height, 'bold', false, 'center');
+            drawTextLines(labelLines, x1, y, colWidths[1], chunk.height, 'bold');
+            drawInnerTable(x2, y, widths, headers, chunk.rows);
+            y += chunk.height;
+            index = chunk.nextIndex;
+            firstChunk = false;
+        }
+    }
+
+    function addFooterToAllPages() {
+        const totalPages = doc.internal.getNumberOfPages();
+        for (let page = 1; page <= totalPages; page++) {
+            doc.setPage(page);
+            doc.setFont('times', 'normal');
+            doc.setFontSize(9);
+            doc.text(`Page ${page} of ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
+        }
+    }
+
+    const deliveryModes = getDeliveryModesText(data);
+    const moduleLevel = [data.module_level, mnqfLevels[data.module_level]].filter(Boolean).join(' ');
+    const outcomesRows = (data.outcomes || []).map(outcome => {
+        const cells = outcome.competencies.map(c => c.checked ? '✔' : '');
+        return [
+            outcome.number || '',
+            outcome.text || '',
+            cells[0] || '',
+            cells[1] || '',
+            cells[2] || '',
+            cells[3] || '',
+            cells[4] || ''
+        ];
+    });
+    const curricularRows = (data.curricular_content || []).map(item => [
+        item.week || '',
+        [item.topic, item.details].filter(Boolean).join('\n'),
+        item.pedagogy || '',
+        item.resources || '',
+        item.credit || '',
+        item.hours || '',
+        item.contact || ''
+    ]);
+    const assessmentRows = (data.assessments || []).map((assessment, index) => [
+        String(index + 1),
+        assessment.title || '',
+        assessment.details || '',
+        assessment.form || '',
+        assessment.length || '',
+        assessment.weight || ''
+    ]);
+    const controlledWeight = data.assessments?.reduce((sum, item) => sum + (item.form === 'Uncontrolled' ? 0 : parseFloat(item.weight || 0)), 0) || 0;
+    const uncontrolledWeight = data.assessments?.reduce((sum, item) => sum + (item.form === 'Uncontrolled' ? parseFloat(item.weight || 0) : 0), 0) || 0;
+    const totalWeight = controlledWeight + uncontrolledWeight;
+
+    drawTextRow('11.1', 'Module Name', data.module_name_en);
+    drawTextRow('', 'Module Name (Dhivehi)', data.module_name_dhivehi);
+    drawTextRow('', 'Module Name (Arabic)', data.module_name_arabic);
+    drawTextRow('', 'Module Description', data.module_description);
+    drawTextRow('11.2', 'Module Code', data.module_code);
+    drawTextRow('', 'Module Level', moduleLevel);
+    drawTextRow('11.3', 'Credits', data.contact_credits);
+    drawTextRow('', 'Total Learning Hours', data.contact_total_learning_hours);
+    drawTextRow('', 'Contact Hours (Face to Face, Blended Mode & E-Learning)', data.contact_hours);
+    drawTextRow('', 'Non-contact Hours (Face to face, Blended and E-Learning Mode)', data.non_contact_hours);
+    drawTextRow('11.4', 'Delivery Modality', deliveryModes);
+    drawTextRow('', 'Methods of Delivery', data.delivery_methods);
+    drawTextRow('11.5', 'Minimum Qualification', data.instructor_qualification);
+    drawTextRow('11.6', 'Prerequisite', data.prerequisite);
+    drawTextRow('11.7', 'Corequisites', data.corequisites);
+    drawNestedTableRow(
+        '11.8',
+        'Expected Learning Outcomes',
+        ['No.', 'Outcome Statement', 'Knowledge & Understanding', 'Practice', 'Generic Cognitive Skills', 'Communication, ICT & Numeracy', 'Autonomy & Accountability'],
+        outcomesRows,
+        [7, 25, 10, 10, 12, 13, 13]
+    );
+    drawNestedTableRow(
+        '11.9',
+        'Curricular Content',
+        ['Week', 'Main Topic & Details', 'Pedagogy', 'Resources', 'Credit', 'TLH', 'Contact'],
+        curricularRows,
+        [7, 28, 14, 14, 8, 9, 10]
+    );
+    drawNestedTableRow(
+        '11.10',
+        'Assessment Methods and Grading',
+        ['#', 'Task Title', 'Details', 'Form', 'Length', 'Weight (%)'],
+        assessmentRows,
+        [6, 18, 28, 14, 12, 12]
+    );
+    drawTextRow('', 'Assessment Weightage Summary', `Total Weightage: ${totalWeight}%\nControlled Assessment Weightage: ${controlledWeight}%\nUncontrolled Assessment Weightage: ${uncontrolledWeight}%`);
+    drawTextRow('11.11', 'Core Texts', data.core_texts);
+    drawTextRow('', 'Additional References', data.additional_references);
+    drawTextRow('Developed By', 'Full Name', data.developer_name);
+    drawTextRow('', 'Highest Qualification', data.qualification);
+    drawTextRow('', 'Designation and Office', data.designation);
+    drawTextRow('', 'Email ID', data.email_contact);
+    addFooterToAllPages();
+
+    return doc;
+}
+
+function buildPDFRow(sectionNo, label, value, valueClass = '') {
+    return `
+        <tr>
+            <td class="pdf-section-no">${formatCellText(sectionNo)}</td>
+            <td class="pdf-label-cell">${formatCellText(label)}</td>
+            <td class="pdf-value-cell ${valueClass}">${value || '&nbsp;'}</td>
+        </tr>`;
+}
+
+function buildPDFInnerTable(headers, rows, emptyMessage, extraClass = '') {
+    const headerCells = headers.map(header => `<th>${formatCellText(header)}</th>`).join('');
+    const bodyRows = rows.length
+        ? rows.join('')
+        : `<tr><td colspan="${headers.length}">${formatCellText(emptyMessage)}</td></tr>`;
+
+    return `
+        <table class="pdf-inner-table ${extraClass}">
+            <thead>
+                <tr>${headerCells}</tr>
+            </thead>
+            <tbody>${bodyRows}</tbody>
+        </table>`;
+}
+
 function buildPDFContent(data) {
     const deliveryModes = (data.delivery_modes || []).map(mode => {
         if (mode === 'f2f') return 'Face to Face';
@@ -257,6 +630,10 @@ function buildPDFContent(data) {
         if (mode === 'elearning') return 'E-Learning';
         return escapeHTML(mode);
     }).join(', ');
+
+    const moduleLevel = [data.module_level, mnqfLevels[data.module_level]]
+        .filter(Boolean)
+        .join(' ');
 
     const outcomesRows = (data.outcomes || []).map(outcome => {
         const cells = outcome.competencies.map(c => c.checked ? '✔' : '');
@@ -270,7 +647,7 @@ function buildPDFContent(data) {
                 <td>${cells[3]}</td>
                 <td>${cells[4]}</td>
             </tr>`;
-    }).join('');
+    });
 
     const curricularRows = (data.curricular_content || []).map(item => `
         <tr>
@@ -284,7 +661,7 @@ function buildPDFContent(data) {
             <td>${escapeHTML(item.credit)}</td>
             <td>${escapeHTML(item.hours)}</td>
             <td>${escapeHTML(item.contact)}</td>
-        </tr>`).join('');
+        </tr>`);
 
     const assessmentRows = (data.assessments || []).map((assessment, index) => `
         <tr>
@@ -294,252 +671,94 @@ function buildPDFContent(data) {
             <td>${escapeHTML(assessment.form)}</td>
             <td>${escapeHTML(assessment.length)}</td>
             <td>${escapeHTML(assessment.weight)}</td>
-        </tr>`).join('');
+        </tr>`);
 
     const controlledWeight = data.assessments?.reduce((sum, item) => sum + (item.form === 'Uncontrolled' ? 0 : parseFloat(item.weight || 0)), 0) || 0;
     const uncontrolledWeight = data.assessments?.reduce((sum, item) => sum + (item.form === 'Uncontrolled' ? parseFloat(item.weight || 0) : 0), 0) || 0;
     const totalWeight = controlledWeight + uncontrolledWeight;
 
+    const outcomesTable = buildPDFInnerTable(
+        ['No.', 'Outcome Statement', 'Knowledge & Understanding', 'Practice', 'Generic Cognitive Skills', 'Communication, ICT & Numeracy', 'Autonomy & Accountability'],
+        outcomesRows,
+        'No learning outcomes entered.',
+        'pdf-competency-table'
+    );
+
+    const curricularTable = buildPDFInnerTable(
+        ['Week', 'Main Topic & Details', 'Pedagogy', 'Resources', 'Credit', 'Total Learning Hours', 'Contact Hours'],
+        curricularRows,
+        'No curricular content entered.',
+        'pdf-curricular-table'
+    );
+
+    const assessmentTable = `
+        ${buildPDFInnerTable(
+        ['#', 'Task Title', 'Details', 'Form', 'Length', 'Weight (%)'],
+        assessmentRows,
+        'No assessment items entered.',
+        'pdf-assessment-table'
+    )}
+        <div class="pdf-summary-lines">
+            <div><strong>Total Weightage:</strong> ${escapeHTML(totalWeight)}%</div>
+            <div><strong>Controlled Assessment Weightage:</strong> ${escapeHTML(controlledWeight)}%</div>
+            <div><strong>Uncontrolled Assessment Weightage:</strong> ${escapeHTML(uncontrolledWeight)}%</div>
+        </div>`;
+
     return `
         <div class="pdf-document">
-            <div class="pdf-header">
-                <h1>Module Outline</h1>
-                <p class="pdf-subtitle"><strong>Module Title:</strong> ${escapeHTML(data.module_name_en)}</p>
-                <table class="pdf-table simple-table summary-table">
-                    <tbody>
-                        <tr>
-                            <td><strong>Module Code</strong></td>
-                            <td>${escapeHTML(data.module_code)}</td>
-                            <td><strong>Module Level</strong></td>
-                            <td>${escapeHTML(data.module_level)} ${escapeHTML(mnqfLevels[data.module_level] || '')}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Credits</strong></td>
-                            <td>${escapeHTML(data.contact_credits)}</td>
-                            <td><strong>Total Learning Hours</strong></td>
-                            <td>${escapeHTML(data.contact_total_learning_hours)}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Contact Hours</strong></td>
-                            <td>${escapeHTML(data.contact_hours)}</td>
-                            <td><strong>Delivery Mode</strong></td>
-                            <td>${deliveryModes || 'N/A'}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <table class="pdf-outline-table">
+                <colgroup>
+                    <col class="pdf-col-section">
+                    <col class="pdf-col-label">
+                    <col class="pdf-col-value">
+                </colgroup>
+                <tbody>
+                    ${buildPDFRow('11.1', 'Module Name', formatCellText(data.module_name_en))}
+                    ${buildPDFRow('', 'Module Name (Dhivehi)', `<span class="pdf-rtl" dir="rtl">${formatCellText(data.module_name_dhivehi)}</span>`)}
+                    ${buildPDFRow('', 'Module Name (Arabic)', `<span class="pdf-rtl" dir="rtl">${formatCellText(data.module_name_arabic)}</span>`)}
+                    ${buildPDFRow('', 'Module Description', formatCellText(data.module_description))}
 
-            <section class="pdf-section">
-                <h2>11.1 Module Name</h2>
-                <table class="pdf-table simple-table">
-                    <tbody>
-                        <tr><td><strong>English</strong></td><td>${escapeHTML(data.module_name_en)}</td></tr>
-                        <tr><td><strong>Dhivehi</strong></td><td dir="rtl" style="font-family:'MV Typewriter', serif;">${escapeHTML(data.module_name_dhivehi)}</td></tr>
-                        <tr><td><strong>Arabic</strong></td><td dir="rtl">${escapeHTML(data.module_name_arabic)}</td></tr>
-                    </tbody>
-                </table>
-                <div class="pdf-paragraph"><strong>Module Description</strong></div>
-                <div class="pdf-paragraph">${formatParagraph(data.module_description)}</div>
-            </section>
+                    ${buildPDFRow('11.2', 'Module Code', formatCellText(data.module_code))}
+                    ${buildPDFRow('', 'Module Level', formatCellText(moduleLevel))}
 
-            <section class="pdf-section">
-                <h2>11.2 Module Code</h2>
-                <p>${escapeHTML(data.module_code)}</p>
-            </section>
+                    ${buildPDFRow('11.3', 'Credits', formatCellText(data.contact_credits))}
+                    ${buildPDFRow('', 'Total Learning Hours', formatCellText(data.contact_total_learning_hours))}
+                    ${buildPDFRow('', 'Contact Hours (Face to Face, Blended Mode & E-Learning)', formatCellText(data.contact_hours))}
+                    ${buildPDFRow('', 'Non-contact Hours (Face to face, Blended and E-Learning Mode)', formatCellText(data.non_contact_hours))}
 
-            <section class="pdf-section">
-                <h2>11.3 Credit & Hours Distribution</h2>
-                <table class="pdf-table simple-table">
-                    <tbody>
-                        <tr><td><strong>Number of Credits</strong></td><td>${escapeHTML(data.contact_credits)}</td></tr>
-                        <tr><td><strong>Total Learning Hours</strong></td><td>${escapeHTML(data.contact_total_learning_hours)}</td></tr>
-                        <tr><td><strong>Contact Hours</strong></td><td>${escapeHTML(data.contact_hours)}</td></tr>
-                        <tr><td><strong>Non-contact Hours</strong></td><td>${escapeHTML(data.non_contact_hours)}</td></tr>
-                    </tbody>
-                </table>
-            </section>
+                    ${buildPDFRow('11.4', 'Delivery Modality', formatCellText(deliveryModes))}
+                    ${buildPDFRow('', 'Methods of Delivery', formatCellText(data.delivery_methods))}
 
-            <section class="pdf-section">
-                <h2>11.4 Delivery Modality</h2>
-                <p><strong>Mode:</strong> ${deliveryModes || 'N/A'}</p>
-                <div class="pdf-paragraph">${formatParagraph(data.delivery_methods)}</div>
-            </section>
-
-            <section class="pdf-section">
-                <h2>11.5 Minimum Qualification</h2>
-                <p>${escapeHTML(data.instructor_qualification)}</p>
-            </section>
-
-            <section class="pdf-section">
-                <h2>11.6 Prerequisite</h2>
-                <p>${escapeHTML(data.prerequisite)}</p>
-            </section>
-
-            <section class="pdf-section">
-                <h2>11.7 Corequisites</h2>
-                <p>${escapeHTML(data.corequisites)}</p>
-            </section>
-
-            <section class="pdf-section">
-                <h2>11.8 Expected Learning Outcomes</h2>
-                <table class="pdf-table competencies-table">
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Outcome Statement</th>
-                            <th>Knowledge &amp; understanding</th>
-                            <th>Practice</th>
-                            <th>Generic Cognitive Skills</th>
-                            <th>Communication, ICT &amp; Numeracy</th>
-                            <th>Autonomy &amp; Accountability</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${outcomesRows || '<tr><td colspan="7">No learning outcomes entered.</td></tr>'}
-                    </tbody>
-                </table>
-            </section>
-
-            <section class="pdf-section">
-                <h2>11.9 Curricular Content</h2>
-                <table class="pdf-table pdf-table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Week</th>
-                            <th>Main Topic &amp; Details</th>
-                            <th>Pedagogy</th>
-                            <th>Resources</th>
-                            <th>Credit</th>
-                            <th>Total Learning Hours</th>
-                            <th>Contact Hours</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${curricularRows || '<tr><td colspan="7">No curricular content entered.</td></tr>'}
-                    </tbody>
-                </table>
-            </section>
-
-            <section class="pdf-section">
-                <h2>11.10 Assessment Methods and Grading</h2>
-                <p>This section defines controlled and uncontrolled assessment weightages for the module.</p>
-                <table class="pdf-table pdf-table-bordered">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Task Title</th>
-                            <th>Details</th>
-                            <th>Form</th>
-                            <th>Length</th>
-                            <th>Weight (%)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${assessmentRows || '<tr><td colspan="6">No assessment items entered.</td></tr>'}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="5" style="text-align:right;"><strong>Total Weightage</strong></td>
-                            <td><strong>${totalWeight}</strong></td>
-                        </tr>
-                    </tfoot>
-                </table>
-                <p><strong>Controlled Assessment Weightage:</strong> ${controlledWeight}%</p>
-                <p><strong>Uncontrolled Assessment Weightage:</strong> ${uncontrolledWeight}%</p>
-            </section>
-
-            <section class="pdf-section">
-                <h2>11.11 Reference Materials</h2>
-                <p><strong>Core Texts:</strong></p>
-                <div class="pdf-paragraph">${formatParagraph(data.core_texts)}</div>
-                <p><strong>Additional References:</strong></p>
-                <div class="pdf-paragraph">${formatParagraph(data.additional_references)}</div>
-            </section>
-
-            <section class="pdf-section">
-                <h2>Developed By</h2>
-                <table class="pdf-table simple-table">
-                    <tbody>
-                        <tr><td><strong>Full Name:</strong></td><td>${escapeHTML(data.developer_name)}</td></tr>
-                        <tr><td><strong>Highest Qualification:</strong></td><td>${escapeHTML(data.qualification)}</td></tr>
-                        <tr><td><strong>Designation and Office:</strong></td><td>${escapeHTML(data.designation)}</td></tr>
-                        <tr><td><strong>Email ID:</strong></td><td>${escapeHTML(data.email_contact)}</td></tr>
-                    </tbody>
-                </table>
-            </section>
+                    ${buildPDFRow('11.5', 'Minimum Qualification', formatCellText(data.instructor_qualification))}
+                    ${buildPDFRow('11.6', 'Prerequisite', formatCellText(data.prerequisite))}
+                    ${buildPDFRow('11.7', 'Corequisites', formatCellText(data.corequisites))}
+                    ${buildPDFRow('11.8', 'Expected Learning Outcomes', outcomesTable, 'pdf-nested-value')}
+                    ${buildPDFRow('11.9', 'Curricular Content', curricularTable, 'pdf-nested-value')}
+                    ${buildPDFRow('11.10', 'Assessment Methods and Grading', assessmentTable, 'pdf-nested-value')}
+                    ${buildPDFRow('11.11', 'Core Texts', formatCellText(data.core_texts))}
+                    ${buildPDFRow('', 'Additional References', formatCellText(data.additional_references))}
+                    ${buildPDFRow('Developed By', 'Full Name', formatCellText(data.developer_name))}
+                    ${buildPDFRow('', 'Highest Qualification', formatCellText(data.qualification))}
+                    ${buildPDFRow('', 'Designation and Office', formatCellText(data.designation))}
+                    ${buildPDFRow('', 'Email ID', formatCellText(data.email_contact))}
+                </tbody>
+            </table>
         </div>
     `;
 }
 
 function exportToPDF(customName, sourceData, saveRecord = true) {
-    if (!window.html2canvas || !window.jspdf?.jsPDF) {
-        showNotification('PDF libraries are still loading. Please try again in a few seconds.', 'error');
+    if (!window.jspdf?.jsPDF) {
+        showNotification('PDF library is still loading. Please try again in a few seconds.', 'error');
         return;
     }
 
     showNotification('Generating PDF…', 'info');
     const formData = sourceData || collectFormData();
-    const pdfTemplate = document.getElementById('pdfTemplate');
-    pdfTemplate.innerHTML = buildPDFContent(formData);
-
-    const exportClone = pdfTemplate.cloneNode(true);
-    exportClone.id = 'pdfTemplateExportClone';
-    exportClone.style.position = 'fixed';
-    exportClone.style.left = '0';
-    exportClone.style.top = '0';
-    exportClone.style.width = '160mm';
-    exportClone.style.minHeight = '297mm';
-    exportClone.style.opacity = '1';
-    exportClone.style.visibility = 'visible';
-    exportClone.style.pointerEvents = 'none';
-    exportClone.style.zIndex = '10000';
-    exportClone.style.background = '#ffffff';
-    exportClone.style.overflow = 'visible';
-    document.body.appendChild(exportClone);
-
     const finalFilename = sanitizeFilename(customName);
-    const doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
 
-    html2canvas(exportClone, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        scrollY: 0
-    }).then(canvas => {
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-        const imgWidth = pageWidth;
-        const pageHeightPx = Math.floor((canvas.width * pageHeight) / pageWidth);
-        let position = 0;
-        let pageCount = 1;
-
-        while (position < canvas.height) {
-            const sliceHeight = Math.min(pageHeightPx, canvas.height - position);
-            const pageCanvas = document.createElement('canvas');
-            pageCanvas.width = canvas.width;
-            pageCanvas.height = sliceHeight;
-            const ctx = pageCanvas.getContext('2d');
-            ctx.drawImage(canvas, 0, position, canvas.width, sliceHeight, 0, 0, canvas.width, sliceHeight);
-            const pageData = pageCanvas.toDataURL('image/png');
-
-            if (pageCount > 1) {
-                doc.addPage();
-            }
-
-            doc.addImage(pageData, 'PNG', 0, 0, imgWidth, (sliceHeight * imgWidth) / canvas.width);
-            position += sliceHeight;
-            pageCount += 1;
-        }
-
-        const totalPages = doc.internal.getNumberOfPages();
-        doc.setFont('Times', '');
-        doc.setFontSize(10);
-        for (let page = 1; page <= totalPages; page++) {
-            doc.setPage(page);
-            doc.text(`Page ${page} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-        }
-
+    try {
+        const doc = createModuleOutlinePDF(formData);
         doc.save(finalFilename);
 
         if (saveRecord) {
@@ -562,14 +781,10 @@ function exportToPDF(customName, sourceData, saveRecord = true) {
         if (document.getElementById('outlinesPreview').classList.contains('active')) {
             loadOutlinesList();
         }
-    }).catch(err => {
+    } catch (err) {
         console.error('PDF Export Error:', err);
         showNotification('Failed to export PDF', 'error');
-    }).finally(() => {
-        if (exportClone && exportClone.parentNode) {
-            exportClone.parentNode.removeChild(exportClone);
-        }
-    });
+    }
 }
 
 // Function to download PDF
