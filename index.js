@@ -233,6 +233,23 @@ function formatParagraph(value) {
         .join('');
 }
 
+function formatCellText(value) {
+    return escapeHTML(value)
+        .split('\n')
+        .map(line => line || '&nbsp;')
+        .join('<br>');
+}
+
+function sanitizeFilename(value) {
+    const cleaned = String(value || '')
+        .trim()
+        .replace(/[^a-z0-9]+/gi, '_')
+        .replace(/^_+|_+$/g, '')
+        .toLowerCase();
+
+    return `${cleaned || 'module_outline'}.pdf`;
+}
+
 function buildPDFContent(data) {
     const deliveryModes = (data.delivery_modes || []).map(mode => {
         if (mode === 'f2f') return 'Face to Face';
@@ -246,7 +263,7 @@ function buildPDFContent(data) {
         return `
             <tr>
                 <td>${outcome.number || ''}</td>
-                <td>${escapeHTML(outcome.text)}</td>
+                <td>${formatCellText(outcome.text)}</td>
                 <td>${cells[0]}</td>
                 <td>${cells[1]}</td>
                 <td>${cells[2]}</td>
@@ -258,10 +275,12 @@ function buildPDFContent(data) {
     const curricularRows = (data.curricular_content || []).map(item => `
         <tr>
             <td>${escapeHTML(item.week)}</td>
-            <td>${escapeHTML(item.topic)}</td>
-            <td>${escapeHTML(item.details)}</td>
-            <td>${escapeHTML(item.pedagogy)}</td>
-            <td>${escapeHTML(item.resources)}</td>
+            <td>
+                <strong>${formatCellText(item.topic)}</strong>
+                ${item.details ? `<br>${formatCellText(item.details)}` : ''}
+            </td>
+            <td>${formatCellText(item.pedagogy)}</td>
+            <td>${formatCellText(item.resources)}</td>
             <td>${escapeHTML(item.credit)}</td>
             <td>${escapeHTML(item.hours)}</td>
             <td>${escapeHTML(item.contact)}</td>
@@ -270,8 +289,8 @@ function buildPDFContent(data) {
     const assessmentRows = (data.assessments || []).map((assessment, index) => `
         <tr>
             <td>${index + 1}</td>
-            <td>${escapeHTML(assessment.title)}</td>
-            <td>${escapeHTML(assessment.details)}</td>
+            <td>${formatCellText(assessment.title)}</td>
+            <td>${formatCellText(assessment.details)}</td>
             <td>${escapeHTML(assessment.form)}</td>
             <td>${escapeHTML(assessment.length)}</td>
             <td>${escapeHTML(assessment.weight)}</td>
@@ -326,18 +345,6 @@ function buildPDFContent(data) {
             <section class="pdf-section">
                 <h2>11.2 Module Code</h2>
                 <p>${escapeHTML(data.module_code)}</p>
-            </section>
-
-            <section class="pdf-section">
-                <h2>11.3 Credit & Hours Distribution</h2>
-                <table class="pdf-table simple-table">
-                    <tbody>
-                        <tr><td><strong>Number of Credits</strong></td><td>${escapeHTML(data.contact_credits)}</td></tr>
-                        <tr><td><strong>Total Learning Hours</strong></td><td>${escapeHTML(data.contact_total_learning_hours)}</td></tr>
-                        <tr><td><strong>Contact Hours</strong></td><td>${escapeHTML(data.contact_hours)}</td></tr>
-                        <tr><td><strong>Non-contact Hours</strong></td><td>${escapeHTML(data.non_contact_hours)}</td></tr>
-                    </tbody>
-                </table>
             </section>
 
             <section class="pdf-section">
@@ -464,9 +471,14 @@ function buildPDFContent(data) {
     `;
 }
 
-function exportToPDF(customName) {
+function exportToPDF(customName, sourceData, saveRecord = true) {
+    if (!window.html2canvas || !window.jspdf?.jsPDF) {
+        showNotification('PDF libraries are still loading. Please try again in a few seconds.', 'error');
+        return;
+    }
+
     showNotification('Generating PDF…', 'info');
-    const formData = collectFormData();
+    const formData = sourceData || collectFormData();
     const pdfTemplate = document.getElementById('pdfTemplate');
     pdfTemplate.innerHTML = buildPDFContent(formData);
 
@@ -485,9 +497,8 @@ function exportToPDF(customName) {
     exportClone.style.overflow = 'visible';
     document.body.appendChild(exportClone);
 
-    const finalFilename = `${customName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
-    const pdfModule = window.jspdf;
-    const doc = new pdfModule.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const finalFilename = sanitizeFilename(customName);
+    const doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
 
     html2canvas(exportClone, {
         scale: 2,
@@ -496,32 +507,28 @@ function exportToPDF(customName) {
         backgroundColor: '#ffffff',
         scrollY: 0
     }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
-        const imgProps = doc.getImageProperties(imgData);
         const imgWidth = pageWidth;
-        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
         const pageHeightPx = Math.floor((canvas.width * pageHeight) / pageWidth);
-        let heightLeft = canvas.height;
         let position = 0;
         let pageCount = 1;
 
-        while (heightLeft > 0) {
+        while (position < canvas.height) {
+            const sliceHeight = Math.min(pageHeightPx, canvas.height - position);
             const pageCanvas = document.createElement('canvas');
             pageCanvas.width = canvas.width;
-            pageCanvas.height = Math.min(pageHeightPx, heightLeft);
+            pageCanvas.height = sliceHeight;
             const ctx = pageCanvas.getContext('2d');
-            ctx.drawImage(canvas, 0, position, canvas.width, pageCanvas.height, 0, 0, canvas.width, pageCanvas.height);
+            ctx.drawImage(canvas, 0, position, canvas.width, sliceHeight, 0, 0, canvas.width, sliceHeight);
             const pageData = pageCanvas.toDataURL('image/png');
 
             if (pageCount > 1) {
                 doc.addPage();
             }
 
-            doc.addImage(pageData, 'PNG', 0, 0, imgWidth, (pageCanvas.height * imgWidth) / canvas.width);
-            heightLeft -= pageHeightPx;
-            position += pageHeightPx;
+            doc.addImage(pageData, 'PNG', 0, 0, imgWidth, (sliceHeight * imgWidth) / canvas.width);
+            position += sliceHeight;
             pageCount += 1;
         }
 
@@ -535,18 +542,21 @@ function exportToPDF(customName) {
 
         doc.save(finalFilename);
 
-        const pdfRecord = {
-            id: `pdf_${Date.now()}`,
-            title: customName,
-            moduleCode: formData.module_code || 'Untitled',
-            moduleName: formData.module_name_en || 'Untitled Module',
-            timestamp: new Date().toISOString(),
-            filename: finalFilename,
-            type: 'pdf'
-        };
+        if (saveRecord) {
+            const pdfRecord = {
+                id: `pdf_${Date.now()}`,
+                title: customName,
+                moduleCode: formData.module_code || 'Untitled',
+                moduleName: formData.module_name_en || 'Untitled Module',
+                timestamp: new Date().toISOString(),
+                filename: finalFilename,
+                data: formData,
+                type: 'pdf'
+            };
 
-        pdfOutlines.unshift(pdfRecord);
-        localStorage.setItem('modulePDFs', JSON.stringify(pdfOutlines));
+            pdfOutlines.unshift(pdfRecord);
+            localStorage.setItem('modulePDFs', JSON.stringify(pdfOutlines));
+        }
 
         showNotification('PDF exported successfully!', 'success');
         if (document.getElementById('outlinesPreview').classList.contains('active')) {
@@ -567,8 +577,7 @@ function downloadPDF(pdfId) {
     const pdfRecord = pdfOutlines.find(pdf => pdf.id === pdfId);
     if (pdfRecord) {
         showNotification(`Downloading ${pdfRecord.filename}...`, 'info');
-        // Regenerate the PDF with the saved title
-        exportToPDF(pdfRecord.title);
+        exportToPDF(pdfRecord.title, pdfRecord.data, false);
     }
 }
 
