@@ -661,22 +661,19 @@ textarea.auto-resize {
 }
 
 .vertical-header {
-    width: 30px; /* narrow column for vertical header */
-    padding: 0;
-    vertical-align: middle;
+    padding: 5px;
     text-align: center;
-    /* Ensure enough height for rotated text */
-    height: auto;
+    vertical-align: middle;
+    white-space: normal;
 }
 
 .vertical-header div {
-    /* Use transform rotation for better PDF rendering */
-    transform: rotate(-90deg);
-    transform-origin: left top;
-    white-space: nowrap;
+    /* Keep text horizontal */
+    writing-mode: horizontal-tb;
+    transform: none;
+    white-space: normal;
     margin: 0;
-    /* Optional: adjust spacing */
-    padding: 5px 0;
+    padding: 0;
 }
 
 .checkbox-cell {
@@ -926,9 +923,12 @@ textarea.auto-resize {
     /* Fix for outcome table headers - make them horizontal */
     .vertical-header {
         height: auto !important;
-        width: auto !important;
+        width: 13% !important;
+        min-width: 0 !important;
+        max-width: 13% !important;
         white-space: normal !important;
         text-align: center !important;
+        padding: 2px !important;
     }
 
     .vertical-header div {
@@ -936,8 +936,9 @@ textarea.auto-resize {
         transform: none !important;
         width: 100% !important;
         height: auto !important;
-        padding: 3px !important;
-        font-size: 10px !important;
+        padding: 0 !important;
+        font-size: 8px !important;
+        word-break: break-word !important;
     }
 
     /* Input field styling for PDF */
@@ -952,6 +953,8 @@ textarea.auto-resize {
         font-size: 11px !important;
         padding: 4px !important;
         margin-top: 2px !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     input[readonly],
@@ -962,6 +965,8 @@ textarea.auto-resize {
     table {
         border: 1px solid #ddd !important;
         font-size: 11px !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     th,
@@ -983,10 +988,25 @@ textarea.auto-resize {
     }
 
     /* Adjust table sizes for smaller font */
+    .outcome-table {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: fixed !important;
+        word-wrap: break-word !important;
+    }
+
+    .outcome-table th,
+    .outcome-table td {
+        word-wrap: break-word !important;
+        white-space: normal !important;
+        overflow-wrap: break-word !important;
+    }
+
     .outcome-table th:first-child,
     .outcome-table td:first-child {
-        width: 200px !important;
-        min-width: 200px !important;
+        width: 35% !important;
+        min-width: 0 !important;
+        max-width: 35% !important;
     }
 
     /* Reduce padding in tables */
@@ -1019,4 +1039,153 @@ textarea.auto-resize {
     .progress-container {
         display: none !important;
     }
+}
+
+/* PDF document-specific styles */
+.pdf-template {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    width: 160mm;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: none;
+    z-index: -1000;
+}
+
+.pdf-document {
+    font-family: 'Times New Roman', Times, serif;
+    color: #000;
+    background-color: #fff;
+    width: 160mm;
+    min-height: 297mm;
+    padding: 0;
+    margin: 0 auto;
+    font-size: 11pt;
+    line-height: 1.45;
+}
+
+.pdf-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #333;
+}
+
+.pdf-header h1 {
+    font-size: 18pt;
+    margin: 0 0 6px 0;
+    letter-spacing: 0.03em;
+}
+
+.pdf-subtitle {
+    margin: 0 0 10px 0;
+    font-size: 11pt;
+}
+
+.pdf-document h2,
+.pdf-document h3 {
+    margin-top: 18px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #000;
+}
+
+.pdf-document h2 {
+    font-size: 14pt;
+}
+
+.pdf-document h3 {
+    font-size: 13pt;
+}
+
+.pdf-document h2 {
+    font-size: 14.5pt;
+}
+
+.pdf-document h3 {
+    font-size: 13pt;
+}
+
+.pdf-section {
+    margin-bottom: 18px;
+    page-break-inside: avoid;
+}
+
+.pdf-header p,
+.pdf-section p {
+    margin: 0 0 10px;
+}
+
+.pdf-paragraph {
+    font-size: 11pt;
+    margin-bottom: 0.75em;
+    white-space: pre-wrap;
+}
+
+.pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 11pt;
+    table-layout: fixed;
+    word-break: break-word;
+}
+
+.pdf-table th,
+.pdf-table td {
+    border: 1px solid #333;
+    padding: 8px 10px;
+    vertical-align: top;
+}
+
+.pdf-table thead {
+    background-color: #f0f0f0;
+}
+
+.simple-table th,
+.simple-table td {
+    border: none;
+    padding: 4px 4px;
+}
+
+.summary-table td {
+    padding: 4px 8px;
+}
+
+.summary-table td:first-child,
+.summary-table td:nth-child(3) {
+    width: 25%;
+    font-weight: bold;
+}
+
+.pdf-table thead {
+    display: table-header-group;
+}
+
+.pdf-table tfoot {
+    display: table-row-group;
+}
+
+.pdf-table tr {
+    page-break-inside: avoid;
+}
+
+.pdf-table th {
+    background-color: #f5f5f5;
+    font-weight: 700;
+    text-align: left;
+}
+
+.competencies-table th,
+.competencies-table td {
+    text-align: center;
+}
+
+.pdf-table td {
+    text-align: left;
+}
+
+.pdf-footer {
+    position: absolute;
+    bottom: 0;
 }
