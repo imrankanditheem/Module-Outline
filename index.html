@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module Outline Form</title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="index.css?v=20260617-formal-pdf">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
@@ -413,6 +412,10 @@
                 <i class="fas fa-file-pdf"></i>
                 <span>Export Outline</span>
             </button>
+            <button class="pane-btn btn-sample" onclick="generateSamplePDF()">
+                <i class="fas fa-file-pdf" style="color: #fff"></i>
+                <span>Generate Sample PDF</span>
+            </button>
         </div>
 
         <div class="outlines-preview" id="outlinesPreview">
@@ -484,9 +487,7 @@
         </div>
     </div>
 
-    <div id="pdfTemplate" class="pdf-template"></div>
-
-    <script src="index.js"></script>
+    <script src="index.js?v=20260617-formal-pdf"></script>
 </body>
 
 </html>

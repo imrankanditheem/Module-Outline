@@ -901,6 +901,19 @@ textarea.auto-resize {
         padding-bottom: 5px !important;
     }
 
+    /* Use traditional serif for printed document */
+    body, .pdf-document {
+        font-family: 'Times New Roman', Times, serif !important;
+    }
+
+    /* Use A4 page size and set default margins for printing */
+    @page { size: A4; margin: 18mm }
+
+    /* Running header/footer placeholders for browser print */
+    .print-header, .print-footer { display:block; width:100%; text-align:center; font-size:10px; color:#333 }
+    .print-header { margin-bottom:6px }
+    .print-footer { position:fixed; bottom:6mm }
+
     h2 {
         color: black !important;
         border-left: 3px solid #666 !important;
@@ -1046,7 +1059,7 @@ textarea.auto-resize {
     position: absolute;
     left: -9999px;
     top: 0;
-    width: 160mm;
+    width: 150mm;
     opacity: 1;
     visibility: visible;
     pointer-events: none;
@@ -1057,132 +1070,150 @@ textarea.auto-resize {
     font-family: 'Times New Roman', Times, serif;
     color: #000;
     background-color: #fff;
-    width: 160mm;
-    min-height: 297mm;
+    width: 150mm;
     padding: 0;
-    margin: 0 auto;
+    margin: 0;
     font-size: 11pt;
-    line-height: 1.45;
+    line-height: 1.35;
 }
 
-.pdf-header {
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #333;
-}
-
-.pdf-header h1 {
-    font-size: 18pt;
-    margin: 0 0 6px 0;
-    letter-spacing: 0.03em;
-}
-
-.pdf-subtitle {
-    margin: 0 0 10px 0;
-    font-size: 11pt;
-}
-
-.pdf-document h2,
-.pdf-document h3 {
-    margin-top: 18px;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #000;
-}
-
-.pdf-document h2 {
-    font-size: 14pt;
-}
-
-.pdf-document h3 {
-    font-size: 13pt;
-}
-
-.pdf-document h2 {
-    font-size: 14.5pt;
-}
-
-.pdf-document h3 {
-    font-size: 13pt;
-}
-
-.pdf-section {
-    margin-bottom: 18px;
-    page-break-inside: avoid;
-}
-
-.pdf-header p,
-.pdf-section p {
-    margin: 0 0 10px;
-}
-
-.pdf-paragraph {
-    font-size: 11pt;
-    margin-bottom: 0.75em;
-    white-space: pre-wrap;
-}
-
-.pdf-table {
+.pdf-outline-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 16px;
-    font-size: 11pt;
     table-layout: fixed;
-    word-break: break-word;
+    font-size: 11pt;
+    line-height: 1.35;
 }
 
-.pdf-table th,
-.pdf-table td {
-    border: 1px solid #333;
-    padding: 8px 10px;
+.pdf-col-section {
+    width: 10%;
+}
+
+.pdf-col-label {
+    width: 30%;
+}
+
+.pdf-col-value {
+    width: 60%;
+}
+
+.pdf-outline-table>tbody>tr>td {
+    border: 1px solid #000;
+    padding: 5px 6px;
     vertical-align: top;
+    overflow-wrap: break-word;
+    word-break: normal;
 }
 
-.pdf-table thead {
-    background-color: #f0f0f0;
-}
-
-.simple-table th,
-.simple-table td {
-    border: none;
-    padding: 4px 4px;
-}
-
-.summary-table td {
-    padding: 4px 8px;
-}
-
-.summary-table td:first-child,
-.summary-table td:nth-child(3) {
-    width: 25%;
-    font-weight: bold;
-}
-
-.pdf-table thead {
-    display: table-header-group;
-}
-
-.pdf-table tfoot {
-    display: table-row-group;
-}
-
-.pdf-table tr {
-    page-break-inside: avoid;
-}
-
-.pdf-table th {
-    background-color: #f5f5f5;
+.pdf-section-no,
+.pdf-label-cell {
+    background-color: #bfbfbf;
     font-weight: 700;
-    text-align: left;
 }
 
-.competencies-table th,
-.competencies-table td {
+.pdf-section-no {
     text-align: center;
 }
 
-.pdf-table td {
-    text-align: left;
+.pdf-value-cell {
+    background-color: #fff;
+    font-weight: 400;
+}
+
+.pdf-rtl {
+    display: block;
+    direction: rtl;
+    text-align: right;
+    font-family: 'MV Typewriter', 'Times New Roman', Times, serif;
+}
+
+.pdf-nested-value {
+    padding: 0 !important;
+}
+
+.pdf-inner-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 8.5pt;
+    line-height: 1.25;
+}
+
+.pdf-inner-table th,
+.pdf-inner-table td {
+    border: 1px solid #000;
+    padding: 3px 4px;
+    vertical-align: top;
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+.pdf-inner-table th {
+    background-color: #d9d9d9;
+    font-weight: 700;
+    text-align: center;
+}
+
+.pdf-inner-table td {
+    background-color: #fff;
+}
+
+.pdf-competency-table th:first-child,
+.pdf-competency-table td:first-child,
+.pdf-assessment-table th:first-child,
+.pdf-assessment-table td:first-child {
+    width: 7%;
+    text-align: center;
+}
+
+.pdf-competency-table th:nth-child(2),
+.pdf-competency-table td:nth-child(2) {
+    width: 28%;
+}
+
+.pdf-curricular-table th:first-child,
+.pdf-curricular-table td:first-child {
+    width: 8%;
+}
+
+.pdf-curricular-table th:nth-child(2),
+.pdf-curricular-table td:nth-child(2) {
+    width: 28%;
+}
+
+.pdf-curricular-table th:nth-child(3),
+.pdf-curricular-table td:nth-child(3),
+.pdf-curricular-table th:nth-child(4),
+.pdf-curricular-table td:nth-child(4) {
+    width: 17%;
+}
+
+.pdf-assessment-table th:nth-child(2),
+.pdf-assessment-table td:nth-child(2) {
+    width: 20%;
+}
+
+.pdf-assessment-table th:nth-child(3),
+.pdf-assessment-table td:nth-child(3) {
+    width: 30%;
+}
+
+.pdf-competency-table th:nth-child(n+3),
+.pdf-competency-table td:nth-child(n+3),
+.pdf-curricular-table th:first-child,
+.pdf-curricular-table td:first-child,
+.pdf-curricular-table th:nth-child(n+5),
+.pdf-curricular-table td:nth-child(n+5),
+.pdf-assessment-table th:nth-child(n+4),
+.pdf-assessment-table td:nth-child(n+4) {
+    text-align: center;
+}
+
+.pdf-summary-lines {
+    border-top: 1px solid #000;
+    padding: 5px 6px;
+    font-size: 9pt;
+    line-height: 1.35;
 }
 
 .pdf-footer {

@@ -1672,3 +1672,48 @@ window.addEventListener('DOMContentLoaded', (event) => {
         saveDraft();
     });
 });
+
+// --- Sample PDF Generation (for testing) ---
+function getSampleData() {
+    return {
+        module_name_en: 'Introduction to Web Development',
+        module_name_dhivehi: 'ވެބް ޑިވެލޮޕްމެންޓް ދިވެހި',
+        module_name_arabic: 'مقدمة في تطوير الويب',
+        module_description: 'This module introduces students to the fundamentals of web development including HTML, CSS and JavaScript. Students will build interactive web pages and learn best practices in responsive design and accessibility.',
+        module_code: 'WD101',
+        module_level: '3',
+        contact_credits: '10',
+        contact_total_learning_hours: '100',
+        contact_hours: '33',
+        non_contact_hours: '67',
+        delivery_modes: ['f2f','blended'],
+        delivery_methods: 'Face-to-face lectures and blended online sessions using LMS.',
+        instructor_qualification: 'Minimum Bachelor's degree in relevant field',
+        prerequisite: 'Basic computer literacy',
+        corequisites: 'None',
+        outcomes: [
+            { number: 1, text: 'Understand HTML structure and semantics', competencies: [{checked:true},{checked:false},{checked:false},{checked:false},{checked:false}] },
+            { number: 2, text: 'Apply CSS to style web pages responsively', competencies: [{checked:true},{checked:true},{checked:false},{checked:false},{checked:false}] }
+        ],
+        curricular_content: [
+            { week: 1, topic: 'HTML Basics', details: 'Elements, attributes, document structure', pedagogy: 'Lecture + Lab', resources: 'Slides, examples', credit:'0.5', hours:'7', contact:'2' },
+            { week: 2, topic: 'CSS Fundamentals', details: 'Selectors, box model, layout', pedagogy: 'Lecture + Lab', resources: 'Slides, examples', credit:'0.5', hours:'7', contact:'2' }
+        ],
+        assessments: [
+            { title: 'Project 1', details: 'Build a multi-page website', form: 'Controlled', length: '', weight: '60' },
+            { title: 'Quiz', details: 'Multiple choice', form: 'Uncontrolled', length: '', weight: '40' }
+        ],
+        core_texts: 'HTML & CSS: Design and Build Websites - Jon Duckett',
+        additional_references: 'MDN Web Docs; W3Schools',
+        developer_name: 'John Doe',
+        qualification: 'MSc Computer Science',
+        designation: 'Lecturer, Computing',
+        email_contact: 'john.doe@example.com'
+    };
+}
+
+function generateSamplePDF() {
+    const sample = getSampleData();
+    const filename = `sample_${(sample.module_code || 'module')}.pdf`;
+    exportToPDF(filename, sample, true);
+}
