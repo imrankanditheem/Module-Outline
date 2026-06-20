@@ -523,6 +523,17 @@ function createModuleOutlinePDF(data) {
     data.module_name_dhivehi = cleanPDFText(data.module_name_dhivehi);
     data.module_name_arabic = cleanPDFText(data.module_name_arabic);
 
+    function supportsPdfText(value) {
+        return /^[\x00-\x7F\n\r\t]*$/.test(value || '');
+    }
+
+    if (!supportsPdfText(data.module_name_dhivehi)) {
+        data.module_name_dhivehi = '';
+    }
+    if (!supportsPdfText(data.module_name_arabic)) {
+        data.module_name_arabic = '';
+    }
+
     const deliveryModes = getDeliveryModesText(data);
     const moduleLevel = [data.module_level, mnqfLevels[data.module_level]].filter(Boolean).join(' ');
     const outcomesRows = (data.outcomes || []).map(outcome => {
