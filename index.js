@@ -263,19 +263,10 @@ function createModuleOutlinePDF(data) {
     let y = topMargin + headerHeight;
 
     function addHeader() {
-        const title = cleanPDFText(data.module_name_en) || 'Module Outline';
-        const code = cleanPDFText(data.module_code) || '';
         doc.setTextColor(0, 0, 0);
         doc.setFont('times', 'bold');
         doc.setFontSize(10);
         doc.text('MODULE OUTLINE FORM', marginX, topMargin - 5);
-        doc.setFont('times', 'normal');
-        doc.setFontSize(8.5);
-        const headerTitle = doc.splitTextToSize(title, tableWidth - 62)[0] || 'Module Outline';
-        doc.text(headerTitle, marginX, topMargin);
-        if (code) {
-            doc.text(`Module Code: ${code}`, pageWidth - marginX, topMargin, { align: 'right' });
-        }
         doc.setDrawColor(...lineColor);
         doc.setLineWidth(0.35);
         doc.line(marginX, topMargin + 4, pageWidth - marginX, topMargin + 4);
@@ -504,29 +495,14 @@ function createModuleOutlinePDF(data) {
         addHeader();
         y = topMargin + headerHeight;
 
-        const moduleTitle = cleanPDFText(data.module_name_en) || 'Module Outline';
-        const moduleCode = cleanPDFText(data.module_code) || 'Not specified';
-        const level = [data.module_level, mnqfLevels[data.module_level]].filter(Boolean).join(' ') || 'Not specified';
-        const credits = cleanPDFText(data.contact_credits) || 'Not specified';
-
         doc.setDrawColor(...lineColor);
         doc.setLineWidth(0.35);
-        doc.rect(marginX, y, tableWidth, 38);
+        doc.rect(marginX, y, tableWidth, 20);
 
         doc.setFont('times', 'bold');
         doc.setFontSize(16);
-        doc.text('MODULE OUTLINE', pageWidth / 2, y + 10, { align: 'center' });
-
-        doc.setFontSize(12);
-        const titleLines = doc.splitTextToSize(moduleTitle, tableWidth - 18).slice(0, 2);
-        doc.text(titleLines, pageWidth / 2, y + 19, { align: 'center' });
-
-        doc.setFont('times', 'normal');
-        doc.setFontSize(9.5);
-        doc.text(`Module Code: ${moduleCode}`, marginX + 8, y + 32);
-        doc.text(`MNQF Level: ${level}`, pageWidth / 2, y + 32, { align: 'center' });
-        doc.text(`Credits: ${credits}`, pageWidth - marginX - 8, y + 32, { align: 'right' });
-        y += 44;
+        doc.text('MODULE OUTLINE', pageWidth / 2, y + 12.5, { align: 'center' });
+        y += 26;
     }
 
     function addFooterToAllPages() {
