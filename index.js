@@ -215,31 +215,6 @@ function confirmExport() {
     exportToPDF(exportName);
 }
 
-// Function to export to PDF with proper formatting
-function escapeHTML(value) {
-    if (value === null || value === undefined) return '';
-    return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
-
-function formatParagraph(value) {
-    return escapeHTML(value)
-        .split('\n')
-        .map(line => `<p>${line || '&nbsp;'}</p>`)
-        .join('');
-}
-
-function formatCellText(value) {
-    return escapeHTML(value)
-        .split('\n')
-        .map(line => line || '&nbsp;')
-        .join('<br>');
-}
-
 function sanitizeFilename(value) {
     const cleaned = String(value || '')
         .trim()
@@ -269,17 +244,19 @@ function createModuleOutlinePDF(data) {
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const marginX = 18;
-    const topMargin = 18;
-    const headerHeight = 14; // space reserved for page header
-    const bottomMargin = 18;
+    const topMargin = 16;
+    const headerHeight = 16;
+    const bottomMargin = 20;
     const tableWidth = pageWidth - (marginX * 2);
-    const colWidths = [16, 44, tableWidth - 60];
-    const rowFill = [191, 191, 191];
-    const headerFill = [217, 217, 217];
+    const colWidths = [18, 50, tableWidth - 68];
+    const rowFill = [238, 238, 238];
+    const labelFill = [248, 248, 248];
+    const sectionFill = [55, 55, 55];
+    const headerFill = [224, 224, 224];
     const lineColor = [0, 0, 0];
-    const bodyFontSize = 11;
+    const bodyFontSize = 10;
     const innerFontSize = 7.8;
-    const bodyLineHeight = 5;
+    const bodyLineHeight = 4.7;
     const innerLineHeight = 3.5;
     const paddingX = 2.2;
     const paddingY = 2.2;
@@ -288,17 +265,20 @@ function createModuleOutlinePDF(data) {
     function addHeader() {
         const title = cleanPDFText(data.module_name_en) || 'Module Outline';
         const code = cleanPDFText(data.module_code) || '';
+        doc.setTextColor(0, 0, 0);
         doc.setFont('times', 'bold');
-        doc.setFontSize(14);
-        doc.text(title, pageWidth / 2, topMargin - 4, { align: 'center' });
+        doc.setFontSize(10);
+        doc.text('MODULE OUTLINE FORM', marginX, topMargin - 5);
+        doc.setFont('times', 'normal');
+        doc.setFontSize(8.5);
+        const headerTitle = doc.splitTextToSize(title, tableWidth - 62)[0] || 'Module Outline';
+        doc.text(headerTitle, marginX, topMargin);
         if (code) {
-            doc.setFont('times', 'normal');
-            doc.setFontSize(10);
-            doc.text(code, marginX, topMargin - 4);
+            doc.text(`Module Code: ${code}`, pageWidth - marginX, topMargin, { align: 'right' });
         }
         doc.setDrawColor(...lineColor);
-        doc.setLineWidth(0.6);
-        doc.line(marginX, topMargin + 2, pageWidth - marginX, topMargin + 2);
+        doc.setLineWidth(0.35);
+        doc.line(marginX, topMargin + 4, pageWidth - marginX, topMargin + 4);
     }
 
     doc.setProperties({
@@ -353,6 +333,7 @@ function createModuleOutlinePDF(data) {
     function drawFilledCell(x, yPos, width, height, fill) {
         doc.setDrawColor(...lineColor);
         doc.setFillColor(...fill);
+        doc.setLineWidth(0.2);
         doc.rect(x, yPos, width, height, 'FD');
     }
 
@@ -399,7 +380,7 @@ function createModuleOutlinePDF(data) {
             const x1 = x0 + colWidths[0];
             const x2 = x1 + colWidths[1];
             drawFilledCell(x0, y, colWidths[0], rowHeight, rowFill);
-            drawFilledCell(x1, y, colWidths[1], rowHeight, rowFill);
+            drawFilledCell(x1, y, colWidths[1], rowHeight, labelFill);
             drawFilledCell(x2, y, colWidths[2], rowHeight, [255, 255, 255]);
             drawTextLines(sectionLines, x0, y, colWidths[0], rowHeight, 'bold', false, 'center');
             drawTextLines(labelLines, x1, y, colWidths[1], rowHeight, 'bold');
@@ -435,7 +416,7 @@ function createModuleOutlinePDF(data) {
             currentX = x;
             row.forEach((cell, index) => {
                 drawFilledCell(currentX, currentY, widths[index], rowHeight, [255, 255, 255]);
-                const align = index === 0 || cell === '✔' ? 'center' : 'left';
+                const align = index === 0 || cell === 'X' ? 'center' : 'left';
                 drawTextLines(splitLines(cell, widths[index] - 2, true), currentX, currentY, widths[index], rowHeight, 'normal', true, align);
                 currentX += widths[index];
             });
@@ -495,7 +476,7 @@ function createModuleOutlinePDF(data) {
             const x1 = x0 + colWidths[0];
             const x2 = x1 + colWidths[1];
             drawFilledCell(x0, y, colWidths[0], chunk.height, rowFill);
-            drawFilledCell(x1, y, colWidths[1], chunk.height, rowFill);
+            drawFilledCell(x1, y, colWidths[1], chunk.height, labelFill);
             drawFilledCell(x2, y, colWidths[2], chunk.height, [255, 255, 255]);
             drawTextLines(sectionLines, x0, y, colWidths[0], chunk.height, 'bold', false, 'center');
             drawTextLines(labelLines, x1, y, colWidths[1], chunk.height, 'bold');
@@ -504,6 +485,48 @@ function createModuleOutlinePDF(data) {
             index = chunk.nextIndex;
             firstChunk = false;
         }
+    }
+
+    function drawSectionHeader(title) {
+        ensurePageSpace(9);
+        doc.setFillColor(...sectionFill);
+        doc.setDrawColor(...lineColor);
+        doc.rect(marginX, y, tableWidth, 8, 'FD');
+        doc.setFont('times', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(255, 255, 255);
+        doc.text(title.toUpperCase(), marginX + 2.5, y + 5.3);
+        doc.setTextColor(0, 0, 0);
+        y += 8;
+    }
+
+    function drawTitleBlock() {
+        addHeader();
+        y = topMargin + headerHeight;
+
+        const moduleTitle = cleanPDFText(data.module_name_en) || 'Module Outline';
+        const moduleCode = cleanPDFText(data.module_code) || 'Not specified';
+        const level = [data.module_level, mnqfLevels[data.module_level]].filter(Boolean).join(' ') || 'Not specified';
+        const credits = cleanPDFText(data.contact_credits) || 'Not specified';
+
+        doc.setDrawColor(...lineColor);
+        doc.setLineWidth(0.35);
+        doc.rect(marginX, y, tableWidth, 38);
+
+        doc.setFont('times', 'bold');
+        doc.setFontSize(16);
+        doc.text('MODULE OUTLINE', pageWidth / 2, y + 10, { align: 'center' });
+
+        doc.setFontSize(12);
+        const titleLines = doc.splitTextToSize(moduleTitle, tableWidth - 18).slice(0, 2);
+        doc.text(titleLines, pageWidth / 2, y + 19, { align: 'center' });
+
+        doc.setFont('times', 'normal');
+        doc.setFontSize(9.5);
+        doc.text(`Module Code: ${moduleCode}`, marginX + 8, y + 32);
+        doc.text(`MNQF Level: ${level}`, pageWidth / 2, y + 32, { align: 'center' });
+        doc.text(`Credits: ${credits}`, pageWidth - marginX - 8, y + 32, { align: 'right' });
+        y += 44;
     }
 
     function addFooterToAllPages() {
@@ -519,7 +542,7 @@ function createModuleOutlinePDF(data) {
     const deliveryModes = getDeliveryModesText(data);
     const moduleLevel = [data.module_level, mnqfLevels[data.module_level]].filter(Boolean).join(' ');
     const outcomesRows = (data.outcomes || []).map(outcome => {
-        const cells = outcome.competencies.map(c => c.checked ? '✔' : '');
+        const cells = outcome.competencies.map(c => c.checked ? 'X' : '');
         return [
             outcome.number || '',
             outcome.text || '',
@@ -551,200 +574,76 @@ function createModuleOutlinePDF(data) {
     const uncontrolledWeight = data.assessments?.reduce((sum, item) => sum + (item.form === 'Uncontrolled' ? parseFloat(item.weight || 0) : 0), 0) || 0;
     const totalWeight = controlledWeight + uncontrolledWeight;
 
+    drawTitleBlock();
+    drawSectionHeader('11.1 Module Identification');
     drawTextRow('11.1', 'Module Name', data.module_name_en);
     drawTextRow('', 'Module Name (Dhivehi)', data.module_name_dhivehi);
     drawTextRow('', 'Module Name (Arabic)', data.module_name_arabic);
     drawTextRow('', 'Module Description', data.module_description);
+    drawSectionHeader('11.2 Module Code and Level');
     drawTextRow('11.2', 'Module Code', data.module_code);
     drawTextRow('', 'Module Level', moduleLevel);
+    drawSectionHeader('11.3 Credit and Hours Distribution');
     drawTextRow('11.3', 'Credits', data.contact_credits);
     drawTextRow('', 'Total Learning Hours', data.contact_total_learning_hours);
     drawTextRow('', 'Contact Hours (Face to Face, Blended Mode & E-Learning)', data.contact_hours);
     drawTextRow('', 'Non-contact Hours (Face to face, Blended and E-Learning Mode)', data.non_contact_hours);
+    drawSectionHeader('11.4 Delivery Modality');
     drawTextRow('11.4', 'Delivery Modality', deliveryModes);
     drawTextRow('', 'Methods of Delivery', data.delivery_methods);
+    drawSectionHeader('11.5 to 11.7 Entry Requirements');
     drawTextRow('11.5', 'Minimum Qualification', data.instructor_qualification);
     drawTextRow('11.6', 'Prerequisite', data.prerequisite);
     drawTextRow('11.7', 'Corequisites', data.corequisites);
+    drawSectionHeader('11.8 Expected Learning Outcomes');
     drawNestedTableRow(
         '11.8',
         'Expected Learning Outcomes',
         ['No.', 'Outcome Statement', 'Knowledge & Understanding', 'Practice', 'Generic Cognitive Skills', 'Communication, ICT & Numeracy', 'Autonomy & Accountability'],
         outcomesRows,
-        [7, 25, 10, 10, 12, 13, 13]
+        [8, 34, 12, 11, 13, 14, 14]
     );
+    drawSectionHeader('11.9 Curricular Content');
     drawNestedTableRow(
         '11.9',
         'Curricular Content',
         ['Week', 'Main Topic & Details', 'Pedagogy', 'Resources', 'Credit', 'TLH', 'Contact'],
         curricularRows,
-        [7, 28, 14, 14, 8, 9, 10]
+        [8, 36, 16, 16, 9, 10, 11]
     );
+    drawSectionHeader('11.10 Assessment Methods and Grading');
     drawNestedTableRow(
         '11.10',
         'Assessment Methods and Grading',
         ['#', 'Task Title', 'Details', 'Form', 'Length', 'Weight (%)'],
         assessmentRows,
-        [6, 18, 28, 14, 12, 12]
+        [7, 22, 34, 16, 13, 14]
     );
     drawTextRow('', 'Assessment Weightage Summary', `Total Weightage: ${totalWeight}%\nControlled Assessment Weightage: ${controlledWeight}%\nUncontrolled Assessment Weightage: ${uncontrolledWeight}%`);
+    drawSectionHeader('11.11 Reference Materials');
     drawTextRow('11.11', 'Core Texts', data.core_texts);
     drawTextRow('', 'Additional References', data.additional_references);
+    drawSectionHeader('Developed By');
     drawTextRow('Developed By', 'Full Name', data.developer_name);
     drawTextRow('', 'Highest Qualification', data.qualification);
     drawTextRow('', 'Designation and Office', data.designation);
     drawTextRow('', 'Email ID', data.email_contact);
+    ensurePageSpace(26);
+    y += 6;
+    doc.setFont('times', 'normal');
+    doc.setFontSize(9.5);
+    doc.text('Developer Signature:', marginX, y);
+    doc.line(marginX + 34, y + 1, marginX + 82, y + 1);
+    doc.text('Date:', pageWidth - marginX - 52, y);
+    doc.line(pageWidth - marginX - 40, y + 1, pageWidth - marginX, y + 1);
+    y += 12;
+    doc.text('Approved By:', marginX, y);
+    doc.line(marginX + 24, y + 1, marginX + 82, y + 1);
+    doc.text('Date:', pageWidth - marginX - 52, y);
+    doc.line(pageWidth - marginX - 40, y + 1, pageWidth - marginX, y + 1);
     addFooterToAllPages();
 
     return doc;
-}
-
-function buildPDFRow(sectionNo, label, value, valueClass = '') {
-    return `
-        <tr>
-            <td class="pdf-section-no">${formatCellText(sectionNo)}</td>
-            <td class="pdf-label-cell">${formatCellText(label)}</td>
-            <td class="pdf-value-cell ${valueClass}">${value || '&nbsp;'}</td>
-        </tr>`;
-}
-
-function buildPDFInnerTable(headers, rows, emptyMessage, extraClass = '') {
-    const headerCells = headers.map(header => `<th>${formatCellText(header)}</th>`).join('');
-    const bodyRows = rows.length
-        ? rows.join('')
-        : `<tr><td colspan="${headers.length}">${formatCellText(emptyMessage)}</td></tr>`;
-
-    return `
-        <table class="pdf-inner-table ${extraClass}">
-            <thead>
-                <tr>${headerCells}</tr>
-            </thead>
-            <tbody>${bodyRows}</tbody>
-        </table>`;
-}
-
-function buildPDFContent(data) {
-    const deliveryModes = (data.delivery_modes || []).map(mode => {
-        if (mode === 'f2f') return 'Face to Face';
-        if (mode === 'blended') return 'Blended';
-        if (mode === 'elearning') return 'E-Learning';
-        return escapeHTML(mode);
-    }).join(', ');
-
-    const moduleLevel = [data.module_level, mnqfLevels[data.module_level]]
-        .filter(Boolean)
-        .join(' ');
-
-    const outcomesRows = (data.outcomes || []).map(outcome => {
-        const cells = outcome.competencies.map(c => c.checked ? '✔' : '');
-        return `
-            <tr>
-                <td>${outcome.number || ''}</td>
-                <td>${formatCellText(outcome.text)}</td>
-                <td>${cells[0]}</td>
-                <td>${cells[1]}</td>
-                <td>${cells[2]}</td>
-                <td>${cells[3]}</td>
-                <td>${cells[4]}</td>
-            </tr>`;
-    });
-
-    const curricularRows = (data.curricular_content || []).map(item => `
-        <tr>
-            <td>${escapeHTML(item.week)}</td>
-            <td>
-                <strong>${formatCellText(item.topic)}</strong>
-                ${item.details ? `<br>${formatCellText(item.details)}` : ''}
-            </td>
-            <td>${formatCellText(item.pedagogy)}</td>
-            <td>${formatCellText(item.resources)}</td>
-            <td>${escapeHTML(item.credit)}</td>
-            <td>${escapeHTML(item.hours)}</td>
-            <td>${escapeHTML(item.contact)}</td>
-        </tr>`);
-
-    const assessmentRows = (data.assessments || []).map((assessment, index) => `
-        <tr>
-            <td>${index + 1}</td>
-            <td>${formatCellText(assessment.title)}</td>
-            <td>${formatCellText(assessment.details)}</td>
-            <td>${escapeHTML(assessment.form)}</td>
-            <td>${escapeHTML(assessment.length)}</td>
-            <td>${escapeHTML(assessment.weight)}</td>
-        </tr>`);
-
-    const controlledWeight = data.assessments?.reduce((sum, item) => sum + (item.form === 'Uncontrolled' ? 0 : parseFloat(item.weight || 0)), 0) || 0;
-    const uncontrolledWeight = data.assessments?.reduce((sum, item) => sum + (item.form === 'Uncontrolled' ? parseFloat(item.weight || 0) : 0), 0) || 0;
-    const totalWeight = controlledWeight + uncontrolledWeight;
-
-    const outcomesTable = buildPDFInnerTable(
-        ['No.', 'Outcome Statement', 'Knowledge & Understanding', 'Practice', 'Generic Cognitive Skills', 'Communication, ICT & Numeracy', 'Autonomy & Accountability'],
-        outcomesRows,
-        'No learning outcomes entered.',
-        'pdf-competency-table'
-    );
-
-    const curricularTable = buildPDFInnerTable(
-        ['Week', 'Main Topic & Details', 'Pedagogy', 'Resources', 'Credit', 'Total Learning Hours', 'Contact Hours'],
-        curricularRows,
-        'No curricular content entered.',
-        'pdf-curricular-table'
-    );
-
-    const assessmentTable = `
-        ${buildPDFInnerTable(
-        ['#', 'Task Title', 'Details', 'Form', 'Length', 'Weight (%)'],
-        assessmentRows,
-        'No assessment items entered.',
-        'pdf-assessment-table'
-    )}
-        <div class="pdf-summary-lines">
-            <div><strong>Total Weightage:</strong> ${escapeHTML(totalWeight)}%</div>
-            <div><strong>Controlled Assessment Weightage:</strong> ${escapeHTML(controlledWeight)}%</div>
-            <div><strong>Uncontrolled Assessment Weightage:</strong> ${escapeHTML(uncontrolledWeight)}%</div>
-        </div>`;
-
-    return `
-        <div class="pdf-document">
-            <table class="pdf-outline-table">
-                <colgroup>
-                    <col class="pdf-col-section">
-                    <col class="pdf-col-label">
-                    <col class="pdf-col-value">
-                </colgroup>
-                <tbody>
-                    ${buildPDFRow('11.1', 'Module Name', formatCellText(data.module_name_en))}
-                    ${buildPDFRow('', 'Module Name (Dhivehi)', `<span class="pdf-rtl" dir="rtl">${formatCellText(data.module_name_dhivehi)}</span>`)}
-                    ${buildPDFRow('', 'Module Name (Arabic)', `<span class="pdf-rtl" dir="rtl">${formatCellText(data.module_name_arabic)}</span>`)}
-                    ${buildPDFRow('', 'Module Description', formatCellText(data.module_description))}
-
-                    ${buildPDFRow('11.2', 'Module Code', formatCellText(data.module_code))}
-                    ${buildPDFRow('', 'Module Level', formatCellText(moduleLevel))}
-
-                    ${buildPDFRow('11.3', 'Credits', formatCellText(data.contact_credits))}
-                    ${buildPDFRow('', 'Total Learning Hours', formatCellText(data.contact_total_learning_hours))}
-                    ${buildPDFRow('', 'Contact Hours (Face to Face, Blended Mode & E-Learning)', formatCellText(data.contact_hours))}
-                    ${buildPDFRow('', 'Non-contact Hours (Face to face, Blended and E-Learning Mode)', formatCellText(data.non_contact_hours))}
-
-                    ${buildPDFRow('11.4', 'Delivery Modality', formatCellText(deliveryModes))}
-                    ${buildPDFRow('', 'Methods of Delivery', formatCellText(data.delivery_methods))}
-
-                    ${buildPDFRow('11.5', 'Minimum Qualification', formatCellText(data.instructor_qualification))}
-                    ${buildPDFRow('11.6', 'Prerequisite', formatCellText(data.prerequisite))}
-                    ${buildPDFRow('11.7', 'Corequisites', formatCellText(data.corequisites))}
-                    ${buildPDFRow('11.8', 'Expected Learning Outcomes', outcomesTable, 'pdf-nested-value')}
-                    ${buildPDFRow('11.9', 'Curricular Content', curricularTable, 'pdf-nested-value')}
-                    ${buildPDFRow('11.10', 'Assessment Methods and Grading', assessmentTable, 'pdf-nested-value')}
-                    ${buildPDFRow('11.11', 'Core Texts', formatCellText(data.core_texts))}
-                    ${buildPDFRow('', 'Additional References', formatCellText(data.additional_references))}
-                    ${buildPDFRow('Developed By', 'Full Name', formatCellText(data.developer_name))}
-                    ${buildPDFRow('', 'Highest Qualification', formatCellText(data.qualification))}
-                    ${buildPDFRow('', 'Designation and Office', formatCellText(data.designation))}
-                    ${buildPDFRow('', 'Email ID', formatCellText(data.email_contact))}
-                </tbody>
-            </table>
-        </div>
-    `;
 }
 
 function exportToPDF(customName, sourceData, saveRecord = true) {
@@ -1673,47 +1572,48 @@ window.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 
-// --- Sample PDF Generation (for testing) ---
+// Sample PDF generation for testing the export layout.
 function getSampleData() {
     return {
         module_name_en: 'Introduction to Web Development',
-        module_name_dhivehi: 'ވެބް ޑިވެލޮޕްމެންޓް ދިވެހި',
+        module_name_dhivehi: 'ވެބް ޑިވެލޮޕްމެންޓް',
         module_name_arabic: 'مقدمة في تطوير الويب',
-        module_description: 'This module introduces students to the fundamentals of web development including HTML, CSS and JavaScript. Students will build interactive web pages and learn best practices in responsive design and accessibility.',
+        module_description: 'This module introduces learners to the principles and practices of modern web development. It covers semantic HTML, CSS layout, responsive design, basic JavaScript, accessibility, and the development of a standards-compliant web project.',
         module_code: 'WD101',
         module_level: '3',
         contact_credits: '10',
         contact_total_learning_hours: '100',
         contact_hours: '33',
         non_contact_hours: '67',
-        delivery_modes: ['f2f','blended'],
-        delivery_methods: 'Face-to-face lectures and blended online sessions using LMS.',
-        instructor_qualification: 'Minimum Bachelor's degree in relevant field',
+        delivery_modes: ['f2f', 'blended'],
+        delivery_methods: 'Lectures, guided laboratory sessions, supervised practical work, online learning activities, and independent project development.',
+        instructor_qualification: 'Bachelor degree or higher qualification in Computing, Information Technology, Software Engineering, or a closely related field.',
         prerequisite: 'Basic computer literacy',
         corequisites: 'None',
         outcomes: [
-            { number: 1, text: 'Understand HTML structure and semantics', competencies: [{checked:true},{checked:false},{checked:false},{checked:false},{checked:false}] },
-            { number: 2, text: 'Apply CSS to style web pages responsively', competencies: [{checked:true},{checked:true},{checked:false},{checked:false},{checked:false}] }
+            { number: '1', text: 'Explain the structure and purpose of semantic HTML documents.', competencies: [{ checked: true }, { checked: false }, { checked: true }, { checked: false }, { checked: false }] },
+            { number: '2', text: 'Apply CSS rules and layout techniques to produce responsive web pages.', competencies: [{ checked: true }, { checked: true }, { checked: true }, { checked: false }, { checked: false }] },
+            { number: '3', text: 'Develop a small interactive website using HTML, CSS, and JavaScript.', competencies: [{ checked: false }, { checked: true }, { checked: true }, { checked: true }, { checked: true }] }
         ],
         curricular_content: [
-            { week: 1, topic: 'HTML Basics', details: 'Elements, attributes, document structure', pedagogy: 'Lecture + Lab', resources: 'Slides, examples', credit:'0.5', hours:'7', contact:'2' },
-            { week: 2, topic: 'CSS Fundamentals', details: 'Selectors, box model, layout', pedagogy: 'Lecture + Lab', resources: 'Slides, examples', credit:'0.5', hours:'7', contact:'2' }
+            { week: '1', topic: 'HTML Foundations', details: 'Document structure, headings, lists, links, images, forms, and semantic elements.', pedagogy: 'Lecture and lab', resources: 'Slides, code examples, browser developer tools', credit: '1', hours: '10', contact: '3' },
+            { week: '2', topic: 'CSS Styling and Layout', details: 'Selectors, cascade, box model, Flexbox, Grid, responsive breakpoints, and print-friendly styling.', pedagogy: 'Demonstration and practical', resources: 'CSS reference material and lab sheet', credit: '1', hours: '10', contact: '3' },
+            { week: '3', topic: 'JavaScript Interaction', details: 'DOM selection, events, form validation, and basic interface behaviour.', pedagogy: 'Workshop', resources: 'Sample scripts and exercises', credit: '1', hours: '10', contact: '3' }
         ],
         assessments: [
-            { title: 'Project 1', details: 'Build a multi-page website', form: 'Controlled', length: '', weight: '60' },
-            { title: 'Quiz', details: 'Multiple choice', form: 'Uncontrolled', length: '', weight: '40' }
+            { title: 'Practical Website Project', details: 'Design and develop a responsive multi-page website that meets the provided technical and accessibility requirements.', form: 'Controlled', length: 'Project submission', weight: '60' },
+            { title: 'Skills Test', details: 'Timed practical test covering HTML, CSS, and basic JavaScript tasks.', form: 'Controlled', length: '2 hours', weight: '20' },
+            { title: 'Learning Portfolio', details: 'Short reflective portfolio documenting weekly practical work and improvements.', form: 'Uncontrolled', length: 'Portfolio', weight: '20' }
         ],
-        core_texts: 'HTML & CSS: Design and Build Websites - Jon Duckett',
-        additional_references: 'MDN Web Docs; W3Schools',
+        core_texts: 'Duckett, J. (2011). HTML and CSS: Design and Build Websites. Wiley.\nDuckett, J. (2014). JavaScript and JQuery: Interactive Front-End Web Development. Wiley.',
+        additional_references: 'MDN Web Docs. https://developer.mozilla.org/\nW3C Web Accessibility Initiative. https://www.w3.org/WAI/',
         developer_name: 'John Doe',
         qualification: 'MSc Computer Science',
-        designation: 'Lecturer, Computing',
-        email_contact: 'john.doe@example.com'
+        designation: 'Lecturer, Department of Computing',
+        email_contact: 'john.doe@example.edu'
     };
 }
 
 function generateSamplePDF() {
-    const sample = getSampleData();
-    const filename = `sample_${(sample.module_code || 'module')}.pdf`;
-    exportToPDF(filename, sample, true);
+    exportToPDF('formal_module_outline_sample', getSampleData(), false);
 }
