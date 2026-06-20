@@ -519,6 +519,10 @@ function createModuleOutlinePDF(data) {
         }
     }
 
+    data.module_name_en = cleanPDFText(data.module_name_en);
+    data.module_name_dhivehi = cleanPDFText(data.module_name_dhivehi);
+    data.module_name_arabic = cleanPDFText(data.module_name_arabic);
+
     const deliveryModes = getDeliveryModesText(data);
     const moduleLevel = [data.module_level, mnqfLevels[data.module_level]].filter(Boolean).join(' ');
     const outcomesRows = (data.outcomes || []).map(outcome => {
@@ -556,7 +560,7 @@ function createModuleOutlinePDF(data) {
 
     drawTitleBlock();
     drawSectionHeader('11.1 Module Identification');
-    drawTextRow('11.1', 'Module Name', data.module_name_en);
+    drawTextRow('11.1', 'Module Name (English)', data.module_name_en);
     drawTextRow('', 'Module Name (Dhivehi)', data.module_name_dhivehi);
     drawTextRow('', 'Module Name (Arabic)', data.module_name_arabic);
     drawTextRow('', 'Module Description', data.module_description);
