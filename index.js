@@ -497,12 +497,16 @@ function createModuleOutlinePDF(data) {
 
         doc.setDrawColor(...lineColor);
         doc.setLineWidth(0.35);
-        doc.rect(marginX, y, tableWidth, 20);
+        doc.rect(marginX, y, tableWidth, 28);
 
         doc.setFont('times', 'bold');
         doc.setFontSize(16);
         doc.text('MODULE OUTLINE', pageWidth / 2, y + 12.5, { align: 'center' });
-        y += 26;
+
+        doc.setFont('times', 'normal');
+        doc.setFontSize(10);
+        doc.text('Islamic University of Maldives', pageWidth / 2, y + 22, { align: 'center' });
+        y += 32;
     }
 
     function addFooterToAllPages() {
