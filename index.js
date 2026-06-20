@@ -17,11 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function validateFormBeforeExport() {
     const missingSections = [];
 
-    // Check 11.1 Module Name (English is required)
-    const moduleNameEn = document.querySelector('[name="module_name_en"]')?.value?.trim();
-    if (!moduleNameEn) {
-        missingSections.push("11.1 Module Name (English)");
-    }
+    // Module Name (English) is optional for PDF export
 
     // Check Module Description
     const moduleDescription = document.querySelector('[name="module_description"]')?.value?.trim();
