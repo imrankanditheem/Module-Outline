@@ -35,6 +35,13 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+.subtitle {
+    margin: 4px 0 20px;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
 /* Right side pane */
 .side-pane {
     width: 320px;
