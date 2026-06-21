@@ -1073,6 +1073,16 @@ textarea.auto-resize {
     z-index: -1000;
 }
 
+/* Embedded font faces for PDF rendering (local fonts) */
+@font-face {
+    font-family: 'NotoNaskhArabicLocal';
+    src: url('fonts/NotoNaskhArabic-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'NotoSansThaanaLocal';
+    src: url('fonts/NotoSansThaana-Regular.ttf') format('truetype');
+}
+
 .pdf-document {
     font-family: 'Times New Roman', Times, serif;
     color: #000;
@@ -1131,7 +1141,7 @@ textarea.auto-resize {
     display: block;
     direction: rtl;
     text-align: right;
-    font-family: 'MV Typewriter', 'Times New Roman', Times, serif;
+    font-family: 'NotoSansThaanaLocal', 'NotoNaskhArabicLocal', 'MV Typewriter', 'Times New Roman', Times, serif;
 }
 
 .pdf-nested-value {

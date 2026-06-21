@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="index.css?v=20260617-formal-pdf">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 
 <body>
@@ -428,6 +429,13 @@
     </div>
 
     <!-- Save Draft Modal -->
+
+    <!-- Hidden HTML template used for PDF rendering (populated at export time) -->
+    <div class="pdf-template" id="pdfTemplate" aria-hidden="true">
+        <div class="pdf-document" id="pdfDocument">
+            <!-- content injected by JS before rendering -->
+        </div>
+    </div>
     <div class="modal" id="saveModal">
         <div class="modal-content">
             <h3 class="modal-header">Save Draft</h3>

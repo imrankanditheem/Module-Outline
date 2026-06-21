@@ -648,8 +648,13 @@ function exportToPDF(customName, sourceData, saveRecord = true) {
     const finalFilename = sanitizeFilename(customName);
 
     try {
-        const doc = createModuleOutlinePDF(formData);
-        doc.save(finalFilename);
+        // Prefer HTML->canvas->PDF path to preserve complex script rendering (Arabic/Thaana)
+        if (window.html2canvas) {
+            await renderPdfFromHtml(formData, finalFilename);
+        } else {
+            const doc = createModuleOutlinePDF(formData);
+            doc.save(finalFilename);
+        }
 
         if (saveRecord) {
             const pdfRecord = {
@@ -675,6 +680,122 @@ function exportToPDF(customName, sourceData, saveRecord = true) {
         console.error('PDF Export Error:', err);
         showNotification('Failed to export PDF', 'error');
     }
+}
+
+// Build HTML for the hidden PDF template and render using html2canvas + jsPDF
+async function renderPdfFromHtml(data, filename) {
+        const docEl = document.getElementById('pdfDocument');
+        docEl.innerHTML = buildPdfTemplateHtml(data);
+
+        // ensure fonts are loaded before rendering
+        try {
+                if (document.fonts && document.fonts.ready) {
+                        await document.fonts.ready;
+                }
+        } catch (e) {
+                // ignore font loading errors
+        }
+
+        // give browser a tick to apply fonts/styles
+        await new Promise(r => setTimeout(r, 120));
+
+        const canvas = await html2canvas(docEl, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        // calculate image dimensions preserving A4 ratio
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgRatio = imgProps.width / imgProps.height;
+        const pdfW = pageWidth - 18 * 2;
+        const pdfH = pdfW / imgRatio;
+        pdf.addImage(imgData, 'PNG', 18, 16, pdfW, pdfH);
+        pdf.save(filename);
+}
+
+// Build the HTML string for the PDF document using existing CSS classes
+function buildPdfTemplateHtml(data) {
+        const d = Object.assign({}, data);
+        const safe = v => (v === null || v === undefined) ? '' : String(v);
+
+        // Header / title block
+        let html = `<div style="padding:8px 12px;">
+            <div style="text-align:center; font-family: Times, serif;">
+                <div style="font-weight:bold; font-size:18px;">MODULE OUTLINE</div>
+                <div style="font-size:11px; margin-top:6px;">Islamic University of Maldives</div>
+            </div>
+            <hr style="margin:10px 0; border-color:#333"/>
+        `;
+
+        // Module Identification table
+        html += `<table class="pdf-outline-table" style="margin-top:6px;">
+            <tbody>
+                <tr>
+                    <td class="pdf-section-no">11.1</td>
+                    <td class="pdf-label-cell"><strong>Module Name (English)</strong></td>
+                    <td class="pdf-value-cell">${escapeHtml(safe(d.module_name_en))}</td>
+                </tr>
+                <tr>
+                    <td class="pdf-section-no"></td>
+                    <td class="pdf-label-cell"><strong>Module Name (Dhivehi)</strong></td>
+                    <td class="pdf-value-cell pdf-rtl">${escapeHtml(safe(d.module_name_dhivehi))}</td>
+                </tr>
+                <tr>
+                    <td class="pdf-section-no"></td>
+                    <td class="pdf-label-cell"><strong>Module Name (Arabic)</strong></td>
+                    <td class="pdf-value-cell pdf-rtl">${escapeHtml(safe(d.module_name_arabic))}</td>
+                </tr>
+                <tr>
+                    <td class="pdf-section-no"></td>
+                    <td class="pdf-label-cell"><strong>Module Description</strong></td>
+                    <td class="pdf-value-cell">${escapeHtml(safe(d.module_description)).replace(/\n/g,'<br/>')}</td>
+                </tr>
+            </tbody>
+        </table>`;
+
+        // Additional sections - map common simple fields
+        html += `<table class="pdf-outline-table" style="margin-top:12px;">
+            <tbody>
+                <tr><td class="pdf-section-no">11.2</td><td class="pdf-label-cell"><strong>Module Code</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.module_code))}</td></tr>
+                <tr><td class="pdf-section-no"></td><td class="pdf-label-cell"><strong>Module Level</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.module_level))}</td></tr>
+                <tr><td class="pdf-section-no">11.3</td><td class="pdf-label-cell"><strong>Credits</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.contact_credits))}</td></tr>
+                <tr><td class="pdf-section-no"></td><td class="pdf-label-cell"><strong>Total Learning Hours</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.contact_total_learning_hours))}</td></tr>
+            </tbody>
+        </table>`;
+
+        // Outcomes (simple rendering)
+        const outcomes = d.outcomes || [];
+        html += `<div style="margin-top:12px; font-weight:bold;">11.8 Expected Learning Outcomes</div>`;
+        html += `<table class="pdf-inner-table" style="width:100%; margin-top:6px;">
+            <thead><tr><th>No.</th><th>Outcome Statement</th><th>Knowledge</th><th>Practice</th><th>Generic</th><th>Communication</th><th>Autonomy</th></tr></thead><tbody>`;
+        if (outcomes.length) {
+                outcomes.forEach((o, idx) => {
+                        const comps = (o.competencies || []).map(c => c.checked ? 'X' : '');
+                        html += `<tr><td style="text-align:center">${escapeHtml(o.number || (idx+1))}</td><td>${escapeHtml(o.text || '')}</td><td style="text-align:center">${escapeHtml(comps[0]||'')}</td><td style="text-align:center">${escapeHtml(comps[1]||'')}</td><td style="text-align:center">${escapeHtml(comps[2]||'')}</td><td style="text-align:center">${escapeHtml(comps[3]||'')}</td><td style="text-align:center">${escapeHtml(comps[4]||'')}</td></tr>`;
+                });
+        } else {
+                html += `<tr><td colspan="7">No information entered.</td></tr>`;
+        }
+        html += `</tbody></table>`;
+
+        // Reference materials and developed by
+        html += `<div style="margin-top:12px;"><table class="pdf-outline-table"><tbody>`;
+        html += `<tr><td class="pdf-section-no">11.11</td><td class="pdf-label-cell"><strong>Core Texts</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.core_texts)).replace(/\n/g,'<br/>')}</td></tr>`;
+        html += `<tr><td class="pdf-section-no"></td><td class="pdf-label-cell"><strong>Additional References</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.additional_references)).replace(/\n/g,'<br/>')}</td></tr>`;
+        html += `<tr><td class="pdf-section-no">&nbsp;</td><td class="pdf-label-cell"><strong>Developed By</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.developer_name))}<br/>${escapeHtml(safe(d.qualification))}<br/>${escapeHtml(safe(d.designation))}<br/>${escapeHtml(safe(d.email_contact))}</td></tr>`;
+        html += `</tbody></table></div>`;
+
+        html += `</div>`;
+        return html;
+}
+
+function escapeHtml(str) {
+        return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
 }
 
 // Function to download PDF
