@@ -686,6 +686,7 @@ async function exportToPDF(customName, sourceData, saveRecord = true) {
 async function renderPdfFromHtml(data, filename) {
         const docEl = document.getElementById('pdfDocument');
         docEl.innerHTML = buildPdfTemplateHtml(data);
+        docEl.style.display = 'block';
 
         // ensure fonts are loaded before rendering
         try {
@@ -697,95 +698,280 @@ async function renderPdfFromHtml(data, filename) {
         }
 
         // give browser a tick to apply fonts/styles
-        await new Promise(r => setTimeout(r, 120));
+        await new Promise(r => setTimeout(r, 160));
 
-        const canvas = await html2canvas(docEl, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
-        const imgData = canvas.toDataURL('image/png', 1.0);
+        const canvas = await html2canvas(docEl, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                useCORS: true,
+                scrollY: -window.scrollY,
+                windowWidth: docEl.scrollWidth,
+                windowHeight: docEl.scrollHeight
+        });
+
         const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-        // calculate image dimensions preserving A4 ratio
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
-        const imgProps = pdf.getImageProperties(imgData);
-        const imgRatio = imgProps.width / imgProps.height;
-        const pdfW = pageWidth - 18 * 2;
-        const pdfH = pdfW / imgRatio;
-        pdf.addImage(imgData, 'PNG', 18, 16, pdfW, pdfH);
+        const margin = 12;
+        const imgWidth = pageWidth - margin * 2;
+        const pageHeightLimit = pageHeight - margin * 2;
+        const pageHeightPx = Math.floor(canvas.width * pageHeightLimit / imgWidth);
+
+        let position = 0;
+        let pageIndex = 0;
+
+        while (position < canvas.height) {
+                const pageCanvas = document.createElement('canvas');
+                pageCanvas.width = canvas.width;
+                const remainingHeight = canvas.height - position;
+                pageCanvas.height = remainingHeight > pageHeightPx ? pageHeightPx : remainingHeight;
+
+                const pageCtx = pageCanvas.getContext('2d');
+                pageCtx.fillStyle = '#ffffff';
+                pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+                pageCtx.drawImage(canvas, 0, position, canvas.width, pageCanvas.height, 0, 0, pageCanvas.width, pageCanvas.height);
+
+                const pageData = pageCanvas.toDataURL('image/png', 1.0);
+                const pageImageHeight = (pageCanvas.height * imgWidth) / canvas.width;
+
+                if (pageIndex > 0) {
+                        pdf.addPage();
+                }
+                pdf.addImage(pageData, 'PNG', margin, margin, imgWidth, pageImageHeight);
+
+                position += pageCanvas.height;
+                pageIndex += 1;
+        }
+
         pdf.save(filename);
 }
 
-// Build the HTML string for the PDF document using existing CSS classes
+// Build the HTML string for the PDF document using the application form structure
 function buildPdfTemplateHtml(data) {
         const d = Object.assign({}, data);
         const safe = v => (v === null || v === undefined) ? '' : String(v);
+        const textToHtml = value => escapeHtml(safe(value)).replace(/\n/g, '<br/>');
+        const multilineValue = value => `<div class="pdf-value-multiline">${textToHtml(value) || '&nbsp;'}</div>`;
+        const checkboxMark = checked => checked ? '&#10004;' : '&nbsp;';
 
-        // Header / title block
-        let html = `<div style="padding:8px 12px;">
-            <div style="text-align:center; font-family: Times, serif;">
-                <div style="font-weight:bold; font-size:18px;">MODULE OUTLINE</div>
-                <div style="font-size:11px; margin-top:6px;">Islamic University of Maldives</div>
-            </div>
-            <hr style="margin:10px 0; border-color:#333"/>
-        `;
+        const renderSectionHeading = (section, title) => `
+                <div class="pdf-section-title">
+                        <div class="pdf-section-number">${escapeHtml(section)}</div>
+                        <div class="pdf-section-heading">${escapeHtml(title)}</div>
+                </div>`;
 
-        // Module Identification table
-        html += `<table class="pdf-outline-table" style="margin-top:6px;">
-            <tbody>
+        const renderFieldRow = (label, value, rtl = false) => `
                 <tr>
-                    <td class="pdf-section-no">11.1</td>
-                    <td class="pdf-label-cell"><strong>Module Name (English)</strong></td>
-                    <td class="pdf-value-cell">${escapeHtml(safe(d.module_name_en))}</td>
-                </tr>
-                <tr>
-                    <td class="pdf-section-no"></td>
-                    <td class="pdf-label-cell"><strong>Module Name (Dhivehi)</strong></td>
-                    <td class="pdf-value-cell pdf-rtl">${escapeHtml(safe(d.module_name_dhivehi))}</td>
-                </tr>
-                <tr>
-                    <td class="pdf-section-no"></td>
-                    <td class="pdf-label-cell"><strong>Module Name (Arabic)</strong></td>
-                    <td class="pdf-value-cell pdf-rtl">${escapeHtml(safe(d.module_name_arabic))}</td>
-                </tr>
-                <tr>
-                    <td class="pdf-section-no"></td>
-                    <td class="pdf-label-cell"><strong>Module Description</strong></td>
-                    <td class="pdf-value-cell">${escapeHtml(safe(d.module_description)).replace(/\n/g,'<br/>')}</td>
-                </tr>
-            </tbody>
-        </table>`;
+                        <td class="pdf-label-cell"><strong>${escapeHtml(label)}</strong></td>
+                        <td class="pdf-value-cell${rtl ? ' pdf-rtl' : ''}">${rtl ? `<div dir="rtl">${textToHtml(value) || '&nbsp;'}</div>` : multilineValue(value)}</td>
+                </tr>`;
 
-        // Additional sections - map common simple fields
-        html += `<table class="pdf-outline-table" style="margin-top:12px;">
-            <tbody>
-                <tr><td class="pdf-section-no">11.2</td><td class="pdf-label-cell"><strong>Module Code</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.module_code))}</td></tr>
-                <tr><td class="pdf-section-no"></td><td class="pdf-label-cell"><strong>Module Level</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.module_level))}</td></tr>
-                <tr><td class="pdf-section-no">11.3</td><td class="pdf-label-cell"><strong>Credits</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.contact_credits))}</td></tr>
-                <tr><td class="pdf-section-no"></td><td class="pdf-label-cell"><strong>Total Learning Hours</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.contact_total_learning_hours))}</td></tr>
-            </tbody>
-        </table>`;
+        const renderNameBlock = () => `
+                <table class="pdf-name-table">
+                        <tbody>
+                                <tr>
+                                        <td class="pdf-label-cell"><strong>English Name</strong></td>
+                                        <td class="pdf-value-cell">${multilineValue(d.module_name_en)}</td>
+                                </tr>
+                                <tr>
+                                        <td class="pdf-label-cell"><strong>Dhivehi Name</strong></td>
+                                        <td class="pdf-value-cell pdf-rtl" dir="rtl">${textToHtml(d.module_name_dhivehi) || '&nbsp;'}</td>
+                                </tr>
+                                <tr>
+                                        <td class="pdf-label-cell"><strong>Arabic Name</strong></td>
+                                        <td class="pdf-value-cell pdf-rtl" dir="rtl">${textToHtml(d.module_name_arabic) || '&nbsp;'}</td>
+                                </tr>
+                        </tbody>
+                </table>`;
 
-        // Outcomes (simple rendering)
-        const outcomes = d.outcomes || [];
-        html += `<div style="margin-top:12px; font-weight:bold;">11.8 Expected Learning Outcomes</div>`;
-        html += `<table class="pdf-inner-table" style="width:100%; margin-top:6px;">
-            <thead><tr><th>No.</th><th>Outcome Statement</th><th>Knowledge</th><th>Practice</th><th>Generic</th><th>Communication</th><th>Autonomy</th></tr></thead><tbody>`;
-        if (outcomes.length) {
-                outcomes.forEach((o, idx) => {
-                        const comps = (o.competencies || []).map(c => c.checked ? 'X' : '');
-                        html += `<tr><td style="text-align:center">${escapeHtml(o.number || (idx+1))}</td><td>${escapeHtml(o.text || '')}</td><td style="text-align:center">${escapeHtml(comps[0]||'')}</td><td style="text-align:center">${escapeHtml(comps[1]||'')}</td><td style="text-align:center">${escapeHtml(comps[2]||'')}</td><td style="text-align:center">${escapeHtml(comps[3]||'')}</td><td style="text-align:center">${escapeHtml(comps[4]||'')}</td></tr>`;
-                });
-        } else {
-                html += `<tr><td colspan="7">No information entered.</td></tr>`;
-        }
-        html += `</tbody></table>`;
+        const renderOutcomeTable = () => {
+                const outcomes = (d.outcomes && d.outcomes.length) ? d.outcomes : [{ text: '', competencies: [] }];
+                const rows = outcomes.map((outcome, idx) => {
+                        const competencies = outcome.competencies || [];
+                        return `
+                                <tr>
+                                        <td>${escapeHtml(outcome.number || idx + 1)}</td>
+                                        <td>${multilineValue(outcome.text)}</td>
+                                        <td class="pdf-checkbox-cell">${checkboxMark(competencies[0]?.checked)}</td>
+                                        <td class="pdf-checkbox-cell">${checkboxMark(competencies[1]?.checked)}</td>
+                                        <td class="pdf-checkbox-cell">${checkboxMark(competencies[2]?.checked)}</td>
+                                        <td class="pdf-checkbox-cell">${checkboxMark(competencies[3]?.checked)}</td>
+                                        <td class="pdf-checkbox-cell">${checkboxMark(competencies[4]?.checked)}</td>
+                                </tr>`;
+                }).join('');
 
-        // Reference materials and developed by
-        html += `<div style="margin-top:12px;"><table class="pdf-outline-table"><tbody>`;
-        html += `<tr><td class="pdf-section-no">11.11</td><td class="pdf-label-cell"><strong>Core Texts</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.core_texts)).replace(/\n/g,'<br/>')}</td></tr>`;
-        html += `<tr><td class="pdf-section-no"></td><td class="pdf-label-cell"><strong>Additional References</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.additional_references)).replace(/\n/g,'<br/>')}</td></tr>`;
-        html += `<tr><td class="pdf-section-no">&nbsp;</td><td class="pdf-label-cell"><strong>Developed By</strong></td><td class="pdf-value-cell">${escapeHtml(safe(d.developer_name))}<br/>${escapeHtml(safe(d.qualification))}<br/>${escapeHtml(safe(d.designation))}<br/>${escapeHtml(safe(d.email_contact))}</td></tr>`;
-        html += `</tbody></table></div>`;
+                return `
+                        <table class="pdf-section-table pdf-competency-table">
+                                <thead>
+                                        <tr>
+                                                <th style="width:6%;">#</th>
+                                                <th style="width:42%; text-align:left;">Outcome Statement</th>
+                                                <th>Knowledge &amp; understanding</th>
+                                                <th>Practice: Applied Knowledge</th>
+                                                <th>Generic Cognitive Skills</th>
+                                                <th>Communication, ICT &amp; Numeracy Skills</th>
+                                                <th>Autonomy, Accountability &amp; Working with Others</th>
+                                        </tr>
+                                </thead>
+                                <tbody>${rows}</tbody>
+                        </table>`;
+        };
 
-        html += `</div>`;
+        const renderCurricularRows = () => {
+                const rows = (d.curricular_content && d.curricular_content.length) ? d.curricular_content : [{ topic: '', details: '', pedagogy: '', resources: '', credit: '', hours: '', contact: '' }];
+                return rows.map((row, idx) => `
+                        <tr>
+                                <td class="pdf-center-cell">${idx + 1}</td>
+                                <td>${multilineValue(row.topic)}${row.details ? `<div style="margin-top:6px; font-size:9pt; color:#444;">${textToHtml(row.details)}</div>` : ''}</td>
+                                <td>${multilineValue(row.pedagogy)}</td>
+                                <td>${multilineValue(row.resources)}</td>
+                                <td class="pdf-center-cell">${escapeHtml(row.credit)}</td>
+                                <td class="pdf-center-cell">${escapeHtml(row.hours)}</td>
+                                <td class="pdf-center-cell">${escapeHtml(row.contact)}</td>
+                        </tr>`;
+                }).join('');
+        };
+
+        const renderAssessmentRows = () => {
+                const rows = (d.assessments && d.assessments.length) ? d.assessments : [{ title: '', details: '', form: '', length: '', weight: '' }];
+                return rows.map((assessment, idx) => `
+                        <tr>
+                                <td class="pdf-center-cell">${idx + 1}</td>
+                                <td>${multilineValue(assessment.title)}</td>
+                                <td>${multilineValue(assessment.details)}</td>
+                                <td class="pdf-center-cell">${escapeHtml(assessment.form)}</td>
+                                <td class="pdf-center-cell">${escapeHtml(assessment.length)}</td>
+                                <td class="pdf-center-cell">${escapeHtml(assessment.weight)}</td>
+                        </tr>`;
+                }).join('');
+        };
+
+        let html = `
+                <div class="pdf-container">
+                        <div class="pdf-header">
+                                <div class="pdf-document-title">MODULE OUTLINE</div>
+                                <div class="pdf-document-subtitle">Islamic University of Maldives</div>
+                        </div>
+
+                        ${renderSectionHeading('11.1', 'Module Name')}
+                        ${renderNameBlock()}
+                        <table class="pdf-key-table">
+                                <tbody>
+                                        ${renderFieldRow('Module Description', d.module_description)}
+                                </tbody>
+                        </table>
+
+                        ${renderSectionHeading('11.2', 'Module Code')}
+                        <table class="pdf-key-table">
+                                <tbody>
+                                        ${renderFieldRow('Module Code', d.module_code)}
+                                        ${renderFieldRow('Module Level (MNQF)', d.module_level ? `MNQF level: ${escapeHtml(d.module_level)}` : '')}
+                                </tbody>
+                        </table>
+
+                        ${renderSectionHeading('11.3', 'Credit & Hours Distribution')}
+                        <table class="pdf-key-table">
+                                <tbody>
+                                        ${renderFieldRow('Number of Credits', d.contact_credits)}
+                                        ${renderFieldRow('Total Learning Hours', d.contact_total_learning_hours)}
+                                        ${renderFieldRow('Contact Hours', d.contact_hours)}
+                                        ${renderFieldRow('Non-contact Hours', d.non_contact_hours)}
+                                </tbody>
+                        </table>
+
+                        ${renderSectionHeading('11.4', 'Delivery Modality')}
+                        <table class="pdf-key-table">
+                                <tbody>
+                                        ${renderFieldRow('Mode', getDeliveryModesText(d))}
+                                        ${renderFieldRow('Methods of Delivery', d.delivery_methods)}
+                                </tbody>
+                        </table>
+
+                        ${renderSectionHeading('11.5', 'Minimum Qualification')}
+                        <table class="pdf-key-table">
+                                <tbody>
+                                        ${renderFieldRow('Instructor Qualification', d.instructor_qualification)}
+                                </tbody>
+                        </table>
+
+                        ${renderSectionHeading('11.6', 'Prerequisite')}
+                        <table class="pdf-key-table">
+                                <tbody>
+                                        ${renderFieldRow('Prerequisite', d.prerequisite)}
+                                </tbody>
+                        </table>
+
+                        ${renderSectionHeading('11.7', 'Corequisites')}
+                        <table class="pdf-key-table">
+                                <tbody>
+                                        ${renderFieldRow('Corequisites', d.corequisites)}
+                                </tbody>
+                        </table>
+
+                        ${renderSectionHeading('11.8', 'Expected Learning Outcomes')}
+                        ${renderOutcomeTable()}
+
+                        ${renderSectionHeading('11.9', 'Curricular Content')}
+                        <table class="pdf-section-table pdf-curricular-table">
+                                <thead>
+                                        <tr>
+                                                <th>Week</th>
+                                                <th>Main Topic &amp; Details</th>
+                                                <th>Pedagogy</th>
+                                                <th>Resources</th>
+                                                <th>Credit</th>
+                                                <th>Total Learning Hours</th>
+                                                <th>Contact Hours</th>
+                                        </tr>
+                                </thead>
+                                <tbody>${renderCurricularRows()}</tbody>
+                        </table>
+
+                        ${renderSectionHeading('11.10', 'Assessment Methods and Grading')}
+                        <div style="margin-bottom:8px; font-size:10pt; color:#333;">Students must obtain 50% from all controlled assessments to pass. In E-learning and Blended modality all exams are conducted face-to-face under supervision of invigilators.</div>
+                        <table class="pdf-section-table pdf-assessment-table">
+                                <thead>
+                                        <tr>
+                                                <th>#</th>
+                                                <th>Task Title</th>
+                                                <th>Details</th>
+                                                <th>Form</th>
+                                                <th>Length (Words)</th>
+                                                <th>Weight (%)</th>
+                                        </tr>
+                                </thead>
+                                <tbody>${renderAssessmentRows()}</tbody>
+                        </table>
+                        <table class="pdf-key-table" style="margin-top:6px;">
+                                <tbody>
+                                        ${renderFieldRow('Controlled Assessment Weightage', d.assessment_controlled_weight ? `${escapeHtml(d.assessment_controlled_weight)}%` : '')}
+                                        ${renderFieldRow('Uncontrolled Assessment Weightage', d.assessment_uncontrolled_weight ? `${escapeHtml(d.assessment_uncontrolled_weight)}%` : '')}
+                                        ${renderFieldRow('Total Weightage', d.assessment_total_weight ? `${escapeHtml(d.assessment_total_weight)}%` : '')}
+                                </tbody>
+                        </table>
+
+                        ${renderSectionHeading('11.11', 'Reference Materials')}
+                        <table class="pdf-key-table">
+                                <tbody>
+                                        ${renderFieldRow('Core Texts', d.core_texts)}
+                                        ${renderFieldRow('Additional References', d.additional_references)}
+                                </tbody>
+                        </table>
+
+                        <div class="pdf-section-title" style="margin-top:16px;">
+                                <div class="pdf-section-number">-</div>
+                                <div class="pdf-section-heading">Developed By</div>
+                        </div>
+                        <table class="pdf-key-table">
+                                <tbody>
+                                        ${renderFieldRow('Full Name', d.developer_name)}
+                                        ${renderFieldRow('Highest Qualification', d.qualification)}
+                                        ${renderFieldRow('Designation and Office', d.designation)}
+                                        ${renderFieldRow('Email ID', d.email_contact)}
+                                </tbody>
+                        </table>
+                </div>`;
+
         return html;
 }
 
@@ -1099,6 +1285,10 @@ function collectFormData() {
         }
     });
     data.assessments = assessments;
+
+    data.assessment_total_weight = parseFloat(document.getElementById('totalWeight')?.value || 0);
+    data.assessment_controlled_weight = parseFloat(document.getElementById('controlledTotal')?.innerText || 0);
+    data.assessment_uncontrolled_weight = parseFloat(document.getElementById('uncontrolledTotal')?.innerText || 0);
 
     return data;
 }

@@ -1092,6 +1092,132 @@ textarea.auto-resize {
     margin: 0;
     font-size: 11pt;
     line-height: 1.35;
+    box-sizing: border-box;
+}
+
+.pdf-header {
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.pdf-document-title {
+    font-size: 18pt;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.pdf-document-subtitle {
+    font-size: 11pt;
+    margin-top: 4px;
+}
+
+.pdf-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    margin-bottom: 8px;
+}
+
+.pdf-section-number {
+    min-width: 42px;
+    padding: 4px 8px;
+    border: 1px solid #000;
+    background: #d9d9d9;
+    font-weight: 700;
+    text-align: center;
+}
+
+.pdf-section-heading {
+    font-size: 12pt;
+    font-weight: 700;
+}
+
+.pdf-key-table,
+.pdf-section-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    table-layout: fixed;
+}
+
+.pdf-key-table td,
+.pdf-section-table th,
+.pdf-section-table td {
+    border: 1px solid #000;
+    padding: 6px 8px;
+    vertical-align: top;
+    word-break: break-word;
+}
+
+.pdf-key-table .pdf-label-cell {
+    background: #e6e6e6;
+    width: 30%;
+    font-weight: 700;
+}
+
+.pdf-key-table .pdf-value-cell {
+    width: 70%;
+    white-space: pre-wrap;
+}
+
+.pdf-name-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.pdf-name-table td {
+    border: 1px solid #000;
+    padding: 8px 10px;
+    vertical-align: top;
+    word-break: break-word;
+}
+
+.pdf-name-table .pdf-label-cell {
+    background: #e6e6e6;
+    width: 28%;
+    font-weight: 700;
+}
+
+.pdf-value-multiline {
+    white-space: pre-wrap;
+}
+
+.pdf-curricular-table th,
+.pdf-curricular-table td,
+.pdf-assessment-table th,
+.pdf-assessment-table td {
+    padding: 6px 8px;
+    font-size: 10.5pt;
+}
+
+.pdf-curricular-table th,
+.pdf-assessment-table th {
+    background: #d9d9d9;
+    text-align: center;
+}
+
+.pdf-curricular-table td,
+.pdf-assessment-table td {
+    white-space: pre-wrap;
+}
+
+.pdf-checkbox-cell {
+    text-align: center;
+    font-size: 12pt;
+}
+
+.pdf-center-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.pdf-rtl {
+    display: block;
+    direction: rtl;
+    text-align: right;
+    font-family: 'NotoSansThaanaLocal', 'NotoNaskhArabicLocal', 'MV Typewriter', 'Times New Roman', Times, serif;
 }
 
 .pdf-outline-table {
