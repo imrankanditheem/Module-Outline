@@ -993,6 +993,10 @@ function downloadPDF(pdfId) {
     }
 }
 
+// Expose key functions to the global/window scope so inline `onclick` handlers work
+// Some environments wrap scripts; explicit exposure ensures the buttons can call them.
+/* moved global exposures to end of file */
+
 // Function to close modal
 function closeModal() {
     document.getElementById('saveModal').classList.remove('active');
@@ -1867,6 +1871,26 @@ window.addEventListener('DOMContentLoaded', (event) => {
     updateAssessmentCalc();
     loadOutlinesList();
 
+    // Ensure right-side pane buttons work even if inline handlers are unavailable
+    try {
+        const pane = document.querySelector('.pane-buttons');
+        if (pane) {
+            const btnNew = pane.querySelector('.btn-new');
+            const btnSave = pane.querySelector('.btn-save');
+            const btnOutlines = pane.querySelector('.btn-outlines');
+            const btnExport = pane.querySelector('.btn-export');
+            const btnSample = pane.querySelector('.btn-sample');
+
+            if (btnNew) btnNew.addEventListener('click', (e) => { e.preventDefault(); createNewOutline(); });
+            if (btnSave) btnSave.addEventListener('click', (e) => { e.preventDefault(); saveDraft(); });
+            if (btnOutlines) btnOutlines.addEventListener('click', (e) => { e.preventDefault(); showMyOutlines(); });
+            if (btnExport) btnExport.addEventListener('click', (e) => { e.preventDefault(); openExportModal(); });
+            if (btnSample) btnSample.addEventListener('click', (e) => { e.preventDefault(); generateSamplePDF(); });
+        }
+    } catch (err) {
+        console.warn('Pane button wiring failed:', err);
+    }
+
     // Set up form submission
     document.getElementById('moduleForm').addEventListener('submit', function (e) {
         e.preventDefault();
@@ -1919,3 +1943,19 @@ function getSampleData() {
 function generateSamplePDF() {
     exportToPDF('formal_module_outline_sample', getSampleData(), false);
 }
+
+// Expose key functions to the global/window scope so inline `onclick` handlers work
+// Some environments wrap scripts; explicit exposure ensures the buttons can call them.
+/* eslint-disable no-undef */
+window.createNewOutline = createNewOutline;
+window.saveDraft = saveDraft;
+window.showMyOutlines = showMyOutlines;
+window.openExportModal = openExportModal;
+window.generateSamplePDF = generateSamplePDF;
+window.closeModal = closeModal;
+window.confirmExport = confirmExport;
+window.confirmSave = confirmSave;
+window.closeValidationModal = closeValidationModal;
+window.confirmLoad = confirmLoad;
+window.downloadPDF = downloadPDF;
+/* eslint-enable no-undef */
