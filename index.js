@@ -1862,41 +1862,56 @@ function deleteAssessmentRow() {
     }
 }
 
-// Initialize on load
-window.addEventListener('DOMContentLoaded', (event) => {
+function initializePaneButtons() {
+    try {
+        const pane = document.querySelector('.pane-buttons');
+        if (!pane) return;
+
+        const btnNew = pane.querySelector('.btn-new');
+        const btnSave = pane.querySelector('.btn-save');
+        const btnOutlines = pane.querySelector('.btn-outlines');
+        const btnExport = pane.querySelector('.btn-export');
+        const btnSample = pane.querySelector('.btn-sample');
+        const btnPrint = pane.querySelector('.btn-print');
+
+        if (btnNew) btnNew.addEventListener('click', (e) => { e.preventDefault(); createNewOutline(); });
+        if (btnSave) btnSave.addEventListener('click', (e) => { e.preventDefault(); saveDraft(); });
+        if (btnOutlines) btnOutlines.addEventListener('click', (e) => { e.preventDefault(); showMyOutlines(); });
+        if (btnExport) btnExport.addEventListener('click', (e) => { e.preventDefault(); openExportModal(); });
+        if (btnSample) btnSample.addEventListener('click', (e) => { e.preventDefault(); generateSamplePDF(); });
+        if (btnPrint) btnPrint.addEventListener('click', (e) => { e.preventDefault(); printForm(); });
+    } catch (err) {
+        console.warn('Pane button wiring failed:', err);
+    }
+}
+
+function initPage() {
     updateLevelName();
-    if (document.getElementById('creditsInput').value) {
+    if (document.getElementById('creditsInput')?.value) {
         calculateHours();
     }
     updateAssessmentCalc();
     loadOutlinesList();
+    initializePaneButtons();
 
-    // Ensure right-side pane buttons work even if inline handlers are unavailable
-    try {
-        const pane = document.querySelector('.pane-buttons');
-        if (pane) {
-            const btnNew = pane.querySelector('.btn-new');
-            const btnSave = pane.querySelector('.btn-save');
-            const btnOutlines = pane.querySelector('.btn-outlines');
-            const btnExport = pane.querySelector('.btn-export');
-            const btnSample = pane.querySelector('.btn-sample');
-
-            if (btnNew) btnNew.addEventListener('click', (e) => { e.preventDefault(); createNewOutline(); });
-            if (btnSave) btnSave.addEventListener('click', (e) => { e.preventDefault(); saveDraft(); });
-            if (btnOutlines) btnOutlines.addEventListener('click', (e) => { e.preventDefault(); showMyOutlines(); });
-            if (btnExport) btnExport.addEventListener('click', (e) => { e.preventDefault(); openExportModal(); });
-            if (btnSample) btnSample.addEventListener('click', (e) => { e.preventDefault(); generateSamplePDF(); });
-        }
-    } catch (err) {
-        console.warn('Pane button wiring failed:', err);
+    const moduleForm = document.getElementById('moduleForm');
+    if (moduleForm) {
+        moduleForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            saveDraft();
+        });
     }
+}
 
-    // Set up form submission
-    document.getElementById('moduleForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        saveDraft();
-    });
-});
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPage);
+} else {
+    initPage();
+}
+
+function printForm() {
+    window.print();
+}
 
 // Sample PDF generation for testing the export layout.
 function getSampleData() {
