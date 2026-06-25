@@ -1986,6 +1986,10 @@ function printForm() {
     window.print();
 }
 
+function printFullFormPDF() {
+    window.print();
+}
+
 // Sample PDF generation for testing the export layout.
 function getSampleData() {
     return {
@@ -2047,4 +2051,5 @@ window.closeValidationModal = closeValidationModal;
 window.confirmLoad = confirmLoad;
 window.downloadPDF = downloadPDF;
 window.printForm = printForm;
+window.printFullFormPDF = printFullFormPDF;
 /* eslint-enable no-undef */
