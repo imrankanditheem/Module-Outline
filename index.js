@@ -1946,6 +1946,7 @@ function initializePaneButtons() {
         const btnExport = pane.querySelector('.btn-export');
         const btnSample = pane.querySelector('.btn-sample');
         const btnPrint = pane.querySelector('.btn-print');
+        const btnPrintPdf = pane.querySelector('.btn-print-pdf');
 
         if (btnNew) btnNew.addEventListener('click', (e) => { e.preventDefault(); createNewOutline(); });
         if (btnSave) btnSave.addEventListener('click', (e) => { e.preventDefault(); saveDraft(); });
@@ -1953,6 +1954,10 @@ function initializePaneButtons() {
         if (btnExport) btnExport.addEventListener('click', (e) => { e.preventDefault(); openExportModal(); });
         if (btnSample) btnSample.addEventListener('click', (e) => { e.preventDefault(); generateSamplePDF(); });
         if (btnPrint) btnPrint.addEventListener('click', (e) => { e.preventDefault(); printForm(); });
+        if (btnPrintPdf) {
+            btnPrintPdf.dataset.bound = 'true';
+            btnPrintPdf.addEventListener('click', (e) => { e.preventDefault(); printFullFormPDF(); });
+        }
     } catch (err) {
         console.warn('Pane button wiring failed:', err);
     }
@@ -2010,8 +2015,13 @@ function printForm() {
 }
 
 function printFullFormPDF() {
-    syncProgrammePrintText();
-    window.print();
+    try {
+        syncProgrammePrintText();
+        window.print();
+    } catch (err) {
+        console.error('Print Error:', err);
+        showNotification('Unable to open print dialog. Please use your browser print command.', 'error');
+    }
 }
 
 // Sample PDF generation for testing the export layout.
