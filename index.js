@@ -118,6 +118,48 @@ function validateFormBeforeExport() {
     return missingSections;
 }
 
+function getEnteredFormFieldCount() {
+    const form = document.getElementById('moduleForm');
+    if (!form) return 0;
+
+    const fields = form.querySelectorAll('input, textarea, select');
+    let filledCount = 0;
+
+    fields.forEach(field => {
+        if (field.disabled || field.readOnly || field.type === 'hidden') return;
+
+        if (field.type === 'checkbox' || field.type === 'radio') {
+            if (field.checked) filledCount += 1;
+            return;
+        }
+
+        if (field.tagName === 'SELECT') {
+            if (field.dataset.userChanged === 'true') filledCount += 1;
+            return;
+        }
+
+        if (String(field.value || '').trim()) {
+            filledCount += 1;
+        }
+    });
+
+    return filledCount;
+}
+
+function hasEnteredFormData() {
+    return getEnteredFormFieldCount() > 0;
+}
+
+function notifyMissingFormData(actionLabel) {
+    showNotification(`Please fill the form before you ${actionLabel}.`, 'warning');
+}
+
+function notifyMissingRequiredFields(actionLabel, missingSections) {
+    const count = missingSections.length;
+    const sectionText = count === 1 ? 'required section is' : 'required sections are';
+    showNotification(`${count} ${sectionText} missing before you ${actionLabel}.`, 'warning');
+}
+
 // Function to create a new outline
 function createNewOutline() {
     if (confirm('Create a new outline? Any unsaved changes will be lost.')) {
@@ -132,6 +174,11 @@ function createNewOutline() {
 
 // Function to save a draft
 function saveDraft() {
+    if (!hasEnteredFormData()) {
+        notifyMissingFormData('save a draft');
+        return;
+    }
+
     if (currentOutlineId && !isFirstSave) {
         showNotification('Outline Saved', 'success');
         updateExistingOutline();
@@ -151,11 +198,17 @@ function showMyOutlines() {
 
 // Function to open export modal with validation
 function openExportModal() {
+    if (!hasEnteredFormData()) {
+        notifyMissingFormData('export the outline');
+        return;
+    }
+
     // Validate form before showing export modal
     const missingSections = validateFormBeforeExport();
 
     if (missingSections.length > 0) {
         // Show validation warning modal instead of export modal
+        notifyMissingRequiredFields('export the outline', missingSections);
         showValidationWarning(missingSections);
         return;
     }
@@ -1898,6 +1951,12 @@ function initPage() {
 
     const moduleForm = document.getElementById('moduleForm');
     if (moduleForm) {
+        moduleForm.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', function () {
+                this.dataset.userChanged = 'true';
+            });
+        });
+
         moduleForm.addEventListener('submit', function (e) {
             e.preventDefault();
             saveDraft();
@@ -1912,6 +1971,18 @@ if (document.readyState === 'loading') {
 }
 
 function printForm() {
+    if (!hasEnteredFormData()) {
+        notifyMissingFormData('print the form');
+        return;
+    }
+
+    const missingSections = validateFormBeforeExport();
+    if (missingSections.length > 0) {
+        notifyMissingRequiredFields('print the form', missingSections);
+        showValidationWarning(missingSections);
+        return;
+    }
+
     window.print();
 }
 
