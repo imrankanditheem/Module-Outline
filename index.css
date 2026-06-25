@@ -477,10 +477,6 @@ h1 {
     margin-top: 0;
 }
 
-.programme-print-text {
-    display: none;
-}
-
 h2 {
     color: var(--primary-color);
     font-size: 1.2rem;
@@ -992,16 +988,22 @@ textarea.auto-resize {
         text-align: center !important;
     }
 
-    .programme-field label,
-    .programme-field input {
+    .programme-field label {
         display: none !important;
     }
 
-    .programme-print-text {
+    .programme-field input {
         display: block !important;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
         min-height: 12px !important;
         font-size: 11px !important;
         text-align: center !important;
+        font-family: 'Times New Roman', Times, serif !important;
+        color: black !important;
     }
 
     /* Use traditional serif for printed document */

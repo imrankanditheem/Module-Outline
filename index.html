@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <title>Module Outline Form</title>
-    <link rel="stylesheet" href="index.css?v=20260625-print-button-fix">
+    <link rel="stylesheet" href="index.css?v=20260625-programme-input-print">
 </head>
 
 <body>
@@ -20,8 +20,7 @@
                     <p class="subtitle">Islamic University of Maldives</p>
                     <div class="programme-field">
                         <label for="programmeName">Name of Programme:</label>
-                        <input type="text" id="programmeName" name="programme_name" oninput="syncProgrammePrintText()">
-                        <div class="programme-print-text" id="programmePrintText" aria-hidden="true"></div>
+                        <input type="text" id="programmeName" name="programme_name">
                     </div>
                 </div>
 
@@ -428,7 +427,7 @@
                 <span>Print Form</span>
             </button>
             <button type="button" class="pane-btn btn-print-pdf"
-                onclick="if (this.dataset.bound === 'true') return false; try { syncProgrammePrintText(); } catch (error) {} window.print(); return false;">
+                onclick="if (this.dataset.bound === 'true') return false; window.print(); return false;">
                 <i class="fas fa-file-pdf"></i>
                 <span>Print Full Form PDF</span>
             </button>
@@ -510,7 +509,7 @@
         </div>
     </div>
 
-    <script src="index.js?v=20260625-print-button-fix"></script>
+    <script src="index.js?v=20260625-programme-input-print"></script>
 </body>
 
 </html>

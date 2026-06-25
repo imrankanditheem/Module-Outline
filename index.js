@@ -698,7 +698,6 @@ function createModuleOutlinePDF(data) {
 async function exportToPDF(customName, sourceData, saveRecord = true) {
     if (!window.jspdf?.jsPDF) {
         showNotification('PDF tools are unavailable. Opening print dialog instead.', 'warning');
-        syncProgrammePrintText();
         window.print();
         return;
     }
@@ -1519,7 +1518,6 @@ function loadFormData(data) {
         });
     }
 
-    syncProgrammePrintText();
 }
 
 // Function to reset form to initial state
@@ -1596,14 +1594,6 @@ function resetFormToInitialState() {
     document.getElementById('labelUncontrolled').innerText = '';
     document.getElementById('controlledWarning').style.display = 'none';
     document.getElementById('delivery_methods').value = '';
-    syncProgrammePrintText();
-}
-
-function syncProgrammePrintText() {
-    const input = document.getElementById('programmeName');
-    const output = document.getElementById('programmePrintText');
-    if (!input || !output) return;
-    output.textContent = input.value.trim();
 }
 
 // Function to show notification popup
@@ -1971,13 +1961,9 @@ function initPage() {
     updateAssessmentCalc();
     loadOutlinesList();
     initializePaneButtons();
-    syncProgrammePrintText();
-    window.addEventListener('beforeprint', syncProgrammePrintText);
 
     const moduleForm = document.getElementById('moduleForm');
     if (moduleForm) {
-        document.getElementById('programmeName')?.addEventListener('input', syncProgrammePrintText);
-
         moduleForm.querySelectorAll('select').forEach(select => {
             select.addEventListener('change', function () {
                 this.dataset.userChanged = 'true';
@@ -2010,13 +1996,11 @@ function printForm() {
         return;
     }
 
-    syncProgrammePrintText();
     window.print();
 }
 
 function printFullFormPDF() {
     try {
-        syncProgrammePrintText();
         window.print();
     } catch (err) {
         console.error('Print Error:', err);
@@ -2087,5 +2071,4 @@ window.confirmLoad = confirmLoad;
 window.downloadPDF = downloadPDF;
 window.printForm = printForm;
 window.printFullFormPDF = printFullFormPDF;
-window.syncProgrammePrintText = syncProgrammePrintText;
 /* eslint-enable no-undef */
