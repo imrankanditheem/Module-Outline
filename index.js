@@ -1866,6 +1866,8 @@ function initializePaneButtons() {
     try {
         const pane = document.querySelector('.pane-buttons');
         if (!pane) return;
+        if (pane.dataset.bound === 'true') return;
+        pane.dataset.bound = 'true';
 
         const btnNew = pane.querySelector('.btn-new');
         const btnSave = pane.querySelector('.btn-save');
@@ -1973,4 +1975,5 @@ window.confirmSave = confirmSave;
 window.closeValidationModal = closeValidationModal;
 window.confirmLoad = confirmLoad;
 window.downloadPDF = downloadPDF;
+window.printForm = printForm;
 /* eslint-enable no-undef */
