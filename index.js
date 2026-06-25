@@ -692,7 +692,8 @@ function createModuleOutlinePDF(data) {
 
 async function exportToPDF(customName, sourceData, saveRecord = true) {
     if (!window.jspdf?.jsPDF) {
-        showNotification('PDF library is still loading. Please try again in a few seconds.', 'error');
+        showNotification('PDF tools are unavailable. Opening print dialog instead.', 'warning');
+        window.print();
         return;
     }
 

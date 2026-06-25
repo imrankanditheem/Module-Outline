@@ -89,6 +89,30 @@ body {
 
 .pane-btn i {
     font-size: 20px;
+    font-style: normal;
+    min-width: 24px;
+    text-align: center;
+}
+
+.pane-btn .fa-plus-circle::before {
+    content: "+";
+}
+
+.pane-btn .fa-save::before {
+    content: "S";
+}
+
+.pane-btn .fa-list-alt::before {
+    content: "L";
+}
+
+.pane-btn .fa-file-pdf::before {
+    content: "PDF";
+    font-size: 12px;
+}
+
+.pane-btn .fa-print::before {
+    content: "P";
 }
 
 .btn-new {
