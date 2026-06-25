@@ -850,11 +850,19 @@ textarea.auto-resize {
 
 /* Print styles for PDF export */
 @media print {
+    html {
+        width: 174mm !important;
+        overflow: visible !important;
+    }
+
     body {
         background: white !important;
         color: black !important;
         padding: 0 !important;
         margin: 0 !important;
+        width: 174mm !important;
+        min-width: 0 !important;
+        overflow: visible !important;
         font-size: 12px !important;
         line-height: 1.4 !important;
     }
@@ -871,16 +879,35 @@ textarea.auto-resize {
 
     .container {
         box-shadow: none !important;
-        padding: 10px !important;
+        padding: 0 !important;
         margin: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
+        width: 174mm !important;
+        max-width: 174mm !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
     }
 
     .main-container {
+        flex: none !important;
+        width: 174mm !important;
+        max-width: 174mm !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
+    }
+
+    form,
+    .section,
+    .assessment-wrapper,
+    .calc-box,
+    .mnqf-container,
+    .vertical-input-group {
         width: 100% !important;
         max-width: 100% !important;
-        margin: 0 !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
     }
 
     /* Page break control for PDF */
@@ -1002,6 +1029,8 @@ textarea.auto-resize {
         font-size: 11px !important;
         padding: 4px !important;
         margin-top: 2px !important;
+        width: 100% !important;
+        min-width: 0 !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
     }
@@ -1016,6 +1045,8 @@ textarea.auto-resize {
         font-size: 11px !important;
         width: 100% !important;
         max-width: 100% !important;
+        table-layout: fixed !important;
+        box-sizing: border-box !important;
     }
 
     th,
@@ -1024,6 +1055,8 @@ textarea.auto-resize {
         color: black !important;
         padding: 4px !important;
         font-size: 11px !important;
+        min-width: 0 !important;
+        overflow-wrap: anywhere !important;
     }
 
     /* Hide the main title "Module Outline Form" */
@@ -1071,11 +1104,25 @@ textarea.auto-resize {
 
     /* Adjust row spacing */
     .row {
-        gap: 10px !important;
+        display: block !important;
+        gap: 0 !important;
+        width: 100% !important;
     }
 
     .col {
-        min-width: 150px !important;
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        margin-bottom: 8px !important;
+    }
+
+    .equal-row,
+    .equal-col {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
     }
 
     /* Hide contact and non-contact distribution tables */
