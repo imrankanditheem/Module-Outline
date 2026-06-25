@@ -457,7 +457,7 @@ body {
 h1 {
     color: var(--primary-color);
     margin: 0 0 4px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -475,6 +475,10 @@ h1 {
 
 .programme-field label {
     margin-top: 0;
+}
+
+.programme-print-text {
+    display: none;
 }
 
 h2 {
@@ -970,7 +974,7 @@ textarea.auto-resize {
     h1 {
         color: black !important;
         border-bottom: none !important;
-        font-size: 14px !important;
+        font-size: 16px !important;
         margin-bottom: 4px !important;
         padding-bottom: 0 !important;
     }
@@ -982,6 +986,22 @@ textarea.auto-resize {
     .subtitle {
         font-size: 11px !important;
         margin-bottom: 10px !important;
+    }
+
+    .programme-field {
+        text-align: center !important;
+    }
+
+    .programme-field label,
+    .programme-field input {
+        display: none !important;
+    }
+
+    .programme-print-text {
+        display: block !important;
+        min-height: 12px !important;
+        font-size: 11px !important;
+        text-align: center !important;
     }
 
     /* Use traditional serif for printed document */

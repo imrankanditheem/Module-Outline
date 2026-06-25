@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module Outline Form</title>
-    <link rel="stylesheet" href="index.css?v=20260625-programme-header">
+    <link rel="stylesheet" href="index.css?v=20260625-programme-print-text">
 </head>
 
 <body>
@@ -18,7 +18,8 @@
                     <p class="subtitle">Islamic University of Maldives</p>
                     <div class="programme-field">
                         <label for="programmeName">Name of Programme:</label>
-                        <input type="text" id="programmeName" name="programme_name">
+                        <input type="text" id="programmeName" name="programme_name" oninput="syncProgrammePrintText()">
+                        <div class="programme-print-text" id="programmePrintText" aria-hidden="true"></div>
                     </div>
                 </div>
 
@@ -506,7 +507,7 @@
         </div>
     </div>
 
-    <script src="index.js?v=20260625-programme-header"></script>
+    <script src="index.js?v=20260625-programme-print-text"></script>
 </body>
 
 </html>

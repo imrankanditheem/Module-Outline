@@ -1517,6 +1517,8 @@ function loadFormData(data) {
             }
         });
     }
+
+    syncProgrammePrintText();
 }
 
 // Function to reset form to initial state
@@ -1593,6 +1595,14 @@ function resetFormToInitialState() {
     document.getElementById('labelUncontrolled').innerText = '';
     document.getElementById('controlledWarning').style.display = 'none';
     document.getElementById('delivery_methods').value = '';
+    syncProgrammePrintText();
+}
+
+function syncProgrammePrintText() {
+    const input = document.getElementById('programmeName');
+    const output = document.getElementById('programmePrintText');
+    if (!input || !output) return;
+    output.textContent = input.value.trim();
 }
 
 // Function to show notification popup
@@ -1955,6 +1965,7 @@ function initPage() {
     updateAssessmentCalc();
     loadOutlinesList();
     initializePaneButtons();
+    syncProgrammePrintText();
 
     const moduleForm = document.getElementById('moduleForm');
     if (moduleForm) {
@@ -2060,4 +2071,5 @@ window.confirmLoad = confirmLoad;
 window.downloadPDF = downloadPDF;
 window.printForm = printForm;
 window.printFullFormPDF = printFullFormPDF;
+window.syncProgrammePrintText = syncProgrammePrintText;
 /* eslint-enable no-undef */
