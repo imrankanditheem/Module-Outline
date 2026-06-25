@@ -546,16 +546,20 @@ function createModuleOutlinePDF(data) {
 
         doc.setDrawColor(...lineColor);
         doc.setLineWidth(0.35);
-        doc.rect(marginX, y, tableWidth, 28);
+        doc.rect(marginX, y, tableWidth, 34);
 
         doc.setFont('times', 'bold');
-        doc.setFontSize(16);
-        doc.text('MODULE OUTLINE', pageWidth / 2, y + 12.5, { align: 'center' });
+        doc.setFontSize(14);
+        doc.text('Module Outline', pageWidth / 2, y + 10, { align: 'center' });
 
         doc.setFont('times', 'normal');
-        doc.setFontSize(10);
-        doc.text('Islamic University of Maldives', pageWidth / 2, y + 22, { align: 'center' });
-        y += 32;
+        doc.setFontSize(11);
+        doc.text('Islamic University of Maldives', pageWidth / 2, y + 18, { align: 'center' });
+        if (data.programme_name) {
+            doc.setFontSize(10);
+            doc.text(data.programme_name, pageWidth / 2, y + 27, { align: 'center' });
+        }
+        y += 38;
     }
 
     function addFooterToAllPages() {
@@ -571,6 +575,7 @@ function createModuleOutlinePDF(data) {
     data.module_name_en = cleanPDFText(data.module_name_en);
     data.module_name_dhivehi = cleanPDFText(data.module_name_dhivehi);
     data.module_name_arabic = cleanPDFText(data.module_name_arabic);
+    data.programme_name = cleanPDFText(data.programme_name);
 
     function supportsPdfText(value) {
         return /^[\x00-\x7F\n\r\t]*$/.test(value || '');
@@ -903,8 +908,9 @@ function buildPdfTemplateHtml(data) {
         let html = `
                 <div class="pdf-container">
                         <div class="pdf-header">
-                                <div class="pdf-document-title">MODULE OUTLINE</div>
+                                <div class="pdf-document-title">Module Outline</div>
                                 <div class="pdf-document-subtitle">Islamic University of Maldives</div>
+                                <div class="pdf-programme-name">${textToHtml(d.programme_name)}</div>
                         </div>
 
                         ${renderSectionHeading('11.1', 'Module Name')}
@@ -1995,6 +2001,7 @@ function printFullFormPDF() {
 function getSampleData() {
     return {
         module_name_en: 'Introduction to Web Development',
+        programme_name: 'Bachelor of Information Technology',
         module_name_dhivehi: 'ވެބް ޑިވެލޮޕްމެންޓް',
         module_name_arabic: 'مقدمة في تطوير الويب',
         module_description: 'This module introduces learners to the principles and practices of modern web development. It covers semantic HTML, CSS layout, responsive design, basic JavaScript, accessibility, and the development of a standards-compliant web project.',

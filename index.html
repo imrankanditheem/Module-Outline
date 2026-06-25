@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module Outline Form</title>
-    <link rel="stylesheet" href="index.css?v=20260625-print-width">
+    <link rel="stylesheet" href="index.css?v=20260625-programme-header">
 </head>
 
 <body>
@@ -13,9 +13,14 @@
     <div class="main-container">
         <div class="container">
             <form id="moduleForm">
-                <!-- Your existing form content starts here -->
-                <h1>Module Outline Form</h1>
-                <p class="subtitle">Islamic University of Maldives</p>
+                <div class="form-header">
+                    <h1>Module Outline</h1>
+                    <p class="subtitle">Islamic University of Maldives</p>
+                    <div class="programme-field">
+                        <label for="programmeName">Name of Programme:</label>
+                        <input type="text" id="programmeName" name="programme_name">
+                    </div>
+                </div>
 
                 <!-- Section 11.1 Module Name -->
                 <div class="section" id="section11_1">
@@ -501,7 +506,7 @@
         </div>
     </div>
 
-    <script src="index.js?v=20260625-print-width"></script>
+    <script src="index.js?v=20260625-programme-header"></script>
 </body>
 
 </html>

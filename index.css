@@ -35,13 +35,6 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.subtitle {
-    margin: 4px 0 20px;
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;
-}
-
 /* Right side pane */
 .side-pane {
     width: 320px;
@@ -456,14 +449,32 @@ body {
     }
 }
 
-/* Rest of your existing styles */
-h1 {
+.form-header {
     text-align: center;
+    margin-bottom: 22px;
+}
+
+h1 {
     color: var(--primary-color);
-    border-bottom: 3px solid var(--primary-color);
-    padding-bottom: 10px;
-    margin-bottom: 30px;
-    font-size: 1.8rem;
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.subtitle {
+    margin: 0 0 14px;
+    font-size: 11px;
+    color: #333;
+    font-weight: 500;
+    text-align: center;
+}
+
+.programme-field {
+    text-align: left;
+}
+
+.programme-field label {
+    margin-top: 0;
 }
 
 h2 {
@@ -958,10 +969,19 @@ textarea.auto-resize {
     /* Style for headers */
     h1 {
         color: black !important;
-        border-bottom: 1px solid #000 !important;
-        font-size: 18px !important;
-        margin-bottom: 15px !important;
-        padding-bottom: 5px !important;
+        border-bottom: none !important;
+        font-size: 14px !important;
+        margin-bottom: 4px !important;
+        padding-bottom: 0 !important;
+    }
+
+    .form-header {
+        margin-bottom: 12px !important;
+    }
+
+    .subtitle {
+        font-size: 11px !important;
+        margin-bottom: 10px !important;
     }
 
     /* Use traditional serif for printed document */
@@ -1057,11 +1077,6 @@ textarea.auto-resize {
         font-size: 11px !important;
         min-width: 0 !important;
         overflow-wrap: anywhere !important;
-    }
-
-    /* Hide the main title "Module Outline Form" */
-    h1:first-of-type {
-        display: none !important;
     }
 
     /* Page break before section 11.9 */
@@ -1177,14 +1192,19 @@ textarea.auto-resize {
 }
 
 .pdf-document-title {
-    font-size: 18pt;
+    font-size: 14pt;
     font-weight: 700;
-    letter-spacing: 0.05em;
 }
 
 .pdf-document-subtitle {
     font-size: 11pt;
     margin-top: 4px;
+}
+
+.pdf-programme-name {
+    font-size: 10pt;
+    margin-top: 5px;
+    min-height: 12pt;
 }
 
 .pdf-section-title {
