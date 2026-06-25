@@ -1191,16 +1191,21 @@ textarea.auto-resize {
     }
 
     #section11_1 .module-name-row {
-        display: block !important;
-        gap: 0 !important;
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 8mm !important;
     }
 
     #section11_1 .module-name-row label {
+        font-family: Georgia, 'Times New Roman', Times, serif !important;
         font-size: 14px !important;
+        font-weight: 700 !important;
+        margin-bottom: 5px !important;
     }
 
     #section11_1 .module-name-row textarea {
         min-height: 28px !important;
+        border: 1px solid #111 !important;
         border-radius: 4px !important;
     }
 
@@ -1342,10 +1347,19 @@ textarea.auto-resize {
     word-break: break-word;
 }
 
-.pdf-name-table .pdf-label-cell {
-    background: #e6e6e6;
-    width: 28%;
+.pdf-name-table .pdf-name-field {
+    width: 33.333%;
+    border-bottom: none;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 12pt;
     font-weight: 700;
+    line-height: 1.1;
+}
+
+.pdf-name-table .pdf-name-value {
+    height: 26px;
+    border-top: none;
+    white-space: pre-wrap;
 }
 
 .pdf-value-multiline {

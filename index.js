@@ -829,16 +829,14 @@ function buildPdfTemplateHtml(data) {
                 <table class="pdf-name-table">
                         <tbody>
                                 <tr>
-                                        <td class="pdf-label-cell"><strong>English Name</strong></td>
-                                        <td class="pdf-value-cell">${multilineValue(d.module_name_en)}</td>
+                                        <td class="pdf-name-field"><strong>English Name:</strong></td>
+                                        <td class="pdf-name-field"><strong>Dhivehi Name:</strong></td>
+                                        <td class="pdf-name-field"><strong>Arabic Name:</strong></td>
                                 </tr>
                                 <tr>
-                                        <td class="pdf-label-cell"><strong>Dhivehi Name</strong></td>
-                                        <td class="pdf-value-cell pdf-rtl" dir="rtl">${textToHtml(d.module_name_dhivehi) || '&nbsp;'}</td>
-                                </tr>
-                                <tr>
-                                        <td class="pdf-label-cell"><strong>Arabic Name</strong></td>
-                                        <td class="pdf-value-cell pdf-rtl" dir="rtl">${textToHtml(d.module_name_arabic) || '&nbsp;'}</td>
+                                        <td class="pdf-name-value">${multilineValue(d.module_name_en)}</td>
+                                        <td class="pdf-name-value pdf-rtl" dir="rtl">${textToHtml(d.module_name_dhivehi) || '&nbsp;'}</td>
+                                        <td class="pdf-name-value pdf-rtl" dir="rtl">${textToHtml(d.module_name_arabic) || '&nbsp;'}</td>
                                 </tr>
                         </tbody>
                 </table>`;
