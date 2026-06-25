@@ -2059,7 +2059,7 @@ function getSampleData() {
             { title: 'Learning Portfolio', details: 'Short reflective portfolio documenting weekly practical work and improvements.', form: 'Uncontrolled', length: 'Portfolio', weight: '20' }
         ],
         core_texts: 'Duckett, J. (2011). HTML and CSS: Design and Build Websites. Wiley.\nDuckett, J. (2014). JavaScript and JQuery: Interactive Front-End Web Development. Wiley.',
-        additional_references: 'MDN Web Docs. https://developer.mozilla.org/\nW3C Web Accessibility Initiative. https://www.w3.org/WAI/',
+        additional_references: 'MDN Web Docs\nW3C Web Accessibility Initiative',
         developer_name: 'John Doe',
         qualification: 'MSc Computer Science',
         designation: 'Lecturer, Department of Computing',
