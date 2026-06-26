@@ -1700,17 +1700,32 @@ function updateDeliveryMethods() {
 // --- 11.3 Calculation Logic ---
 function calculateHours() {
     const creditsInput = document.getElementById('creditsInput');
+    const totalLearningHoursInput = document.getElementById('totalLearningHours');
+    const maxContactHoursInput = document.getElementById('maxContactHours');
+    const maxNonContactHoursInput = document.getElementById('maxNonContactHours');
+    if (!creditsInput || !totalLearningHoursInput || !maxContactHoursInput || !maxNonContactHoursInput) return;
+
     const credits = parseFloat(creditsInput.value) || 0;
     const totalHours = Math.round(credits * 10);
-    document.getElementById('totalLearningHours').value = totalHours;
+    totalLearningHoursInput.value = totalHours;
 
     const contactHours = Math.ceil(totalHours / 3);
-    document.getElementById('maxContactHours').value = contactHours;
+    maxContactHoursInput.value = contactHours;
 
     const nonContactHours = Math.max(totalHours - contactHours, 0);
-    document.getElementById('maxNonContactHours').value = nonContactHours;
+    maxNonContactHoursInput.value = nonContactHours;
 
     calculateWeeklyDistribution();
+}
+
+function initializeCreditHoursCalculation() {
+    const creditsInput = document.getElementById('creditsInput');
+    if (!creditsInput || creditsInput.dataset.bound === 'true') return;
+
+    creditsInput.dataset.bound = 'true';
+    ['input', 'keyup', 'change'].forEach(eventName => {
+        creditsInput.addEventListener(eventName, calculateHours);
+    });
 }
 
 // --- 11.8 Learning Outcomes Logic ---
@@ -1953,6 +1968,7 @@ function initializePaneButtons() {
 
 function initPage() {
     updateLevelName();
+    initializeCreditHoursCalculation();
     if (document.getElementById('creditsInput')?.value) {
         calculateHours();
     }
@@ -2069,4 +2085,5 @@ window.confirmLoad = confirmLoad;
 window.downloadPDF = downloadPDF;
 window.printForm = printForm;
 window.printFullFormPDF = printFullFormPDF;
+window.calculateHours = calculateHours;
 /* eslint-enable no-undef */
