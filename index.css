@@ -577,11 +577,22 @@ select {
 
 #section11_3 .credit-hours-layout {
     justify-content: space-between;
-    gap: 26px;
+    flex-wrap: nowrap;
+    gap: 14px;
+}
+
+#section11_3 .compact-field {
+    gap: 8px;
+    flex: 0 1 auto;
+}
+
+#section11_3 .compact-field label {
+    font-size: 1.1rem;
 }
 
 #section11_3 .compact-field input[type=number] {
-    width: 72px;
+    width: 62px;
+    height: 36px;
 }
 
 #section11_1 .module-name-row {
