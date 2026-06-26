@@ -530,6 +530,60 @@ select {
     min-width: 250px;
 }
 
+#section11_2,
+#section11_3 {
+    border-bottom: 2px solid #111;
+    padding-bottom: 26px;
+}
+
+.compact-field-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 28px;
+}
+
+.compact-field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.compact-field label {
+    margin-top: 0;
+    color: #333;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.compact-field input[type=text],
+.compact-field input[type=number] {
+    width: 100px;
+    height: 40px;
+    margin-top: 0;
+    padding: 6px 8px;
+    border: 1px solid #111;
+    border-radius: 7px;
+    background: #fff;
+}
+
+#section11_2 .module-code-layout {
+    max-width: 650px;
+}
+
+#section11_3 .credit-hours-layout {
+    justify-content: space-between;
+    gap: 26px;
+}
+
+#section11_3 .compact-field input[type=number] {
+    width: 72px;
+}
+
 #section11_1 .module-name-row {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1188,6 +1242,53 @@ textarea.auto-resize {
         min-width: 0 !important;
         max-width: 100% !important;
         margin-bottom: 8px !important;
+    }
+
+    #section11_2,
+    #section11_3 {
+        border-bottom: 1px solid #111 !important;
+        padding-bottom: 12px !important;
+    }
+
+    #section11_2 .compact-field-row,
+    #section11_3 .compact-field-row {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+
+    #section11_2 .compact-field,
+    #section11_3 .compact-field {
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        min-width: 0 !important;
+    }
+
+    #section11_2 .compact-field label,
+    #section11_3 .compact-field label {
+        margin-top: 0 !important;
+        font-family: Georgia, 'Times New Roman', Times, serif !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+    }
+
+    #section11_2 .compact-field input,
+    #section11_3 .compact-field input {
+        width: 34px !important;
+        height: 20px !important;
+        padding: 2px 3px !important;
+        margin-top: 0 !important;
+        border: 1px solid #111 !important;
+        border-radius: 4px !important;
+    }
+
+    #section11_2 .mnqf-label {
+        display: none !important;
     }
 
     #section11_1 .module-name-row {

@@ -56,13 +56,13 @@
                 <!-- Section 11.2 Module Code -->
                 <div class="section" id="section11_2">
                     <h2>11.2 Module Code</h2>
-                    <div class="row">
-                        <div class="col">
+                    <div class="compact-field-row module-code-layout">
+                        <div class="compact-field">
                             <label>Module Code:</label>
                             <input type="text" name="module_code">
                         </div>
-                        <div class="col">
-                            <label>Module Level (MNQF):</label>
+                        <div class="compact-field">
+                            <label>MNQF Level</label>
                             <div class="mnqf-container">
                                 <input type="number" id="mnqfInput" name="module_level" min="1" max="10" placeholder="#"
                                     oninput="updateLevelName()">
@@ -75,36 +75,28 @@
                 <!-- Section 11.3 Credit & Hours Distribution -->
                 <div class="section" id="section11_3">
                     <h2>11.3 Credit & Hours Distribution</h2>
-                    <div class="equal-row">
-                        <div class="equal-col">
-                            <div class="calc-box">
-                                <div>
-                                    <label style="margin-top:0;">Number of Credits:</label>
-                                    <input type="number" id="creditsInput" name="contact_credits" placeholder="e.g. 15"
-                                        style="background: #fff;" oninput="calculateHours()" onkeyup="calculateHours()"
-                                        onchange="calculateHours()">
-                                </div>
+                    <div class="compact-field-row credit-hours-layout">
+                        <div class="compact-field">
+                            <label>Credit:</label>
+                            <input type="number" id="creditsInput" name="contact_credits" placeholder="e.g. 15"
+                                oninput="calculateHours()" onkeyup="calculateHours()" onchange="calculateHours()">
+                        </div>
 
-                                <hr style="border: 0; border-top: 1px solid #b8daff; margin: 15px 0;">
+                        <div class="compact-field">
+                            <label>Total Learning Hours:</label>
+                            <input type="number" id="totalLearningHours" name="contact_total_learning_hours"
+                                class="calc-input" readonly>
+                        </div>
 
-                                <div>
-                                    <label>Total Learning Hours</label>
-                                    <input type="number" id="totalLearningHours" name="contact_total_learning_hours"
-                                        class="calc-input" readonly>
-                                </div>
+                        <div class="compact-field">
+                            <label>Contact Hours:</label>
+                            <input type="number" id="maxContactHours" name="contact_hours" class="calc-input" readonly>
+                        </div>
 
-                                <div>
-                                    <label>Contact Hours</label>
-                                    <input type="number" id="maxContactHours" name="contact_hours" class="calc-input"
-                                        readonly>
-                                </div>
-
-                                <div>
-                                    <label>Non-contact Hours</label>
-                                    <input type="number" id="maxNonContactHours" name="non_contact_hours"
-                                        class="calc-input" readonly>
-                                </div>
-                            </div>
+                        <div class="compact-field">
+                            <label>Non-contact Hours</label>
+                            <input type="number" id="maxNonContactHours" name="non_contact_hours" class="calc-input"
+                                readonly>
                         </div>
                     </div>
                 </div>
