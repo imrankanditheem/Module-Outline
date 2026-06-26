@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <title>Module Outline Form</title>
-    <link rel="stylesheet" href="index.css?v=20260626-credit-inline-calc">
+    <link rel="stylesheet" href="index.css?v=20260626-credit-direct-calc">
 </head>
 
 <body>
@@ -79,8 +79,9 @@
                         <div class="compact-field">
                             <label>Credit:</label>
                             <input type="number" id="creditsInput" name="contact_credits" placeholder="e.g. 15"
-                                oninput="calculateHoursInline(this)" onkeyup="calculateHoursInline(this)"
-                                onchange="calculateHoursInline(this)">
+                                oninput="const c=parseFloat(this.value)||0,t=Math.round(c*10),h=Math.ceil(t/3);document.getElementById('totalLearningHours').value=t;document.getElementById('maxContactHours').value=h;document.getElementById('maxNonContactHours').value=Math.max(t-h,0);if(window.calculateHours){calculateHours();}"
+                                onkeyup="this.dispatchEvent(new Event('input', { bubbles: true }))"
+                                onchange="this.dispatchEvent(new Event('input', { bubbles: true }))">
                         </div>
 
                         <div class="compact-field">
@@ -502,7 +503,7 @@
         </div>
     </div>
 
-    <script src="index.js?v=20260626-credit-inline-calc"></script>
+    <script src="index.js?v=20260626-credit-direct-calc"></script>
 </body>
 
 </html>
