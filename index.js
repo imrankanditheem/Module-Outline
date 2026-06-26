@@ -1698,14 +1698,13 @@ function updateDeliveryMethods() {
 }
 
 // --- 11.3 Calculation Logic ---
-function calculateHours() {
-    const creditsInput = document.getElementById('creditsInput');
+function setCreditHourFields(creditValue) {
     const totalLearningHoursInput = document.getElementById('totalLearningHours');
     const maxContactHoursInput = document.getElementById('maxContactHours');
     const maxNonContactHoursInput = document.getElementById('maxNonContactHours');
-    if (!creditsInput || !totalLearningHoursInput || !maxContactHoursInput || !maxNonContactHoursInput) return;
+    if (!totalLearningHoursInput || !maxContactHoursInput || !maxNonContactHoursInput) return;
 
-    const credits = parseFloat(creditsInput.value) || 0;
+    const credits = parseFloat(creditValue) || 0;
     const totalHours = Math.round(credits * 10);
     totalLearningHoursInput.value = totalHours;
 
@@ -1714,9 +1713,23 @@ function calculateHours() {
 
     const nonContactHours = Math.max(totalHours - contactHours, 0);
     maxNonContactHoursInput.value = nonContactHours;
+}
 
+function calculateHours() {
+    const creditsInput = document.getElementById('creditsInput');
+    if (!creditsInput) return;
+
+    setCreditHourFields(creditsInput.value);
     calculateWeeklyDistribution();
 }
+
+function calculateHoursInline(input) {
+    setCreditHourFields(input?.value);
+    calculateWeeklyDistribution();
+}
+
+window.calculateHours = calculateHours;
+window.calculateHoursInline = calculateHoursInline;
 
 function initializeCreditHoursCalculation() {
     const creditsInput = document.getElementById('creditsInput');
@@ -1727,6 +1740,18 @@ function initializeCreditHoursCalculation() {
         creditsInput.addEventListener(eventName, calculateHours);
     });
 }
+
+document.addEventListener('input', function (event) {
+    if (event.target?.id === 'creditsInput') {
+        calculateHoursInline(event.target);
+    }
+});
+
+document.addEventListener('change', function (event) {
+    if (event.target?.id === 'creditsInput') {
+        calculateHoursInline(event.target);
+    }
+});
 
 // --- 11.8 Learning Outcomes Logic ---
 function addOutcome() {
@@ -2086,4 +2111,5 @@ window.downloadPDF = downloadPDF;
 window.printForm = printForm;
 window.printFullFormPDF = printFullFormPDF;
 window.calculateHours = calculateHours;
+window.calculateHoursInline = calculateHoursInline;
 /* eslint-enable no-undef */
