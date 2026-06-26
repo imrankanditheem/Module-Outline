@@ -1704,10 +1704,10 @@ function calculateHours() {
     const totalHours = Math.round(credits * 10);
     document.getElementById('totalLearningHours').value = totalHours;
 
-    const contactHours = Math.floor(totalHours / 3);
+    const contactHours = Math.ceil(totalHours / 3);
     document.getElementById('maxContactHours').value = contactHours;
 
-    const nonContactHours = totalHours - contactHours;
+    const nonContactHours = Math.max(totalHours - contactHours, 0);
     document.getElementById('maxNonContactHours').value = nonContactHours;
 
     calculateWeeklyDistribution();
