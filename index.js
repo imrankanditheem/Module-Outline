@@ -885,8 +885,7 @@ function buildPdfTemplateHtml(data) {
                                 <td class="pdf-center-cell">${escapeHtml(row.credit)}</td>
                                 <td class="pdf-center-cell">${escapeHtml(row.hours)}</td>
                                 <td class="pdf-center-cell">${escapeHtml(row.contact)}</td>
-                        </tr>`;
-                }).join('');
+                        </tr>`).join('');
         };
 
         const renderAssessmentRows = () => {
@@ -899,8 +898,7 @@ function buildPdfTemplateHtml(data) {
                                 <td class="pdf-center-cell">${escapeHtml(assessment.form)}</td>
                                 <td class="pdf-center-cell">${escapeHtml(assessment.length)}</td>
                                 <td class="pdf-center-cell">${escapeHtml(assessment.weight)}</td>
-                        </tr>`;
-                }).join('');
+                        </tr>`).join('');
         };
 
         let html = `
