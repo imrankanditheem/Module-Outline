@@ -1654,6 +1654,11 @@ const mnqfLevels = {
 };
 
 const minimumQualificationForLowerLevels = 'Diploma in a relevant field.';
+const minimumQualificationForMiddleLevels = "Bachelor's Degree in a relevant field.";
+const automaticMinimumQualifications = [
+    minimumQualificationForLowerLevels,
+    minimumQualificationForMiddleLevels
+];
 
 function updateLevelName() {
     const input = document.getElementById('mnqfInput');
@@ -1674,7 +1679,9 @@ function updateLevelName() {
 
     if (level >= 1 && level <= 4) {
         minimumQualificationInput.value = minimumQualificationForLowerLevels;
-    } else if (minimumQualificationInput.value === minimumQualificationForLowerLevels) {
+    } else if (level >= 5 && level <= 6) {
+        minimumQualificationInput.value = minimumQualificationForMiddleLevels;
+    } else if (automaticMinimumQualifications.includes(minimumQualificationInput.value)) {
         minimumQualificationInput.value = '';
     }
 }
