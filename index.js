@@ -1681,20 +1681,34 @@ const deliveryTexts = {
 };
 
 function updateDeliveryMethods() {
-    const selectedModes = [];
-    document.querySelectorAll('input[name="delivery_mode"]:checked').forEach(cb => {
-        selectedModes.push(cb.value);
-    });
+    const deliverySection = document.getElementById('section11_4');
+    const textArea = document.getElementById('delivery_methods');
+    if (!deliverySection || !textArea) return;
 
-    let combinedText = selectedModes
+    const selectedModes = Array.from(
+        deliverySection.querySelectorAll('input[name="delivery_mode"]:checked'),
+        checkbox => checkbox.value
+    );
+    const combinedText = selectedModes
         .map(mode => deliveryTexts[mode])
+        .filter(Boolean)
         .join("\n\n");
 
-    const textArea = document.getElementById('delivery_methods');
     textArea.value = combinedText;
-
     textArea.style.height = 'auto';
     textArea.style.height = textArea.scrollHeight + 'px';
+}
+
+function initializeDeliveryModality() {
+    const deliverySection = document.getElementById('section11_4');
+    if (!deliverySection || deliverySection.dataset.bound === 'true') return;
+
+    deliverySection.dataset.bound = 'true';
+    deliverySection.querySelectorAll('input[name="delivery_mode"]').forEach(checkbox => {
+        checkbox.addEventListener('change', updateDeliveryMethods);
+    });
+
+    updateDeliveryMethods();
 }
 
 // --- 11.3 Calculation Logic ---
@@ -1993,6 +2007,7 @@ function initializePaneButtons() {
 
 function initPage() {
     updateLevelName();
+    initializeDeliveryModality();
     initializeCreditHoursCalculation();
     if (document.getElementById('creditsInput')?.value) {
         calculateHours();
@@ -2110,6 +2125,7 @@ window.confirmLoad = confirmLoad;
 window.downloadPDF = downloadPDF;
 window.printForm = printForm;
 window.printFullFormPDF = printFullFormPDF;
+window.updateDeliveryMethods = updateDeliveryMethods;
 window.calculateHours = calculateHours;
 window.calculateHoursInline = calculateHoursInline;
 /* eslint-enable no-undef */
