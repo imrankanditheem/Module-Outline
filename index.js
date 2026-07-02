@@ -1655,9 +1655,13 @@ const mnqfLevels = {
 
 const minimumQualificationForLowerLevels = 'Diploma in a relevant field.';
 const minimumQualificationForMiddleLevels = "Bachelor's Degree in a relevant field.";
+const minimumQualificationForAdvancedLevels = "Master's Degree in a relevant field.";
+const minimumQualificationForHighestLevels = 'PhD in a relevant field.';
 const automaticMinimumQualifications = [
     minimumQualificationForLowerLevels,
-    minimumQualificationForMiddleLevels
+    minimumQualificationForMiddleLevels,
+    minimumQualificationForAdvancedLevels,
+    minimumQualificationForHighestLevels
 ];
 
 function updateLevelName() {
@@ -1681,6 +1685,10 @@ function updateLevelName() {
         minimumQualificationInput.value = minimumQualificationForLowerLevels;
     } else if (level >= 5 && level <= 6) {
         minimumQualificationInput.value = minimumQualificationForMiddleLevels;
+    } else if (level >= 7 && level <= 8) {
+        minimumQualificationInput.value = minimumQualificationForAdvancedLevels;
+    } else if (level >= 9 && level <= 10) {
+        minimumQualificationInput.value = minimumQualificationForHighestLevels;
     } else if (automaticMinimumQualifications.includes(minimumQualificationInput.value)) {
         minimumQualificationInput.value = '';
     }
