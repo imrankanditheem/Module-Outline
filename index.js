@@ -1680,18 +1680,27 @@ const deliveryTexts = {
     elearning: `E-learning in college is delivered entirely online, allowing students to participate in their coursework without needing to attend physical classes. In this modality, two-thirds of the contact hours are conducted through synchronous (real-time) virtual sessions using Google Meet or similar video-conferencing tools, enabling direct interaction between students and lecturers. The remaining one-third of the learning takes place asynchronously through structured online activities, digital resources, and self-paced study.`
 };
 
+const deliveryModeOrder = ['f2f', 'blended', 'elearning'];
+const deliveryModeLabels = {
+    f2f: 'Face to Face',
+    blended: 'Blended',
+    elearning: 'E-Learning'
+};
+
 function updateDeliveryMethods() {
     const deliverySection = document.getElementById('section11_4');
     const textArea = document.getElementById('delivery_methods');
     if (!deliverySection || !textArea) return;
 
-    const selectedModes = Array.from(
-        deliverySection.querySelectorAll('input[name="delivery_mode"]:checked'),
-        checkbox => checkbox.value
+    const selectedModes = new Set(
+        Array.from(
+            deliverySection.querySelectorAll('input[name="delivery_mode"]:checked'),
+            checkbox => checkbox.value
+        )
     );
-    const combinedText = selectedModes
-        .map(mode => deliveryTexts[mode])
-        .filter(Boolean)
+    const combinedText = deliveryModeOrder
+        .filter(mode => selectedModes.has(mode))
+        .map(mode => `${deliveryModeLabels[mode]}:\n${deliveryTexts[mode]}`)
         .join("\n\n");
 
     textArea.value = combinedText;
