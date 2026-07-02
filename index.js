@@ -1653,10 +1653,14 @@ const mnqfLevels = {
     10: "Doctoral Degree"
 };
 
+const minimumQualificationForLowerLevels = 'Diploma in a relevant field.';
+
 function updateLevelName() {
     const input = document.getElementById('mnqfInput');
     const label = document.getElementById('mnqfLabel');
-    if (!input || !label) return;
+    const minimumQualificationInput = document.getElementById('minimumQualificationInput');
+    if (!input || !label || !minimumQualificationInput) return;
+
     const level = parseInt(input.value);
     if (mnqfLevels[level]) {
         label.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- " + mnqfLevels[level];
@@ -1666,6 +1670,12 @@ function updateLevelName() {
     } else {
         label.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Invalid Level)";
         label.style.color = "red";
+    }
+
+    if (level >= 1 && level <= 4) {
+        minimumQualificationInput.value = minimumQualificationForLowerLevels;
+    } else if (minimumQualificationInput.value === minimumQualificationForLowerLevels) {
+        minimumQualificationInput.value = '';
     }
 }
 
