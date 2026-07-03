@@ -1521,7 +1521,12 @@ function loadFormData(data) {
         });
     }
 
-    calculateWeeklyDistribution();
+    const creditsInput = document.getElementById('creditsInput');
+    if (creditsInput?.value) {
+        calculateHours();
+    } else {
+        calculateWeeklyDistribution();
+    }
 }
 
 // Function to reset form to initial state
@@ -1703,7 +1708,12 @@ function updateLevelName() {
         minimumQualificationInput.value = '';
     }
 
-    calculateWeeklyDistribution();
+    const creditsInput = document.getElementById('creditsInput');
+    if (creditsInput?.value) {
+        calculateHours();
+    } else {
+        calculateWeeklyDistribution();
+    }
 }
 
 // --- Delivery Methods Logic ---
@@ -1766,7 +1776,9 @@ function setCreditHourFields(creditValue) {
     const totalHours = Math.round(credits * 10);
     totalLearningHoursInput.value = totalHours;
 
-    const contactHours = Math.ceil(totalHours / 3);
+    const moduleLevel = parseInt(document.getElementById('mnqfInput')?.value, 10);
+    const contactRatio = moduleLevel >= 1 && moduleLevel <= 3 ? 0.5 : 1 / 3;
+    const contactHours = Math.ceil(totalHours * contactRatio);
     maxContactHoursInput.value = contactHours;
 
     const nonContactHours = Math.max(totalHours - contactHours, 0);
@@ -2130,8 +2142,8 @@ function getSampleData() {
         module_level: '3',
         contact_credits: '10',
         contact_total_learning_hours: '100',
-        contact_hours: '33',
-        non_contact_hours: '67',
+        contact_hours: '50',
+        non_contact_hours: '50',
         delivery_modes: ['f2f', 'blended'],
         delivery_methods: 'Lectures, guided laboratory sessions, supervised practical work, online learning activities, and independent project development.',
         instructor_qualification: 'Bachelor degree or higher qualification in Computing, Information Technology, Software Engineering, or a closely related field.',
