@@ -609,8 +609,7 @@ function createModuleOutlinePDF(data) {
         item.resources || '',
         item.credit || '',
         item.hours || '',
-        item.contact || '',
-        item.non_contact || ''
+        item.contact || ''
     ]);
     const assessmentRows = (data.assessments || []).map((assessment, index) => [
         String(index + 1),
@@ -657,9 +656,9 @@ function createModuleOutlinePDF(data) {
     drawNestedTableRow(
         '11.9',
         'Curricular Content',
-        ['Week', 'Main Topic & Details', 'Pedagogy', 'Resources', 'Credit', 'TLH', 'Contact', 'Non-contact'],
+        ['Week', 'Main Topic & Details', 'Pedagogy', 'Resources', 'Credit', 'TLH', 'Contact'],
         curricularRows,
-        [7, 31, 14, 14, 8, 8, 9, 9]
+        [8, 36, 16, 16, 9, 10, 11]
     );
     drawSectionHeader('11.10 Assessment Methods and Grading');
     drawNestedTableRow(
@@ -876,7 +875,7 @@ function buildPdfTemplateHtml(data) {
         };
 
         const renderCurricularRows = () => {
-                const rows = (d.curricular_content && d.curricular_content.length) ? d.curricular_content : [{ topic: '', details: '', pedagogy: '', resources: '', credit: '', hours: '', contact: '', non_contact: '' }];
+                const rows = (d.curricular_content && d.curricular_content.length) ? d.curricular_content : [{ topic: '', details: '', pedagogy: '', resources: '', credit: '', hours: '', contact: '' }];
                 return rows.map((row, idx) => `
                         <tr>
                                 <td class="pdf-center-cell">${idx + 1}</td>
@@ -886,7 +885,6 @@ function buildPdfTemplateHtml(data) {
                                 <td class="pdf-center-cell">${escapeHtml(row.credit)}</td>
                                 <td class="pdf-center-cell">${escapeHtml(row.hours)}</td>
                                 <td class="pdf-center-cell">${escapeHtml(row.contact)}</td>
-                                <td class="pdf-center-cell">${escapeHtml(row.non_contact)}</td>
                         </tr>`).join('');
         };
 
@@ -980,7 +978,6 @@ function buildPdfTemplateHtml(data) {
                                                 <th>Credit</th>
                                                 <th>Total Learning Hours</th>
                                                 <th>Contact Hours</th>
-                                                <th>Non-contact Hours</th>
                                         </tr>
                                 </thead>
                                 <tbody>${renderCurricularRows()}</tbody>
@@ -1312,9 +1309,8 @@ function collectFormData() {
         const credit = row.querySelector('input[name^="credit"]')?.value || '';
         const hours = row.querySelector('input[name^="hours"]')?.value || '';
         const contact = row.querySelector('input[name^="contact"]')?.value || '';
-        const nonContact = row.querySelector('.curr-non-contact-field')?.value || '';
 
-        if (topic || details || pedagogy || resources || credit || hours || contact || nonContact) {
+        if (topic || details || pedagogy || resources || credit || hours || contact) {
             curricularContent.push({
                 week,
                 topic,
@@ -1323,8 +1319,7 @@ function collectFormData() {
                 resources,
                 credit,
                 hours,
-                contact,
-                non_contact: nonContact
+                contact
             });
         }
     });
@@ -1450,7 +1445,6 @@ function loadFormData(data) {
                 <td><input type="text" name="credit1" class="curr-credit-field" readonly style="background-color:#fff; text-align:center; min-width:40px;"></td>
                 <td><input type="number" name="hours1" class="curr-hours-field" readonly></td>
                 <td><input type="number" name="contact1" class="curr-contact-field" readonly></td>
-                <td><input type="number" name="non_contact1" class="curr-non-contact-field" readonly></td>
               </tr>
             `;
             } else {
@@ -1473,7 +1467,6 @@ function loadFormData(data) {
               <td><input type="text" name="credit${index + 1}" class="curr-credit-field" readonly style="background-color:#fff; text-align:center; min-width:40px;"></td>
               <td><input type="number" name="hours${index + 1}" class="curr-hours-field" readonly></td>
               <td><input type="number" name="contact${index + 1}" class="curr-contact-field" readonly></td>
-              <td><input type="number" name="non_contact${index + 1}" class="curr-non-contact-field" readonly></td>
             `;
                 curricularBody.appendChild(newRow);
             }
@@ -1568,7 +1561,6 @@ function resetFormToInitialState() {
           <td><input type="text" name="credit1" class="curr-credit-field" readonly style="background-color:#fff; text-align:center; min-width:40px;"></td>
           <td><input type="number" name="hours1" class="curr-hours-field" readonly></td>
           <td><input type="number" name="contact1" class="curr-contact-field" readonly></td>
-          <td><input type="number" name="non_contact1" class="curr-non-contact-field" readonly></td>
         </tr>
       `;
 
@@ -1595,7 +1587,6 @@ function resetFormToInitialState() {
     document.getElementById('totalCreditsFooter').innerText = '0';
     document.getElementById('totalHoursFooter').innerText = '0';
     document.getElementById('totalContactFooter').innerText = '0';
-    document.getElementById('totalNonContactFooter').innerText = '0';
     document.getElementById('totalWeight').value = '';
     document.getElementById('controlledTotal').innerText = '0';
     document.getElementById('uncontrolledTotal').innerText = '0';
@@ -1858,17 +1849,14 @@ function calculateWeeklyDistribution() {
     const weeklyContact = Number.isInteger(moduleLevel)
         ? Math.ceil(weeklyLearning * (moduleLevel <= 3 ? 0.5 : 1 / 3))
         : Math.ceil(totalContact / 15);
-    const weeklyNonContact = Math.max(weeklyLearning - weeklyContact, 0);
 
     const rows = document.querySelectorAll('#curricularBody tr');
     let sumLearning = 0;
     let sumContact = 0;
-    let sumNonContact = 0;
 
     rows.forEach(row => {
         const hoursInput = row.querySelector('.curr-hours-field');
         const contactInput = row.querySelector('.curr-contact-field');
-        const nonContactInput = row.querySelector('.curr-non-contact-field');
         const creditInput = row.querySelector('.curr-credit-field');
 
         if (hoursInput) {
@@ -1879,10 +1867,6 @@ function calculateWeeklyDistribution() {
             contactInput.value = weeklyContact;
             sumContact += weeklyContact;
         }
-        if (nonContactInput) {
-            nonContactInput.value = weeklyNonContact;
-            sumNonContact += weeklyNonContact;
-        }
         if (creditInput) {
             creditInput.value = "";
         }
@@ -1890,7 +1874,6 @@ function calculateWeeklyDistribution() {
 
     document.getElementById('totalHoursFooter').innerText = sumLearning;
     document.getElementById('totalContactFooter').innerText = sumContact;
-    document.getElementById('totalNonContactFooter').innerText = sumNonContact;
 
     const creditSource = document.getElementById('creditsInput');
     const creditTarget = document.getElementById('totalCreditsFooter');
@@ -1911,8 +1894,7 @@ function addWeek() {
     const inputs = newRow.querySelectorAll('input, textarea');
     inputs.forEach(input => {
         if (!input.classList.contains('curr-hours-field') &&
-            !input.classList.contains('curr-contact-field') &&
-            !input.classList.contains('curr-non-contact-field')) {
+            !input.classList.contains('curr-contact-field')) {
             input.value = '';
         }
         let namePart = input.name.replace(/\d+$/, '');
@@ -2155,9 +2137,9 @@ function getSampleData() {
             { number: '3', text: 'Develop a small interactive website using HTML, CSS, and JavaScript.', competencies: [{ checked: false }, { checked: true }, { checked: true }, { checked: true }, { checked: true }] }
         ],
         curricular_content: [
-            { week: '1', topic: 'HTML Foundations', details: 'Document structure, headings, lists, links, images, forms, and semantic elements.', pedagogy: 'Lecture and lab', resources: 'Slides, code examples, browser developer tools', credit: '1', hours: '10', contact: '5', non_contact: '5' },
-            { week: '2', topic: 'CSS Styling and Layout', details: 'Selectors, cascade, box model, Flexbox, Grid, responsive breakpoints, and print-friendly styling.', pedagogy: 'Demonstration and practical', resources: 'CSS reference material and lab sheet', credit: '1', hours: '10', contact: '5', non_contact: '5' },
-            { week: '3', topic: 'JavaScript Interaction', details: 'DOM selection, events, form validation, and basic interface behaviour.', pedagogy: 'Workshop', resources: 'Sample scripts and exercises', credit: '1', hours: '10', contact: '5', non_contact: '5' }
+            { week: '1', topic: 'HTML Foundations', details: 'Document structure, headings, lists, links, images, forms, and semantic elements.', pedagogy: 'Lecture and lab', resources: 'Slides, code examples, browser developer tools', credit: '1', hours: '10', contact: '5' },
+            { week: '2', topic: 'CSS Styling and Layout', details: 'Selectors, cascade, box model, Flexbox, Grid, responsive breakpoints, and print-friendly styling.', pedagogy: 'Demonstration and practical', resources: 'CSS reference material and lab sheet', credit: '1', hours: '10', contact: '5' },
+            { week: '3', topic: 'JavaScript Interaction', details: 'DOM selection, events, form validation, and basic interface behaviour.', pedagogy: 'Workshop', resources: 'Sample scripts and exercises', credit: '1', hours: '10', contact: '5' }
         ],
         assessments: [
             { title: 'Practical Website Project', details: 'Design and develop a responsive multi-page website that meets the provided technical and accessibility requirements.', form: 'Controlled', length: 'Project submission', weight: '60' },
