@@ -861,13 +861,13 @@ function buildPdfTemplateHtml(data) {
                         <table class="pdf-section-table pdf-competency-table">
                                 <thead>
                                         <tr>
-                                                <th style="width:6%;">#</th>
-                                                <th style="width:42%; text-align:left;">Outcome Statement</th>
-                                                <th>Knowledge &amp; understanding</th>
-                                                <th>Practice: Applied Knowledge</th>
-                                                <th>Generic Cognitive Skills</th>
-                                                <th>Communication, ICT &amp; Numeracy Skills</th>
-                                                <th>Autonomy, Accountability &amp; Working with Others</th>
+                                                <th class="pdf-row-number-header">#</th>
+                                                <th class="pdf-outcome-statement-header">Outcome Statement</th>
+                                                <th class="pdf-competency-header"><span class="pdf-vertical-label">Knowledge &amp;<br>understanding</span></th>
+                                                <th class="pdf-competency-header"><span class="pdf-vertical-label">Practice: Applied<br>Knowledge and Understanding</span></th>
+                                                <th class="pdf-competency-header"><span class="pdf-vertical-label">Generic Cognitive<br>Skills</span></th>
+                                                <th class="pdf-competency-header"><span class="pdf-vertical-label">Communication, ICT<br>and Numeracy Skills</span></th>
+                                                <th class="pdf-competency-header"><span class="pdf-vertical-label">Autonomy, Accountability<br>and Working with Others</span></th>
                                         </tr>
                                 </thead>
                                 <tbody>${rows}</tbody>
@@ -975,7 +975,7 @@ function buildPdfTemplateHtml(data) {
                                                 <th>Main Topic &amp; Details</th>
                                                 <th>Pedagogy</th>
                                                 <th>Resources</th>
-                                                <th>Credit</th>
+                                                <th class="pdf-curricular-credit-header"><span>Credit</span></th>
                                                 <th>Total Learning Hours</th>
                                                 <th>Contact Hours</th>
                                         </tr>
