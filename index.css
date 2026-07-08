@@ -1177,6 +1177,8 @@ textarea.auto-resize {
         background: white !important;
         box-shadow: none !important;
         outline: none !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
         color: black !important;
         font-size: 11px !important;
         padding: 4px !important;
@@ -1190,6 +1192,37 @@ textarea.auto-resize {
     input[readonly],
     textarea[readonly] {
         background: transparent !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: transparent !important;
+        opacity: 0 !important;
+    }
+
+    input[type="number"] {
+        -webkit-appearance: none !important;
+        -moz-appearance: textfield !important;
+        appearance: none !important;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        margin: 0 !important;
+    }
+
+    textarea {
+        resize: none !important;
+        overflow: hidden !important;
+    }
+
+    textarea::-webkit-resizer {
+        display: none !important;
+        background: transparent !important;
+        width: 0 !important;
+        height: 0 !important;
     }
 
     table {
@@ -1305,6 +1338,43 @@ textarea.auto-resize {
         margin-top: 0 !important;
         border: none !important;
         border-radius: 0 !important;
+    }
+
+    #section11_2 #mnqfInput {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+    }
+
+    #section11_2 .mnqf-container {
+        display: inline-flex !important;
+        align-items: center !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin-top: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    #section11_2 .mnqf-container #mnqfInput {
+        display: none !important;
+    }
+
+    #section11_2 .mnqf-print-value {
+        display: inline !important;
+        min-width: 0 !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        color: #000 !important;
+        font-family: 'Times New Roman', Times, serif !important;
+        font-size: 11px !important;
+        font-weight: 400 !important;
     }
 
     #section11_2 .mnqf-label {
@@ -1745,4 +1815,8 @@ textarea.auto-resize {
 .pdf-footer {
     position: absolute;
     bottom: 0;
+}
+
+.mnqf-print-value {
+    display: none;
 }

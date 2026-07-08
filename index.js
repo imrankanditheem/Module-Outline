@@ -1705,6 +1705,16 @@ function updateLevelName() {
     } else {
         calculateWeeklyDistribution();
     }
+
+    syncMnqfPrintValue();
+}
+
+function syncMnqfPrintValue() {
+    const input = document.getElementById('mnqfInput');
+    const printValue = document.getElementById('mnqfPrintValue');
+    if (input && printValue) {
+        printValue.textContent = input.value || '';
+    }
 }
 
 // --- Delivery Methods Logic ---
@@ -2116,6 +2126,11 @@ function initPage() {
             e.preventDefault();
             saveDraft();
         });
+    }
+
+    if (!window.__mnqfPrintSyncBound) {
+        window.addEventListener('beforeprint', syncMnqfPrintValue);
+        window.__mnqfPrintSyncBound = true;
     }
 }
 
