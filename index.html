@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <title>Module Outline Form</title>
-    <link rel="stylesheet" href="index.css?v=20260708-pdf-resizer-cleanup">
+    <link rel="stylesheet" href="index.css?v=20260712-week-count-distribution">
 </head>
 
 <body>
@@ -241,7 +241,7 @@
                         </tbody>
                         <tfoot>
                             <tr class="total-row">
-                                <td colspan="4" style="text-align:right;">TOTAL (Sum of 15 Weeks)</td>
+                                <td colspan="4" style="text-align:right;">TOTAL (Sum of Weeks)</td>
                                 <td id="totalCreditsFooter" style="text-align:center; font-weight:bold;">0</td>
                                 <td id="totalHoursFooter">0</td>
                                 <td id="totalContactFooter">0</td>
@@ -250,6 +250,9 @@
                     </table>
 
                     <div style="margin-top: 15px;">
+                        <div id="weekRequirementWarning" class="week-requirement-warning" role="alert">
+                            15 Weeks are Required
+                        </div>
                         <button id="addWeekBtn" type="button" onclick="addWeek()"
                             style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
                             + Add More Week
@@ -504,7 +507,7 @@
         </div>
     </div>
 
-    <script src="index.js?v=20260708-pdf-resizer-cleanup"></script>
+    <script src="index.js?v=20260712-week-count-distribution"></script>
 </body>
 
 </html>

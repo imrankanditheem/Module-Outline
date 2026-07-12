@@ -1596,6 +1596,7 @@ function resetFormToInitialState() {
     document.getElementById('labelUncontrolled').innerText = '';
     document.getElementById('controlledWarning').style.display = 'none';
     document.getElementById('delivery_methods').value = '';
+    updateWeekRequirementNotice();
 }
 
 // Function to show notification popup
@@ -1863,20 +1864,48 @@ function setCurricularContactFooterState(currentTotal, requiredTotal) {
     }
 }
 
-function reduceContactHoursToRequiredTotal(contactValues, requiredTotal) {
-    let excess = contactValues.reduce((sum, value) => sum + value, 0) - requiredTotal;
-    if (excess <= 0) return contactValues;
+function reduceHoursToRequiredTotal(values, requiredTotal) {
+    let excess = values.reduce((sum, value) => sum + value, 0) - requiredTotal;
+    if (excess <= 0) return values;
 
-    while (excess > 0 && contactValues.some(value => value > 0)) {
-        for (let index = contactValues.length - 1; index >= 0 && excess > 0; index--) {
-            if (contactValues[index] > 0) {
-                contactValues[index] -= 1;
+    while (excess > 0 && values.some(value => value > 0)) {
+        for (let index = values.length - 1; index >= 0 && excess > 0; index--) {
+            if (values[index] > 0) {
+                values[index] -= 1;
                 excess -= 1;
             }
         }
     }
 
-    return contactValues;
+    return values;
+}
+
+function distributeHoursAcrossWeeks(totalValue, weekCount) {
+    const total = Math.max(Math.round(parseFloat(totalValue) || 0), 0);
+    if (!weekCount) return [];
+
+    const weeklyValue = Math.ceil(total / weekCount);
+    return reduceHoursToRequiredTotal(
+        Array.from({ length: weekCount }, () => weeklyValue),
+        total
+    );
+}
+
+function updateWeekRequirementNotice(rowCount = document.querySelectorAll('#curricularBody tr').length) {
+    const warning = document.getElementById('weekRequirementWarning');
+    const addWeekBtn = document.getElementById('addWeekBtn');
+    const moduleLevel = parseInt(document.getElementById('mnqfInput')?.value, 10);
+    const requiresFifteenWeeks = Number.isInteger(moduleLevel) && moduleLevel >= 3;
+    const hasRequiredWeeks = rowCount >= 15;
+
+    if (warning) {
+        warning.classList.toggle('is-visible', requiresFifteenWeeks && !hasRequiredWeeks);
+    }
+
+    if (addWeekBtn) {
+        addWeekBtn.disabled = requiresFifteenWeeks && hasRequiredWeeks;
+        addWeekBtn.setAttribute('aria-disabled', String(addWeekBtn.disabled));
+    }
 }
 
 function calculateWeeklyDistribution() {
@@ -1886,18 +1915,9 @@ function calculateWeeklyDistribution() {
 
     const totalLearning = parseFloat(tlhInput.value) || 0;
     const totalContact = parseFloat(mchInput.value) || 0;
-    const moduleLevel = parseInt(document.getElementById('mnqfInput')?.value, 10);
-
-    const weeklyLearning = Math.ceil(totalLearning / 15);
-    const weeklyContact = Number.isInteger(moduleLevel)
-        ? Math.ceil(weeklyLearning * (moduleLevel <= 3 ? 0.5 : 1 / 3))
-        : Math.ceil(totalContact / 15);
-
     const rows = Array.from(document.querySelectorAll('#curricularBody tr'));
-    const contactValues = reduceContactHoursToRequiredTotal(
-        rows.map(() => weeklyContact),
-        totalContact
-    );
+    const learningValues = distributeHoursAcrossWeeks(totalLearning, rows.length);
+    const contactValues = distributeHoursAcrossWeeks(totalContact, rows.length);
     let sumLearning = 0;
     let sumContact = 0;
 
@@ -1907,8 +1927,9 @@ function calculateWeeklyDistribution() {
         const creditInput = row.querySelector('.curr-credit-field');
 
         if (hoursInput) {
-            hoursInput.value = weeklyLearning;
-            sumLearning += weeklyLearning;
+            const learningHours = learningValues[index] || 0;
+            hoursInput.value = learningHours;
+            sumLearning += learningHours;
         }
         if (contactInput) {
             const contactHours = contactValues[index] || 0;
@@ -1928,10 +1949,15 @@ function calculateWeeklyDistribution() {
     if (creditSource && creditTarget) {
         creditTarget.innerText = creditSource.value || "0";
     }
+
+    updateWeekRequirementNotice(rows.length);
 }
 
 function addWeek() {
     const tableBody = document.getElementById('curricularBody');
+    const addWeekBtn = document.getElementById('addWeekBtn');
+    if (addWeekBtn?.disabled) return;
+
     const rowCount = tableBody.rows.length + 1;
     const firstRow = tableBody.rows[0];
     const newRow = firstRow.cloneNode(true);
@@ -1961,6 +1987,7 @@ function deleteWeek() {
         calculateWeeklyDistribution();
     } else {
         alert("Cannot delete Week 1. At least one week is required.");
+        updateWeekRequirementNotice(rowCount);
     }
 }
 
