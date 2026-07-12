@@ -888,6 +888,19 @@ function buildPdfTemplateHtml(data) {
                         </tr>`).join('');
         };
 
+        const renderCurricularTotalRow = () => {
+                const rows = (d.curricular_content && d.curricular_content.length) ? d.curricular_content : [];
+                const totalHours = rows.reduce((sum, row) => sum + (parseFloat(row.hours) || 0), 0);
+                const totalContact = rows.reduce((sum, row) => sum + (parseFloat(row.contact) || 0), 0);
+                return `
+                        <tr class="pdf-curricular-total-row">
+                                <td colspan="4" style="text-align:right;">TOTAL (Sum of 15 Weeks)</td>
+                                <td class="pdf-center-cell">${escapeHtml(d.contact_credits)}</td>
+                                <td class="pdf-center-cell">${totalHours || ''}</td>
+                                <td class="pdf-center-cell">${totalContact || ''}</td>
+                        </tr>`;
+        };
+
         const renderAssessmentRows = () => {
                 const rows = (d.assessments && d.assessments.length) ? d.assessments : [{ title: '', details: '', form: '', length: '', weight: '' }];
                 return rows.map((assessment, idx) => `
@@ -980,7 +993,7 @@ function buildPdfTemplateHtml(data) {
                                                 <th>Contact Hours</th>
                                         </tr>
                                 </thead>
-                                <tbody>${renderCurricularRows()}</tbody>
+                                <tbody>${renderCurricularRows()}${renderCurricularTotalRow()}</tbody>
                         </table>
 
                         ${renderSectionHeading('11.10', 'Assessment Methods and Grading')}

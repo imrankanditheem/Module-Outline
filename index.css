@@ -1431,6 +1431,25 @@ textarea.auto-resize {
         width: 5% !important;
     }
 
+    #section11_9 #curricularTable tfoot {
+        display: table-row-group !important;
+    }
+
+    #section11_9 #curricularTable tfoot tr {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    #section11_9 #curricularTable tfoot .total-row td:first-child {
+        font-size: 0 !important;
+    }
+
+    #section11_9 #curricularTable tfoot .total-row td:first-child::before {
+        content: "TOTAL (Sum of 15 Weeks)";
+        font-size: 11px !important;
+        font-weight: 700 !important;
+    }
+
     .equal-row,
     .equal-col {
         display: block !important;
@@ -1798,6 +1817,11 @@ textarea.auto-resize {
     transform: rotate(180deg);
     line-height: 1;
     white-space: nowrap;
+}
+
+.pdf-curricular-total-row td {
+    font-weight: 700;
+    background: #fff;
 }
 
 .pdf-assessment-table th:nth-child(2),
