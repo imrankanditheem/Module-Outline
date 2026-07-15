@@ -1315,7 +1315,7 @@ textarea.auto-resize {
 
     #section11_2,
     #section11_3 {
-        border-bottom: 1px solid #111 !important;
+        border-bottom: none !important;
         padding-bottom: 12px !important;
     }
 
