@@ -1432,14 +1432,14 @@ textarea.auto-resize {
     }
 
     #section11_9 #curricularTable {
-        border: 1px solid #d9d9d9 !important;
+        border: 0.5px solid #666666 !important;
         border-collapse: collapse !important;
         border-spacing: 0 !important;
     }
 
     #section11_9 #curricularTable th,
     #section11_9 #curricularTable td {
-        border: 1px solid #d9d9d9 !important;
+        border: 0.5px solid #666666 !important;
     }
 
     #section11_9 #curricularTable tfoot {
@@ -1633,14 +1633,14 @@ textarea.auto-resize {
 }
 
 .pdf-curricular-table {
-    border: 1px solid #d9d9d9;
+    border: 0.5px solid #666666;
     border-collapse: collapse;
     border-spacing: 0;
 }
 
 .pdf-curricular-table th,
 .pdf-curricular-table td {
-    border: 1px solid #d9d9d9;
+    border: 0.5px solid #666666;
 }
 
 .pdf-curricular-table th,
