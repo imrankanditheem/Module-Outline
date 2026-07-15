@@ -1431,6 +1431,17 @@ textarea.auto-resize {
         width: 5% !important;
     }
 
+    #section11_9 #curricularTable {
+        border: 1px solid #d9d9d9 !important;
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+    }
+
+    #section11_9 #curricularTable th,
+    #section11_9 #curricularTable td {
+        border: 1px solid #d9d9d9 !important;
+    }
+
     #section11_9 #curricularTable tfoot {
         display: table-row-group !important;
     }
@@ -1619,6 +1630,17 @@ textarea.auto-resize {
 .pdf-assessment-table td {
     padding: 4px 5px;
     font-size: 9.5pt;
+}
+
+.pdf-curricular-table {
+    border: 1px solid #d9d9d9;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.pdf-curricular-table th,
+.pdf-curricular-table td {
+    border: 1px solid #d9d9d9;
 }
 
 .pdf-curricular-table th,
