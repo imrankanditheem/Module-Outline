@@ -62,12 +62,12 @@ body {
 .pane-buttons {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    margin-bottom: 30px;
+    gap: 14px;
+    margin-bottom: 18px;
 }
 
 .pane-btn {
-    padding: 12px 18px;
+    padding: 10px 16px;
     border: none;
     border-radius: 8px;
     font-weight: 600;
@@ -75,16 +75,16 @@ body {
     transition: all 0.3s;
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 15px;
+    gap: 9px;
+    font-size: 14px;
     line-height: 1.2;
-    height: 48px;
+    height: 42px;
 }
 
 .pane-btn i {
-    font-size: 18px;
+    font-size: 16px;
     font-style: normal;
-    min-width: 22px;
+    min-width: 20px;
     text-align: center;
 }
 
@@ -102,7 +102,7 @@ body {
 
 .pane-btn .fa-file-pdf::before {
     content: "PDF";
-    font-size: 11px;
+    font-size: 10px;
 }
 
 .pane-btn .fa-print::before {
@@ -141,11 +141,12 @@ body {
 }
 
 .outlines-preview {
-    flex: 1;
+    flex: 0 1 auto;
+    max-height: 260px;
     overflow-y: auto;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    padding: 15px;
+    padding: 12px;
     display: none;
     background: #fafafa;
 }
