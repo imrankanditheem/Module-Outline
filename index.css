@@ -1340,7 +1340,7 @@ textarea.auto-resize {
     #section11_2 .compact-field label,
     #section11_3 .compact-field label {
         margin-top: 0 !important;
-        font-family: Georgia, 'Times New Roman', Times, serif !important;
+        font-family: 'Times New Roman', Times, serif !important;
         font-size: 10px !important;
         font-weight: 700 !important;
         white-space: nowrap !important;
@@ -1404,7 +1404,7 @@ textarea.auto-resize {
     }
 
     #section11_1 .module-name-row label {
-        font-family: Georgia, 'Times New Roman', Times, serif !important;
+        font-family: 'Times New Roman', Times, serif !important;
         font-size: 14px !important;
         font-weight: 700 !important;
         margin-bottom: 5px !important;
@@ -1474,6 +1474,18 @@ textarea.auto-resize {
         content: "TOTAL (Sum of 15 Weeks)";
         font-size: 11px !important;
         font-weight: 700 !important;
+    }
+
+    body,
+    body * {
+        font-family: 'Times New Roman', Times, serif !important;
+    }
+
+    [dir="rtl"],
+    [dir="rtl"] *,
+    .pdf-rtl,
+    .pdf-rtl * {
+        font-family: 'NotoSansThaanaLocal', 'NotoNaskhArabicLocal', 'MV Typewriter', 'Times New Roman', Times, serif !important;
     }
 
     .equal-row,
@@ -1624,7 +1636,7 @@ textarea.auto-resize {
 
 .pdf-name-table .pdf-name-field {
     width: 33.333%;
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family: 'Times New Roman', Times, serif;
     font-size: 11pt;
     font-weight: 700;
     line-height: 1.1;
@@ -1896,4 +1908,14 @@ textarea.auto-resize {
 
 .mnqf-print-value {
     display: none;
+}
+
+.pdf-document,
+.pdf-document * {
+    font-family: 'Times New Roman', Times, serif !important;
+}
+
+.pdf-document .pdf-rtl,
+.pdf-document .pdf-rtl * {
+    font-family: 'NotoSansThaanaLocal', 'NotoNaskhArabicLocal', 'MV Typewriter', 'Times New Roman', Times, serif !important;
 }
