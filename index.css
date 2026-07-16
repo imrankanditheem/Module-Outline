@@ -1423,12 +1423,27 @@ textarea.auto-resize {
     }
 
     #section11_9 #curricularTable th:nth-child(5) {
-        writing-mode: vertical-rl !important;
-        transform: rotate(180deg) !important;
-        text-align: left !important;
-        vertical-align: bottom !important;
+        position: relative !important;
+        writing-mode: horizontal-tb !important;
+        transform: none !important;
+        color: transparent !important;
+        font-size: 0 !important;
+        line-height: 1 !important;
+        text-align: center !important;
+        vertical-align: middle !important;
         white-space: nowrap !important;
         width: 5% !important;
+    }
+
+    #section11_9 #curricularTable th:nth-child(5)::before {
+        content: "Credit";
+        color: #000 !important;
+        display: inline-block !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+        writing-mode: vertical-rl !important;
+        transform: rotate(180deg) !important;
     }
 
     #section11_9 #curricularTable {
