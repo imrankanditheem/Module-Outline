@@ -1242,7 +1242,7 @@ textarea.auto-resize {
     }
 
     table {
-        border: 1px solid #ddd !important;
+        border: 0.5px solid #d9d9d9 !important;
         font-size: 11px !important;
         width: 100% !important;
         max-width: 100% !important;
@@ -1252,7 +1252,7 @@ textarea.auto-resize {
 
     th,
     td {
-        border: 1px solid #ddd !important;
+        border: 0.5px solid #d9d9d9 !important;
         color: black !important;
         padding: 4px !important;
         font-size: 11px !important;
@@ -1432,14 +1432,14 @@ textarea.auto-resize {
     }
 
     #section11_9 #curricularTable {
-        border: 0.5px solid #666666 !important;
+        border: 0.5px solid #d9d9d9 !important;
         border-collapse: collapse !important;
         border-spacing: 0 !important;
     }
 
     #section11_9 #curricularTable th,
     #section11_9 #curricularTable td {
-        border: 0.5px solid #666666 !important;
+        border: 0.5px solid #d9d9d9 !important;
     }
 
     #section11_9 #curricularTable tfoot {
@@ -1568,7 +1568,7 @@ textarea.auto-resize {
 
 .pdf-section-table th,
 .pdf-section-table td {
-    border: 1px solid #000;
+    border: 0.5px solid #d9d9d9;
     padding: 4px 5px;
     vertical-align: top;
     word-break: break-word;
@@ -1633,14 +1633,14 @@ textarea.auto-resize {
 }
 
 .pdf-curricular-table {
-    border: 0.5px solid #666666;
+    border: 0.5px solid #d9d9d9;
     border-collapse: collapse;
     border-spacing: 0;
 }
 
 .pdf-curricular-table th,
 .pdf-curricular-table td {
-    border: 0.5px solid #666666;
+    border: 0.5px solid #d9d9d9;
 }
 
 .pdf-curricular-table th,
@@ -1692,7 +1692,7 @@ textarea.auto-resize {
 }
 
 .pdf-outline-table>tbody>tr>td {
-    border: 1px solid #000;
+    border: 0.5px solid #d9d9d9;
     padding: 5px 6px;
     vertical-align: top;
     overflow-wrap: break-word;
@@ -1735,7 +1735,7 @@ textarea.auto-resize {
 
 .pdf-inner-table th,
 .pdf-inner-table td {
-    border: 1px solid #000;
+    border: 0.5px solid #d9d9d9;
     padding: 3px 4px;
     vertical-align: top;
     overflow-wrap: break-word;
