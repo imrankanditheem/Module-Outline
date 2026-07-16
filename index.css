@@ -67,7 +67,7 @@ body {
 }
 
 .pane-btn {
-    padding: 16px 20px;
+    padding: 12px 18px;
     border: none;
     border-radius: 8px;
     font-weight: 600;
@@ -75,15 +75,16 @@ body {
     transition: all 0.3s;
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 16px;
-    height: 56px;
+    gap: 10px;
+    font-size: 15px;
+    line-height: 1.2;
+    height: 48px;
 }
 
 .pane-btn i {
-    font-size: 20px;
+    font-size: 18px;
     font-style: normal;
-    min-width: 24px;
+    min-width: 22px;
     text-align: center;
 }
 
@@ -101,7 +102,7 @@ body {
 
 .pane-btn .fa-file-pdf::before {
     content: "PDF";
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .pane-btn .fa-print::before {
