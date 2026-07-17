@@ -992,6 +992,56 @@ textarea.auto-resize {
     color: white;
 }
 
+.grading-criteria-wrapper {
+    margin-top: 18px;
+    overflow-x: auto;
+}
+
+.grading-criteria-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.grading-criteria-table th,
+.grading-criteria-table td {
+    vertical-align: top;
+}
+
+.grading-criteria-title-cell {
+    font-weight: 700;
+    width: 14%;
+}
+
+.grading-criteria-table th:nth-child(2),
+.grading-criteria-table td:nth-child(2) {
+    width: 18%;
+}
+
+.grading-criteria-table th:nth-child(3),
+.grading-criteria-table td:nth-child(3) {
+    width: 28%;
+}
+
+.grading-criteria-table th:nth-child(4),
+.grading-criteria-table td:nth-child(4) {
+    width: 18%;
+}
+
+.grading-criteria-table th:nth-child(5),
+.grading-criteria-table td:nth-child(5) {
+    width: 10%;
+}
+
+.grading-criteria-table th:nth-child(6),
+.grading-criteria-table td:nth-child(6) {
+    width: 12%;
+}
+
+.grading-criteria-table .arabic-cell {
+    direction: rtl;
+    text-align: right;
+}
+
 @media screen {
     body {
         align-items: flex-start;
@@ -2241,7 +2291,9 @@ textarea.auto-resize {
 .pdf-curricular-table th,
 .pdf-curricular-table td,
 .pdf-assessment-table th,
-.pdf-assessment-table td {
+.pdf-assessment-table td,
+.pdf-grading-criteria-table th,
+.pdf-grading-criteria-table td {
     padding: 4px 5px;
     font-size: 9.5pt;
 }
@@ -2258,14 +2310,61 @@ textarea.auto-resize {
 }
 
 .pdf-curricular-table th,
-.pdf-assessment-table th {
+.pdf-assessment-table th,
+.pdf-grading-criteria-table th {
     background: #d9d9d9;
     text-align: center;
 }
 
 .pdf-curricular-table td,
-.pdf-assessment-table td {
+.pdf-assessment-table td,
+.pdf-grading-criteria-table td {
     white-space: pre-wrap;
+}
+
+.pdf-grading-criteria-table {
+    margin-top: 6px;
+}
+
+.pdf-grading-criteria-table th,
+.pdf-grading-criteria-table td {
+    vertical-align: top;
+}
+
+.pdf-grading-title-cell {
+    width: 14%;
+    font-weight: 700;
+}
+
+.pdf-grading-criteria-table th:nth-child(2),
+.pdf-grading-criteria-table td:nth-child(2) {
+    width: 18%;
+}
+
+.pdf-grading-criteria-table th:nth-child(3),
+.pdf-grading-criteria-table td:nth-child(3) {
+    width: 28%;
+}
+
+.pdf-grading-criteria-table th:nth-child(4),
+.pdf-grading-criteria-table td:nth-child(4) {
+    width: 18%;
+}
+
+.pdf-grading-criteria-table th:nth-child(5),
+.pdf-grading-criteria-table td:nth-child(5) {
+    width: 10%;
+}
+
+.pdf-grading-criteria-table th:nth-child(6),
+.pdf-grading-criteria-table td:nth-child(6) {
+    width: 12%;
+}
+
+.pdf-grading-arabic {
+    direction: rtl;
+    font-family: 'NotoNaskhArabicLocal', 'Times New Roman', Times, serif;
+    text-align: right;
 }
 
 .pdf-checkbox-cell {

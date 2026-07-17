@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <title>Module Outline Form</title>
-    <link rel="stylesheet" href="index.css?v=20260717-screen-design-refresh">
+    <link rel="stylesheet" href="index.css?v=20260717-grading-criteria">
 </head>
 
 <body>
@@ -352,6 +352,63 @@
                             <button type="button" class="btn btn-red" onclick="deleteAssessmentRow()">Delete
                                 Task</button>
                         </div>
+
+                        <div class="grading-criteria-wrapper">
+                            <table id="gradingCriteriaTable" class="grading-criteria-table">
+                                <tbody>
+                                    <tr>
+                                        <td class="grading-criteria-title-cell" rowspan="7">Grading<br>Criteria</td>
+                                        <th>SCORE</th>
+                                        <th>DESCRIPTION</th>
+                                        <th class="arabic-cell" dir="rtl" lang="ar">التفصيل</th>
+                                        <th>GPA</th>
+                                        <th>GRADE</th>
+                                    </tr>
+                                    <tr>
+                                        <td>85-100</td>
+                                        <td>High Distinction</td>
+                                        <td class="arabic-cell" dir="rtl" lang="ar">ممتاز</td>
+                                        <td>4.0</td>
+                                        <td>HD</td>
+                                    </tr>
+                                    <tr>
+                                        <td>75-84</td>
+                                        <td>Distinction</td>
+                                        <td class="arabic-cell" dir="rtl" lang="ar">جيد جداً</td>
+                                        <td>3.0</td>
+                                        <td>DN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>65-74</td>
+                                        <td>Credit</td>
+                                        <td class="arabic-cell" dir="rtl" lang="ar">جيد</td>
+                                        <td>2.0</td>
+                                        <td>CR</td>
+                                    </tr>
+                                    <tr>
+                                        <td>50-64</td>
+                                        <td>Pass</td>
+                                        <td class="arabic-cell" dir="rtl" lang="ar">مقبول</td>
+                                        <td>1.0</td>
+                                        <td>PP</td>
+                                    </tr>
+                                    <tr>
+                                        <td>45-49</td>
+                                        <td>Fail Conditional</td>
+                                        <td class="arabic-cell" dir="rtl" lang="ar">راسب مشروط</td>
+                                        <td>0.0</td>
+                                        <td>FC</td>
+                                    </tr>
+                                    <tr>
+                                        <td>00-49</td>
+                                        <td>Fail</td>
+                                        <td class="arabic-cell" dir="rtl" lang="ar">راسب</td>
+                                        <td>0.0</td>
+                                        <td>FF</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -499,7 +556,7 @@
         </div>
     </div>
 
-    <script src="index.js?v=20260712-pdf-curricular-total-row"></script>
+    <script src="index.js?v=20260717-grading-criteria"></script>
 </body>
 
 </html>

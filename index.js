@@ -914,6 +914,62 @@ function buildPdfTemplateHtml(data) {
                         </tr>`).join('');
         };
 
+        const renderGradingCriteriaTable = () => `
+                <table class="pdf-section-table pdf-grading-criteria-table">
+                        <tbody>
+                                <tr>
+                                        <td class="pdf-grading-title-cell" rowspan="7"><strong>Grading<br>Criteria</strong></td>
+                                        <th>SCORE</th>
+                                        <th>DESCRIPTION</th>
+                                        <th class="pdf-grading-arabic" dir="rtl" lang="ar">التفصيل</th>
+                                        <th>GPA</th>
+                                        <th>GRADE</th>
+                                </tr>
+                                <tr>
+                                        <td>85-100</td>
+                                        <td>High Distinction</td>
+                                        <td class="pdf-grading-arabic" dir="rtl" lang="ar">ممتاز</td>
+                                        <td>4.0</td>
+                                        <td>HD</td>
+                                </tr>
+                                <tr>
+                                        <td>75-84</td>
+                                        <td>Distinction</td>
+                                        <td class="pdf-grading-arabic" dir="rtl" lang="ar">جيد جداً</td>
+                                        <td>3.0</td>
+                                        <td>DN</td>
+                                </tr>
+                                <tr>
+                                        <td>65-74</td>
+                                        <td>Credit</td>
+                                        <td class="pdf-grading-arabic" dir="rtl" lang="ar">جيد</td>
+                                        <td>2.0</td>
+                                        <td>CR</td>
+                                </tr>
+                                <tr>
+                                        <td>50-64</td>
+                                        <td>Pass</td>
+                                        <td class="pdf-grading-arabic" dir="rtl" lang="ar">مقبول</td>
+                                        <td>1.0</td>
+                                        <td>PP</td>
+                                </tr>
+                                <tr>
+                                        <td>45-49</td>
+                                        <td>Fail Conditional</td>
+                                        <td class="pdf-grading-arabic" dir="rtl" lang="ar">راسب مشروط</td>
+                                        <td>0.0</td>
+                                        <td>FC</td>
+                                </tr>
+                                <tr>
+                                        <td>00-49</td>
+                                        <td>Fail</td>
+                                        <td class="pdf-grading-arabic" dir="rtl" lang="ar">راسب</td>
+                                        <td>0.0</td>
+                                        <td>FF</td>
+                                </tr>
+                        </tbody>
+                </table>`;
+
         let html = `
                 <div class="pdf-container">
                         <div class="pdf-header">
@@ -1018,6 +1074,7 @@ function buildPdfTemplateHtml(data) {
                                         ${renderFieldRow('Total Weightage', d.assessment_total_weight ? `${escapeHtml(d.assessment_total_weight)}%` : '')}
                                 </tbody>
                         </table>
+                        ${renderGradingCriteriaTable()}
 
                         ${renderSectionHeading('11.11', 'Reference Materials')}
                         <table class="pdf-key-table">
