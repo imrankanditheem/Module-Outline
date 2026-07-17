@@ -43,10 +43,10 @@ function validateFormBeforeExport() {
         missingSections.push("11.4 Delivery Modality (Mode)");
     }
 
-    // Check 11.5 Minimum Qualification
+    // Check 11.5 Minimum Qualification and experience required by instructors/lecturers
     const instructorQualification = document.querySelector('[name="instructor_qualification"]')?.value?.trim();
     if (!instructorQualification) {
-        missingSections.push("11.5 Minimum Qualification");
+        missingSections.push("11.5 Minimum Qualification and experience required by instructors/lecturers");
     }
 
     // Check 11.8 Expected Learning Outcomes (at least one outcome with text)
@@ -62,7 +62,7 @@ function validateFormBeforeExport() {
         missingSections.push("11.8 Expected Learning Outcomes");
     }
 
-    // Check 11.9 Curricular Content (at least one topic)
+    // Check 11.9 Curricular Content in terms of topics and a summary of content (at least one topic)
     let hasTopic = false;
     const topicInputs = document.querySelectorAll('#curricularBody input[name^="topic"]');
     for (const input of topicInputs) {
@@ -72,7 +72,7 @@ function validateFormBeforeExport() {
         }
     }
     if (!hasTopic) {
-        missingSections.push("11.9 Curricular Content");
+        missingSections.push("11.9 Curricular Content in terms of topics and a summary of content");
     }
 
     // Check 11.10 Assessment Methods (at least one assessment with weight)
@@ -641,7 +641,7 @@ function createModuleOutlinePDF(data) {
     drawTextRow('11.4', 'Delivery Modality', deliveryModes);
     drawTextRow('', 'Methods of Delivery', data.delivery_methods);
     drawSectionHeader('11.5 to 11.7 Entry Requirements');
-    drawTextRow('11.5', 'Minimum Qualification', data.instructor_qualification);
+    drawTextRow('11.5', 'Minimum Qualification and experience required by instructors/lecturers', data.instructor_qualification);
     drawTextRow('11.6', 'Prerequisite', data.prerequisite);
     drawTextRow('11.7', 'Corequisites', data.corequisites);
     drawSectionHeader('11.8 Expected Learning Outcomes');
@@ -652,10 +652,10 @@ function createModuleOutlinePDF(data) {
         outcomesRows,
         [8, 34, 12, 11, 13, 14, 14]
     );
-    drawSectionHeader('11.9 Curricular Content');
+    drawSectionHeader('11.9 Curricular Content in terms of topics and a summary of content');
     drawNestedTableRow(
         '11.9',
-        'Curricular Content',
+        'Curricular Content in terms of topics and a summary of content',
         ['Week', 'Main Topic & Details', 'Pedagogy', 'Resources', 'Credit', 'TLH', 'Contact'],
         curricularRows,
         [8, 36, 16, 16, 9, 10, 11]
@@ -1018,7 +1018,7 @@ function buildPdfTemplateHtml(data) {
                                 </tbody>
                         </table>
 
-                        ${renderSectionHeading('11.5', 'Minimum Qualification')}
+                        ${renderSectionHeading('11.5', 'Minimum Qualification and experience required by instructors/lecturers')}
                         <table class="pdf-key-table">
                                 <tbody>
                                         ${renderFieldRow('Instructor Qualification', d.instructor_qualification)}
@@ -1042,7 +1042,7 @@ function buildPdfTemplateHtml(data) {
                         ${renderSectionHeading('11.8', 'Expected Learning Outcomes')}
                         ${renderOutcomeTable()}
 
-                        ${renderSectionHeading('11.9', 'Curricular Content')}
+                        ${renderSectionHeading('11.9', 'Curricular Content in terms of topics and a summary of content')}
                         <table class="pdf-section-table pdf-curricular-table">
                                 <thead>
                                         <tr>
