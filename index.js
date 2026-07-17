@@ -635,8 +635,8 @@ function createModuleOutlinePDF(data) {
     drawSectionHeader('11.3 Credit and Hours Distribution');
     drawTextRow('11.3', 'Credits', data.contact_credits);
     drawTextRow('', 'Total Learning Hours', data.contact_total_learning_hours);
-    drawTextRow('', 'Contact Hours (Face to Face, Blended Mode & E-Learning)', data.contact_hours);
-    drawTextRow('', 'Non-contact Hours (Face to face, Blended and E-Learning Mode)', data.non_contact_hours);
+    drawTextRow('', 'Contact Hours\n(Face to Face, Blended & E-Learning)', data.contact_hours);
+    drawTextRow('', 'Non-contact Hours\n(Face to face, Blended and E-Learning Mode)', data.non_contact_hours);
     drawSectionHeader('11.4 Delivery Modality');
     drawTextRow('11.4', 'Delivery Modality', deliveryModes);
     drawTextRow('', 'Methods of Delivery', data.delivery_methods);
@@ -825,6 +825,12 @@ function buildPdfTemplateHtml(data) {
                         <td class="pdf-value-cell${rtl ? ' pdf-rtl' : ''}">${rtl ? `<div dir="rtl">${textToHtml(value) || '&nbsp;'}</div>` : multilineValue(value)}</td>
                 </tr>`;
 
+        const renderFieldRowWithSplitLabel = (label, sublabel, value) => `
+                <tr>
+                        <td class="pdf-label-cell"><strong>${escapeHtml(label)}</strong><span class="pdf-label-subline">${escapeHtml(sublabel)}</span></td>
+                        <td class="pdf-value-cell">${multilineValue(value)}</td>
+                </tr>`;
+
         const renderNameBlock = () => `
                 <table class="pdf-name-table">
                         <tbody>
@@ -999,8 +1005,8 @@ function buildPdfTemplateHtml(data) {
                                 <tbody>
                                         ${renderFieldRow('Number of Credits', d.contact_credits)}
                                         ${renderFieldRow('Total Learning Hours', d.contact_total_learning_hours)}
-                                        ${renderFieldRow('Contact Hours', d.contact_hours)}
-                                        ${renderFieldRow('Non-contact Hours', d.non_contact_hours)}
+                                        ${renderFieldRowWithSplitLabel('Contact Hours', '(Face to Face, Blended & E-Learning)', d.contact_hours)}
+                                        ${renderFieldRowWithSplitLabel('Non-contact Hours', '(Face to face, Blended and E-Learning Mode)', d.non_contact_hours)}
                                 </tbody>
                         </table>
 
