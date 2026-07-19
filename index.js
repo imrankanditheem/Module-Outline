@@ -609,7 +609,11 @@ function createModuleOutlinePDF(data) {
         item.resources || '',
         item.credit || '',
         item.hours || '',
-        item.contact || ''
+        item.contact || '',
+        item.blended_face_to_face || '',
+        item.blended_online_synchronous || '',
+        item.blended_online_asynchronous || '',
+        item.elearning || ''
     ]);
     const assessmentRows = (data.assessments || []).map((assessment, index) => [
         String(index + 1),
@@ -656,9 +660,9 @@ function createModuleOutlinePDF(data) {
     drawNestedTableRow(
         '11.9',
         'Curricular Content in terms of topics and a summary of content',
-        ['Week', 'Main Topic & Details', 'Pedagogy', 'Resources', 'Credit', 'TLH', 'Contact'],
+        ['Week', 'Main Topic & Details', 'Pedagogy', 'Resources', 'Credit', 'TLH', 'F2F', 'Blended F2F', 'Blended Sync', 'Blended Async', 'E-Learning'],
         curricularRows,
-        [8, 36, 16, 16, 9, 10, 11]
+        [5, 27, 12, 12, 5, 7, 7, 7, 8, 8, 8]
     );
     drawSectionHeader('11.10 Assessment Methods and Grading');
     drawNestedTableRow(
@@ -890,20 +894,23 @@ function buildPdfTemplateHtml(data) {
                                 <td>${multilineValue(row.resources)}</td>
                                 <td class="pdf-center-cell">${escapeHtml(row.credit)}</td>
                                 <td class="pdf-center-cell">${escapeHtml(row.hours)}</td>
-                                <td class="pdf-center-cell">${escapeHtml(row.contact)}</td>
+                                ${curricularContactFields.map(field => `<td class="pdf-center-cell">${escapeHtml(row[field.property])}</td>`).join('')}
                         </tr>`).join('');
         };
 
         const renderCurricularTotalRow = () => {
                 const rows = (d.curricular_content && d.curricular_content.length) ? d.curricular_content : [];
                 const totalHours = rows.reduce((sum, row) => sum + (parseFloat(row.hours) || 0), 0);
-                const totalContact = rows.reduce((sum, row) => sum + (parseFloat(row.contact) || 0), 0);
+                const contactTotals = curricularContactFields.reduce((totals, field) => {
+                        totals[field.property] = rows.reduce((sum, row) => sum + (parseFloat(row[field.property]) || 0), 0);
+                        return totals;
+                }, {});
                 return `
                         <tr class="pdf-curricular-total-row">
                                 <td colspan="4" style="text-align:right;">TOTAL (Sum of 15 Weeks)</td>
                                 <td class="pdf-center-cell">${escapeHtml(d.contact_credits)}</td>
                                 <td class="pdf-center-cell">${totalHours || ''}</td>
-                                <td class="pdf-center-cell">${totalContact || ''}</td>
+                                ${curricularContactFields.map(field => `<td class="pdf-center-cell">${contactTotals[field.property] || ''}</td>`).join('')}
                         </tr>`;
         };
 
@@ -1044,15 +1051,38 @@ function buildPdfTemplateHtml(data) {
 
                         ${renderSectionHeading('11.9', 'Curricular Content in terms of topics and a summary of content')}
                         <table class="pdf-section-table pdf-curricular-table">
+                                <colgroup>
+                                        <col class="pdf-curricular-week-col">
+                                        <col class="pdf-curricular-topic-col">
+                                        <col class="pdf-curricular-pedagogy-col">
+                                        <col class="pdf-curricular-resources-col">
+                                        <col class="pdf-curricular-credit-col">
+                                        <col class="pdf-curricular-hours-col">
+                                        <col class="pdf-curricular-contact-col">
+                                        <col class="pdf-curricular-contact-col">
+                                        <col class="pdf-curricular-contact-col">
+                                        <col class="pdf-curricular-contact-col">
+                                        <col class="pdf-curricular-contact-col">
+                                </colgroup>
                                 <thead>
                                         <tr>
-                                                <th>Week</th>
-                                                <th>Main Topic &amp; Details</th>
-                                                <th>Pedagogy</th>
-                                                <th>Resources</th>
-                                                <th class="pdf-curricular-credit-header"><span>Credit</span></th>
-                                                <th>Total Learning Hours</th>
-                                                <th>Contact Hours</th>
+                                                <th rowspan="3">Week</th>
+                                                <th rowspan="3">Main Topic &amp; Details</th>
+                                                <th rowspan="3">Pedagogy</th>
+                                                <th rowspan="3">Resources</th>
+                                                <th rowspan="3" class="pdf-curricular-credit-header"><span>Credit</span></th>
+                                                <th rowspan="3">Total Learning Hours</th>
+                                                <th colspan="5">Contact Hours</th>
+                                        </tr>
+                                        <tr>
+                                                <th rowspan="2">Face to Face</th>
+                                                <th colspan="3">Blended</th>
+                                                <th rowspan="2">E-Learning</th>
+                                        </tr>
+                                        <tr>
+                                                <th>Face to Face</th>
+                                                <th>Online Synchronous</th>
+                                                <th>Online Asynchronous</th>
                                         </tr>
                                 </thead>
                                 <tbody>${renderCurricularRows()}${renderCurricularTotalRow()}</tbody>
@@ -1384,9 +1414,13 @@ function collectFormData() {
         const resources = row.querySelector('textarea[name^="resources"]')?.value || '';
         const credit = row.querySelector('input[name^="credit"]')?.value || '';
         const hours = row.querySelector('input[name^="hours"]')?.value || '';
-        const contact = row.querySelector('input[name^="contact"]')?.value || '';
+        const contactValues = curricularContactFields.reduce((values, field) => {
+            values[field.property] = row.querySelector(field.selector)?.value || '';
+            return values;
+        }, {});
 
-        if (topic || details || pedagogy || resources || credit || hours || contact) {
+        if (topic || details || pedagogy || resources || credit || hours ||
+            curricularContactFields.some(field => contactValues[field.property])) {
             curricularContent.push({
                 week,
                 topic,
@@ -1395,7 +1429,7 @@ function collectFormData() {
                 resources,
                 credit,
                 hours,
-                contact
+                ...contactValues
             });
         }
     });
@@ -1520,7 +1554,7 @@ function loadFormData(data) {
                 <td><textarea name="resources1" style="height:100%">${item.resources || ''}</textarea></td>
                 <td><input type="text" name="credit1" class="curr-credit-field" readonly style="background-color:#fff; text-align:center; min-width:40px;"></td>
                 <td><input type="number" name="hours1" class="curr-hours-field" readonly></td>
-                <td><input type="number" name="contact1" class="curr-contact-field" readonly></td>
+                ${renderCurricularContactCells(1, item)}
               </tr>
             `;
             } else {
@@ -1542,7 +1576,7 @@ function loadFormData(data) {
               <td><textarea name="resources${index + 1}" style="height:100%">${item.resources || ''}</textarea></td>
               <td><input type="text" name="credit${index + 1}" class="curr-credit-field" readonly style="background-color:#fff; text-align:center; min-width:40px;"></td>
               <td><input type="number" name="hours${index + 1}" class="curr-hours-field" readonly></td>
-              <td><input type="number" name="contact${index + 1}" class="curr-contact-field" readonly></td>
+              ${renderCurricularContactCells(index + 1, item)}
             `;
                 curricularBody.appendChild(newRow);
             }
@@ -1636,7 +1670,7 @@ function resetFormToInitialState() {
           <td><textarea name="resources1" style="height:100%"></textarea></td>
           <td><input type="text" name="credit1" class="curr-credit-field" readonly style="background-color:#fff; text-align:center; min-width:40px;"></td>
           <td><input type="number" name="hours1" class="curr-hours-field" readonly></td>
-          <td><input type="number" name="contact1" class="curr-contact-field" readonly></td>
+          ${renderCurricularContactCells(1)}
         </tr>
       `;
 
@@ -1923,21 +1957,88 @@ function addOutcome() {
 }
 
 // --- 11.9 Curricular Content Logic ---
-function setCurricularContactFooterState(currentTotal, requiredTotal) {
-    const footer = document.getElementById('totalContactFooter');
-    if (!footer) return;
-
-    footer.innerText = currentTotal;
-
-    if (currentTotal !== requiredTotal) {
-        footer.style.color = '#c00000';
-        footer.title = 'Contact hours mis-match';
-        footer.setAttribute('aria-label', 'Contact hours mis-match');
-    } else {
-        footer.style.color = '';
-        footer.removeAttribute('title');
-        footer.removeAttribute('aria-label');
+const curricularContactFields = [
+    {
+        property: 'contact',
+        namePrefix: 'contact',
+        selector: '.curr-contact-face-to-face-field',
+        className: 'curr-contact-face-to-face-field',
+        totalId: 'totalContactFooter'
+    },
+    {
+        property: 'blended_face_to_face',
+        namePrefix: 'blended_face_to_face',
+        selector: '.curr-contact-blended-face-to-face-field',
+        className: 'curr-contact-blended-face-to-face-field',
+        totalId: 'totalBlendedFaceToFaceFooter'
+    },
+    {
+        property: 'blended_online_synchronous',
+        namePrefix: 'blended_online_synchronous',
+        selector: '.curr-contact-blended-online-synchronous-field',
+        className: 'curr-contact-blended-online-synchronous-field',
+        totalId: 'totalBlendedOnlineSynchronousFooter'
+    },
+    {
+        property: 'blended_online_asynchronous',
+        namePrefix: 'blended_online_asynchronous',
+        selector: '.curr-contact-blended-online-asynchronous-field',
+        className: 'curr-contact-blended-online-asynchronous-field',
+        totalId: 'totalBlendedOnlineAsynchronousFooter'
+    },
+    {
+        property: 'elearning',
+        namePrefix: 'elearning',
+        selector: '.curr-contact-elearning-field',
+        className: 'curr-contact-elearning-field',
+        totalId: 'totalElearningFooter'
     }
+];
+
+function createCurricularContactTotals() {
+    return curricularContactFields.reduce((totals, field) => {
+        totals[field.property] = 0;
+        return totals;
+    }, {});
+}
+
+function getCurricularContactValue(item, field) {
+    return item?.[field.property] ?? '';
+}
+
+function renderCurricularContactCells(rowNumber, item = {}) {
+    return curricularContactFields.map(field => `
+          <td><input type="number" name="${field.namePrefix}${rowNumber}"
+              class="curr-contact-field ${field.className}" readonly
+              value="${escapeHtml(getCurricularContactValue(item, field))}"></td>
+        `).join('');
+}
+
+function setCurricularContactFooterState(contactTotals, requiredTotal) {
+    const totals = typeof contactTotals === 'number'
+        ? { ...createCurricularContactTotals(), contact: contactTotals }
+        : { ...createCurricularContactTotals(), ...(contactTotals || {}) };
+    const currentTotal = curricularContactFields.reduce((sum, field) => {
+        return sum + (parseFloat(totals[field.property]) || 0);
+    }, 0);
+    const hasMismatch = currentTotal !== requiredTotal;
+
+    curricularContactFields.forEach(field => {
+        const footer = document.getElementById(field.totalId);
+        if (!footer) return;
+
+        footer.innerText = totals[field.property] || 0;
+
+        if (hasMismatch) {
+            footer.style.color = '#c00000';
+            footer.title = 'Contact hours mis-match';
+            footer.setAttribute('aria-label', 'Contact hours mis-match');
+        } else {
+            footer.style.color = '';
+            footer.removeAttribute('title');
+            footer.removeAttribute('aria-label');
+        }
+    });
 }
 
 function reduceHoursToRequiredTotal(values, requiredTotal) {
@@ -1995,11 +2096,10 @@ function calculateWeeklyDistribution() {
     const learningValues = distributeHoursAcrossWeeks(totalLearning, rows.length);
     const contactValues = distributeHoursAcrossWeeks(totalContact, rows.length);
     let sumLearning = 0;
-    let sumContact = 0;
+    const contactTotals = createCurricularContactTotals();
 
     rows.forEach((row, index) => {
         const hoursInput = row.querySelector('.curr-hours-field');
-        const contactInput = row.querySelector('.curr-contact-field');
         const creditInput = row.querySelector('.curr-credit-field');
 
         if (hoursInput) {
@@ -2007,18 +2107,21 @@ function calculateWeeklyDistribution() {
             hoursInput.value = learningHours;
             sumLearning += learningHours;
         }
-        if (contactInput) {
-            const contactHours = contactValues[index] || 0;
+        curricularContactFields.forEach(field => {
+            const contactInput = row.querySelector(field.selector);
+            if (!contactInput) return;
+
+            const contactHours = field.property === 'contact' ? contactValues[index] || 0 : 0;
             contactInput.value = contactHours;
-            sumContact += contactHours;
-        }
+            contactTotals[field.property] += contactHours;
+        });
         if (creditInput) {
             creditInput.value = "";
         }
     });
 
     document.getElementById('totalHoursFooter').innerText = sumLearning;
-    setCurricularContactFooterState(sumContact, totalContact);
+    setCurricularContactFooterState(contactTotals, totalContact);
 
     const creditSource = document.getElementById('creditsInput');
     const creditTarget = document.getElementById('totalCreditsFooter');

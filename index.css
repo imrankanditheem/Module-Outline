@@ -724,6 +724,61 @@ th {
     font-weight: bold;
 }
 
+#section11_9 {
+    overflow-x: auto;
+}
+
+#section11_9 #curricularTable {
+    table-layout: fixed;
+    min-width: 1060px;
+}
+
+#section11_9 #curricularTable th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#section11_9 #curricularTable td {
+    vertical-align: middle;
+}
+
+#section11_9 .curr-week-col {
+    width: 4%;
+}
+
+#section11_9 .curr-topic-col {
+    width: 30%;
+}
+
+#section11_9 .curr-pedagogy-col,
+#section11_9 .curr-resources-col {
+    width: 12%;
+}
+
+#section11_9 .curr-credit-col {
+    width: 5%;
+}
+
+#section11_9 .curr-hours-col {
+    width: 8%;
+}
+
+#section11_9 .curr-contact-col {
+    width: 5.8%;
+}
+
+#section11_9 .curricular-credit-header,
+#section11_9 .curricular-contact-subheader {
+    white-space: normal;
+}
+
+#section11_9 .curr-contact-field {
+    min-width: 0;
+    text-align: center;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
 /* --- 11.3 Layout Consistency Styles --- */
 .equal-row {
     display: flex;
@@ -2094,6 +2149,7 @@ textarea.auto-resize {
         border: 0.5px solid #d9d9d9 !important;
         border-collapse: collapse !important;
         border-spacing: 0 !important;
+        min-width: 0 !important;
     }
 
     #section11_9 #curricularTable th,
@@ -2316,11 +2372,15 @@ textarea.auto-resize {
     border: 0.5px solid #d9d9d9;
     border-collapse: collapse;
     border-spacing: 0;
+    table-layout: fixed;
 }
 
 .pdf-curricular-table th,
 .pdf-curricular-table td {
     border: 0.5px solid #d9d9d9;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+    word-break: normal;
 }
 
 .pdf-curricular-table th,
@@ -2525,33 +2585,29 @@ textarea.auto-resize {
     word-break: normal;
 }
 
-.pdf-curricular-table th:first-child,
-.pdf-curricular-table td:first-child {
-    width: 6%;
-}
-
-.pdf-curricular-table th:nth-child(2),
-.pdf-curricular-table td:nth-child(2) {
-    width: 31%;
-}
-
-.pdf-curricular-table th:nth-child(3),
-.pdf-curricular-table td:nth-child(3),
-.pdf-curricular-table th:nth-child(4),
-.pdf-curricular-table td:nth-child(4) {
-    width: 18%;
-}
-
-.pdf-curricular-table th:nth-child(5),
-.pdf-curricular-table td:nth-child(5) {
+.pdf-curricular-week-col {
     width: 5%;
 }
 
-.pdf-curricular-table th:nth-child(6),
-.pdf-curricular-table td:nth-child(6),
-.pdf-curricular-table th:nth-child(7),
-.pdf-curricular-table td:nth-child(7) {
-    width: 11%;
+.pdf-curricular-topic-col {
+    width: 29%;
+}
+
+.pdf-curricular-pedagogy-col,
+.pdf-curricular-resources-col {
+    width: 12%;
+}
+
+.pdf-curricular-credit-col {
+    width: 5%;
+}
+
+.pdf-curricular-hours-col {
+    width: 8%;
+}
+
+.pdf-curricular-contact-col {
+    width: 5.8%;
 }
 
 .pdf-curricular-credit-header {
@@ -2587,7 +2643,7 @@ textarea.auto-resize {
 .pdf-competency-table td:nth-child(n+3),
 .pdf-curricular-table th:first-child,
 .pdf-curricular-table td:first-child,
-.pdf-curricular-table th:nth-child(n+5),
+.pdf-curricular-table th,
 .pdf-curricular-table td:nth-child(n+5),
 .pdf-assessment-table th:nth-child(n+4),
 .pdf-assessment-table td:nth-child(n+4) {
