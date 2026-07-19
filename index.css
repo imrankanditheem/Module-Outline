@@ -729,10 +729,10 @@ th {
 }
 
 #section11_9 #curricularTable {
-    table-layout: auto;
-    width: auto;
-    min-width: 620px;
-    max-width: none;
+    table-layout: fixed;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
 }
 
 #section11_9 #curricularTable th {
@@ -752,28 +752,28 @@ th {
 }
 
 #section11_9 .curr-week-col {
-    width: 36px;
+    width: 3.1%;
 }
 
 #section11_9 .curr-topic-col {
-    width: 180px;
+    width: 46.55%;
 }
 
 #section11_9 .curr-pedagogy-col,
 #section11_9 .curr-resources-col {
-    width: 88px;
+    width: 15.17%;
 }
 
 #section11_9 .curr-credit-col {
-    width: 30px;
+    width: 2.59%;
 }
 
 #section11_9 .curr-hours-col {
-    width: 42px;
+    width: 3.62%;
 }
 
 #section11_9 .curr-contact-col {
-    width: 32px;
+    width: 2.76%;
 }
 
 #section11_9 #curricularTable thead th {
