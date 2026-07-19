@@ -730,7 +730,9 @@ th {
 
 #section11_9 #curricularTable {
     table-layout: fixed;
-    min-width: 920px;
+    width: 740px;
+    min-width: 740px;
+    max-width: 100%;
 }
 
 #section11_9 #curricularTable th {
@@ -743,28 +745,28 @@ th {
 }
 
 #section11_9 .curr-week-col {
-    width: 4%;
+    width: 5%;
 }
 
 #section11_9 .curr-topic-col {
-    width: 36.5%;
+    width: 45.6%;
 }
 
 #section11_9 .curr-pedagogy-col,
 #section11_9 .curr-resources-col {
-    width: 10%;
+    width: 12.4%;
 }
 
 #section11_9 .curr-credit-col {
-    width: 4.5%;
+    width: 2.8%;
 }
 
 #section11_9 .curr-hours-col {
-    width: 8%;
+    width: 5%;
 }
 
 #section11_9 .curr-contact-col {
-    width: 5.4%;
+    width: 3.36%;
 }
 
 #section11_9 #curricularTable thead th {
@@ -776,8 +778,8 @@ th {
 #section11_9 #curricularTable .vertical-header {
     position: relative;
     height: 148px;
-    min-width: 38px;
-    padding: 4px;
+    min-width: 20px;
+    padding: 2px;
     text-align: center;
     vertical-align: middle;
     overflow: visible;
@@ -800,6 +802,22 @@ th {
     text-align: center;
     padding-left: 4px;
     padding-right: 4px;
+}
+
+#section11_9 #curricularTable tbody td:nth-child(n+5),
+#section11_9 #curricularTable tfoot td:not(:first-child) {
+    padding-left: 2px;
+    padding-right: 2px;
+    text-align: center;
+}
+
+#section11_9 .curr-credit-field,
+#section11_9 .curr-hours-field,
+#section11_9 .curr-contact-field {
+    min-width: 0 !important;
+    padding-left: 2px;
+    padding-right: 2px;
+    text-align: center;
 }
 
 /* --- 11.3 Layout Consistency Styles --- */
