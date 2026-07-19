@@ -730,7 +730,7 @@ th {
 
 #section11_9 #curricularTable {
     table-layout: fixed;
-    min-width: 980px;
+    min-width: 920px;
 }
 
 #section11_9 #curricularTable th {
@@ -747,43 +747,52 @@ th {
 }
 
 #section11_9 .curr-topic-col {
-    width: 34%;
+    width: 36.5%;
 }
 
 #section11_9 .curr-pedagogy-col,
 #section11_9 .curr-resources-col {
-    width: 10.5%;
+    width: 10%;
 }
 
 #section11_9 .curr-credit-col {
-    width: 4%;
+    width: 4.5%;
 }
 
 #section11_9 .curr-hours-col {
-    width: 9%;
+    width: 8%;
 }
 
 #section11_9 .curr-contact-col {
-    width: 5.6%;
+    width: 5.4%;
 }
 
-#section11_9 .curricular-credit-header,
-#section11_9 .curricular-contact-subheader {
-    white-space: normal;
-}
-
-#section11_9 #curricularTable thead th:not([colspan]) {
+#section11_9 #curricularTable thead th {
     text-align: center;
     vertical-align: middle;
-    white-space: normal;
     line-height: 1.25;
-    padding: 10px 6px;
 }
 
-#section11_9 #curricularTable thead tr:nth-child(2) th[rowspan],
-#section11_9 #curricularTable thead tr:nth-child(3) th {
-    padding-top: 14px;
-    padding-bottom: 14px;
+#section11_9 #curricularTable .vertical-header {
+    position: relative;
+    height: 148px;
+    min-width: 38px;
+    padding: 4px;
+    text-align: center;
+    vertical-align: middle;
+    overflow: visible;
+    white-space: normal;
+}
+
+#section11_9 #curricularTable .vertical-header > span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    white-space: nowrap;
+    line-height: 1;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: center;
 }
 
 #section11_9 .curr-contact-field {
