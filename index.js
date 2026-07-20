@@ -1921,17 +1921,30 @@ function initializeCreditHoursCalculation() {
     ['input', 'keyup', 'change'].forEach(eventName => {
         creditsInput.addEventListener(eventName, calculateHours);
     });
+
+    document.querySelectorAll(curricularDistributionSourceSelectors.join(',')).forEach(input => {
+        if (!input || input.dataset.weekDistributionBound === 'true') return;
+
+        input.dataset.weekDistributionBound = 'true';
+        ['input', 'change'].forEach(eventName => {
+            input.addEventListener(eventName, calculateWeeklyDistribution);
+        });
+    });
 }
 
 document.addEventListener('input', function (event) {
     if (event.target?.id === 'creditsInput') {
         calculateHoursInline(event.target);
+    } else if (isCurricularDistributionSource(event.target)) {
+        calculateWeeklyDistribution();
     }
 });
 
 document.addEventListener('change', function (event) {
     if (event.target?.id === 'creditsInput') {
         calculateHoursInline(event.target);
+    } else if (isCurricularDistributionSource(event.target)) {
+        calculateWeeklyDistribution();
     }
 });
 
@@ -2014,20 +2027,45 @@ function renderCurricularContactCells(rowNumber, item = {}) {
         `).join('');
 }
 
-function setCurricularContactFooterState(contactTotals, requiredTotal) {
+function parseHourValue(value) {
+    const parsed = parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function formatHourValue(value) {
+    const rounded = Math.round((parseHourValue(value) + Number.EPSILON) * 100) / 100;
+    if (Number.isInteger(rounded)) return String(rounded);
+    return rounded.toFixed(2).replace(/\.?0+$/, '');
+}
+
+function valuesMatchToTwoDecimals(value, expectedValue) {
+    return Math.round(parseHourValue(value) * 100) === Math.round(parseHourValue(expectedValue) * 100);
+}
+
+function sumHourValues(values) {
+    const cents = values.reduce((sum, value) => {
+        return sum + Math.round(parseHourValue(value) * 100);
+    }, 0);
+    return formatHourValue(cents / 100);
+}
+
+function setCurricularContactFooterState(contactTotals, requiredTotals) {
     const totals = typeof contactTotals === 'number'
         ? { ...createCurricularContactTotals(), contact: contactTotals }
         : { ...createCurricularContactTotals(), ...(contactTotals || {}) };
-    const currentTotal = curricularContactFields.reduce((sum, field) => {
-        return sum + (parseFloat(totals[field.property]) || 0);
-    }, 0);
-    const hasMismatch = currentTotal !== requiredTotal;
+    const requiredByField = typeof requiredTotals === 'object' && requiredTotals !== null
+        ? { ...createCurricularContactTotals(), ...requiredTotals }
+        : { ...createCurricularContactTotals(), contact: requiredTotals || 0 };
 
     curricularContactFields.forEach(field => {
         const footer = document.getElementById(field.totalId);
         if (!footer) return;
 
-        footer.innerText = totals[field.property] || 0;
+        const total = totals[field.property] || 0;
+        const requiredTotal = requiredByField[field.property] || 0;
+        const hasMismatch = !valuesMatchToTwoDecimals(total, requiredTotal);
+
+        footer.innerText = formatHourValue(total);
 
         if (hasMismatch) {
             footer.style.color = '#c00000';
@@ -2058,14 +2096,59 @@ function reduceHoursToRequiredTotal(values, requiredTotal) {
 }
 
 function distributeHoursAcrossWeeks(totalValue, weekCount) {
-    const total = Math.max(Math.round(parseFloat(totalValue) || 0), 0);
+    const total = Math.max(parseHourValue(totalValue), 0);
     if (!weekCount) return [];
 
-    const weeklyValue = Math.ceil(total / weekCount);
-    return reduceHoursToRequiredTotal(
-        Array.from({ length: weekCount }, () => weeklyValue),
-        total
-    );
+    const totalCents = Math.round(total * 100);
+    const baseCents = Math.floor(totalCents / weekCount);
+    const remainder = totalCents - (baseCents * weekCount);
+
+    return Array.from({ length: weekCount }, (_, index) => {
+        const cents = baseCents + (index < remainder ? 1 : 0);
+        return formatHourValue(cents / 100);
+    });
+}
+
+function getSection113SourceValue(selectors) {
+    for (const selector of selectors) {
+        const source = document.querySelector(selector);
+        if (source && source.value !== '') {
+            return source.value;
+        }
+    }
+
+    return '';
+}
+
+function getCurricularSourceValues() {
+    return {
+        totalLearning: getSection113SourceValue(['#totalLearningHours']),
+        faceToFaceContact: getSection113SourceValue([
+            '#faceToFaceContactHours',
+            '[name="face_to_face_contact_hours"]',
+            '#maxContactHours'
+        ]),
+        eLearningContact: getSection113SourceValue([
+            '#eLearningContactHours',
+            '#elearningContactHours',
+            '[name="elearning_contact_hours"]',
+            '#maxContactHours'
+        ])
+    };
+}
+
+const curricularDistributionSourceSelectors = [
+    '#totalLearningHours',
+    '#maxContactHours',
+    '#faceToFaceContactHours',
+    '[name="face_to_face_contact_hours"]',
+    '#eLearningContactHours',
+    '#elearningContactHours',
+    '[name="elearning_contact_hours"]'
+];
+
+function isCurricularDistributionSource(element) {
+    return Boolean(element?.matches?.(curricularDistributionSourceSelectors.join(',')));
 }
 
 function updateWeekRequirementNotice(rowCount = document.querySelectorAll('#curricularBody tr').length) {
@@ -2086,16 +2169,21 @@ function updateWeekRequirementNotice(rowCount = document.querySelectorAll('#curr
 }
 
 function calculateWeeklyDistribution() {
-    const tlhInput = document.getElementById('totalLearningHours');
-    const mchInput = document.getElementById('maxContactHours');
-    if (!tlhInput || !mchInput) return;
-
-    const totalLearning = parseFloat(tlhInput.value) || 0;
-    const totalContact = parseFloat(mchInput.value) || 0;
     const rows = Array.from(document.querySelectorAll('#curricularBody tr'));
-    const learningValues = distributeHoursAcrossWeeks(totalLearning, rows.length);
-    const contactValues = distributeHoursAcrossWeeks(totalContact, rows.length);
-    let sumLearning = 0;
+    if (!rows.length) return;
+
+    const sourceValues = getCurricularSourceValues();
+    const learningValues = distributeHoursAcrossWeeks(sourceValues.totalLearning, rows.length);
+    const faceToFaceValues = distributeHoursAcrossWeeks(sourceValues.faceToFaceContact, rows.length);
+    const eLearningValues = distributeHoursAcrossWeeks(sourceValues.eLearningContact, rows.length);
+    const zeroValues = distributeHoursAcrossWeeks(0, rows.length);
+    const sourceValuesByField = {
+        contact: sourceValues.faceToFaceContact,
+        blended_face_to_face: 0,
+        blended_online_synchronous: 0,
+        blended_online_asynchronous: 0,
+        elearning: sourceValues.eLearningContact
+    };
     const contactTotals = createCurricularContactTotals();
 
     rows.forEach((row, index) => {
@@ -2103,25 +2191,33 @@ function calculateWeeklyDistribution() {
         const creditInput = row.querySelector('.curr-credit-field');
 
         if (hoursInput) {
-            const learningHours = learningValues[index] || 0;
-            hoursInput.value = learningHours;
-            sumLearning += learningHours;
+            hoursInput.value = learningValues[index] || '0';
         }
         curricularContactFields.forEach(field => {
             const contactInput = row.querySelector(field.selector);
             if (!contactInput) return;
 
-            const contactHours = field.property === 'contact' ? contactValues[index] || 0 : 0;
+            const values = field.property === 'contact'
+                ? faceToFaceValues
+                : field.property === 'elearning'
+                    ? eLearningValues
+                    : zeroValues;
+            const contactHours = values[index] || '0';
             contactInput.value = contactHours;
-            contactTotals[field.property] += contactHours;
         });
         if (creditInput) {
             creditInput.value = "";
         }
     });
 
-    document.getElementById('totalHoursFooter').innerText = sumLearning;
-    setCurricularContactFooterState(contactTotals, totalContact);
+    curricularContactFields.forEach(field => {
+        contactTotals[field.property] = sumHourValues(
+            rows.map(row => row.querySelector(field.selector)?.value || 0)
+        );
+    });
+
+    document.getElementById('totalHoursFooter').innerText = sumHourValues(learningValues);
+    setCurricularContactFooterState(contactTotals, sourceValuesByField);
 
     const creditSource = document.getElementById('creditsInput');
     const creditTarget = document.getElementById('totalCreditsFooter');
