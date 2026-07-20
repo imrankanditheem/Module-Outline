@@ -829,6 +829,22 @@ th {
     box-sizing: border-box;
 }
 
+#moduleForm #section11_9 .curr-credit-field,
+#moduleForm #section11_9 .curr-hours-field,
+#moduleForm #section11_9 .curr-contact-field {
+    padding-left: 1px;
+    padding-right: 1px;
+    font-size: 11px;
+}
+
+#moduleForm #section11_9 .curr-hours-field::-webkit-inner-spin-button,
+#moduleForm #section11_9 .curr-hours-field::-webkit-outer-spin-button,
+#moduleForm #section11_9 .curr-contact-field::-webkit-inner-spin-button,
+#moduleForm #section11_9 .curr-contact-field::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 #section11_9 textarea,
 #section11_9 .vertical-input-group input {
     min-width: 0;
