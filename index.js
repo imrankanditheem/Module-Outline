@@ -2268,6 +2268,14 @@ function distributeSection119Hours() {
     calculateWeeklyDistribution();
 }
 
+function scheduleSection119Distribution() {
+    if (typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(distributeSection119Hours);
+    } else {
+        setTimeout(distributeSection119Hours, 0);
+    }
+}
+
 function addWeek() {
     const tableBody = document.getElementById('curricularBody');
     const addWeekBtn = document.getElementById('addWeekBtn');
@@ -2454,6 +2462,7 @@ function initPage() {
     } else {
         distributeSection119Hours();
     }
+    scheduleSection119Distribution();
     updateAssessmentCalc();
     loadOutlinesList();
     initializePaneButtons();
@@ -2475,6 +2484,11 @@ function initPage() {
     if (!window.__mnqfPrintSyncBound) {
         window.addEventListener('beforeprint', syncMnqfPrintValue);
         window.__mnqfPrintSyncBound = true;
+    }
+
+    if (!window.__section119DistributionBound) {
+        window.addEventListener('pageshow', scheduleSection119Distribution);
+        window.__section119DistributionBound = true;
     }
 }
 
