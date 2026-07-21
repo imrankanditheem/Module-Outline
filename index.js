@@ -2106,19 +2106,14 @@ function distributeHoursAcrossWeeks(totalValue, weekCount) {
         return Array.from({ length: weekCount }, () => '');
     }
 
-    const total = Math.max(parseHourValue(totalValue), 0);
-    const totalCents = Math.round(total * 100);
-    const averageCents = Math.round(totalCents / weekCount);
-    const values = [];
-    let assignedCents = 0;
+    const total = Math.ceil(Math.max(parseHourValue(totalValue), 0));
+    const baseValue = Math.floor(total / weekCount);
+    const remainder = total - (baseValue * weekCount);
+    const firstAdjustedIndex = weekCount - remainder;
 
-    for (let index = 0; index < weekCount; index++) {
-        const isLastWeek = index === weekCount - 1;
-        const remainingCents = totalCents - assignedCents;
-        const cents = isLastWeek ? remainingCents : Math.min(averageCents, remainingCents);
-        values.push(formatHourValue(cents / 100));
-        assignedCents += cents;
-    }
+    const values = Array.from({ length: weekCount }, (_, index) => {
+        return String(baseValue + (index >= firstAdjustedIndex ? 1 : 0));
+    });
 
     return values;
 }
