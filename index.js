@@ -2106,16 +2106,8 @@ function distributeHoursAcrossWeeks(totalValue, weekCount) {
         return Array.from({ length: weekCount }, () => '');
     }
 
-    const total = Math.ceil(Math.max(parseHourValue(totalValue), 0));
-    const baseValue = Math.floor(total / weekCount);
-    const remainder = total - (baseValue * weekCount);
-    const firstAdjustedIndex = weekCount - remainder;
-
-    const values = Array.from({ length: weekCount }, (_, index) => {
-        return String(baseValue + (index >= firstAdjustedIndex ? 1 : 0));
-    });
-
-    return values;
+    const weeklyValue = Math.ceil(Math.max(parseHourValue(totalValue), 0) / weekCount);
+    return Array.from({ length: weekCount }, () => String(weeklyValue));
 }
 
 function calculateBlendedFaceToFaceHours(faceToFaceHours) {
