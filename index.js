@@ -2100,6 +2100,15 @@ function reduceHoursToRequiredTotal(values, requiredTotal) {
     return values;
 }
 
+function reduceHourValuesToRequiredTotal(values, requiredTotalValue) {
+    if (!hasHourSourceValue(requiredTotalValue)) return values;
+
+    const requiredTotal = Math.ceil(Math.max(parseHourValue(requiredTotalValue), 0));
+    const wholeNumberValues = values.map(value => Math.ceil(Math.max(parseHourValue(value), 0)));
+
+    return reduceHoursToRequiredTotal(wholeNumberValues, requiredTotal).map(value => String(value));
+}
+
 function distributeHoursAcrossWeeks(totalValue, weekCount) {
     if (!weekCount) return [];
     if (!hasHourSourceValue(totalValue)) {
@@ -2233,12 +2242,20 @@ function calculateWeeklyDistribution() {
 
     const sourceValues = getCurricularSourceValues();
     const learningValues = distributeHoursAcrossWeeks(sourceValues.totalLearning, rows.length);
-    const faceToFaceValues = distributeHoursAcrossWeeks(sourceValues.faceToFaceContact, rows.length);
-    const eLearningValues = distributeHoursAcrossWeeks(sourceValues.eLearningContact, rows.length);
+    let faceToFaceValues = distributeHoursAcrossWeeks(sourceValues.faceToFaceContact, rows.length);
+    let eLearningValues = distributeHoursAcrossWeeks(sourceValues.eLearningContact, rows.length);
     const blendedValues = faceToFaceValues.map(calculateBlendedContactHours);
     const blendedFaceToFaceValues = blendedValues.map(value => value.faceToFace);
     const blendedOnlineSynchronousValues = blendedValues.map(value => value.onlineSynchronous);
-    const blendedOnlineAsynchronousValues = blendedValues.map(value => value.onlineAsynchronous);
+    let blendedOnlineAsynchronousValues = blendedValues.map(value => value.onlineAsynchronous);
+
+    faceToFaceValues = reduceHourValuesToRequiredTotal(faceToFaceValues, sourceValues.faceToFaceContact);
+    blendedOnlineAsynchronousValues = reduceHourValuesToRequiredTotal(
+        blendedOnlineAsynchronousValues,
+        sourceValues.faceToFaceContact
+    );
+    eLearningValues = reduceHourValuesToRequiredTotal(eLearningValues, sourceValues.faceToFaceContact);
+
     const sourceValuesByField = {
         contact: sourceValues.faceToFaceContact,
         blended_face_to_face: sumHourValues(blendedFaceToFaceValues),
