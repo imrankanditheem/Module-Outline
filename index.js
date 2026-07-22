@@ -2116,6 +2116,28 @@ function calculateBlendedFaceToFaceHours(faceToFaceHours) {
     return String(Math.ceil(parseHourValue(faceToFaceHours) / 3));
 }
 
+function calculateBlendedContactHours(faceToFaceHours) {
+    if (!hasHourSourceValue(faceToFaceHours)) {
+        return {
+            faceToFace: '',
+            onlineSynchronous: '',
+            onlineAsynchronous: ''
+        };
+    }
+
+    const totalFaceToFaceHours = Math.ceil(Math.max(parseHourValue(faceToFaceHours), 0));
+    const blendedFaceToFaceHours = Math.ceil(totalFaceToFaceHours / 3);
+    const remainingHours = Math.max(totalFaceToFaceHours - blendedFaceToFaceHours, 0);
+    const onlineSynchronousHours = Math.ceil(remainingHours / 2);
+    const onlineAsynchronousHours = Math.max(remainingHours - onlineSynchronousHours, 0);
+
+    return {
+        faceToFace: String(blendedFaceToFaceHours),
+        onlineSynchronous: String(onlineSynchronousHours),
+        onlineAsynchronous: String(onlineAsynchronousHours)
+    };
+}
+
 function getSection113SourceValue(selectors) {
     for (const selector of selectors) {
         const source = document.querySelector(selector);
@@ -2213,12 +2235,15 @@ function calculateWeeklyDistribution() {
     const learningValues = distributeHoursAcrossWeeks(sourceValues.totalLearning, rows.length);
     const faceToFaceValues = distributeHoursAcrossWeeks(sourceValues.faceToFaceContact, rows.length);
     const eLearningValues = distributeHoursAcrossWeeks(sourceValues.eLearningContact, rows.length);
-    const blendedFaceToFaceValues = faceToFaceValues.map(calculateBlendedFaceToFaceHours);
+    const blendedValues = faceToFaceValues.map(calculateBlendedContactHours);
+    const blendedFaceToFaceValues = blendedValues.map(value => value.faceToFace);
+    const blendedOnlineSynchronousValues = blendedValues.map(value => value.onlineSynchronous);
+    const blendedOnlineAsynchronousValues = blendedValues.map(value => value.onlineAsynchronous);
     const sourceValuesByField = {
         contact: sourceValues.faceToFaceContact,
         blended_face_to_face: sumHourValues(blendedFaceToFaceValues),
-        blended_online_synchronous: 0,
-        blended_online_asynchronous: 0,
+        blended_online_synchronous: sumHourValues(blendedOnlineSynchronousValues),
+        blended_online_asynchronous: sumHourValues(blendedOnlineAsynchronousValues),
         elearning: sourceValues.eLearningContact
     };
     const contactTotals = createCurricularContactTotals();
@@ -2234,6 +2259,12 @@ function calculateWeeklyDistribution() {
         }
         if (fields.blendedFaceToFace) {
             fields.blendedFaceToFace.value = blendedFaceToFaceValues[index] ?? '';
+        }
+        if (fields.blendedOnlineSynchronous) {
+            fields.blendedOnlineSynchronous.value = blendedOnlineSynchronousValues[index] ?? '';
+        }
+        if (fields.blendedOnlineAsynchronous) {
+            fields.blendedOnlineAsynchronous.value = blendedOnlineAsynchronousValues[index] ?? '';
         }
         if (fields.eLearning) {
             fields.eLearning.value = eLearningValues[index] ?? '';
