@@ -2266,7 +2266,7 @@ function calculateWeeklyDistribution() {
     let eLearningValues = distributeHoursAcrossWeeks(sourceValues.eLearningContact, rows.length);
     const blendedValues = faceToFaceValues.map(calculateBlendedContactHours);
     const blendedFaceToFaceValues = blendedValues.map(value => value.faceToFace);
-    const blendedOnlineSynchronousValues = blendedValues.map(value => value.onlineSynchronous);
+    let blendedOnlineSynchronousValues = blendedValues.map(value => value.onlineSynchronous);
     let blendedOnlineAsynchronousValues = blendedValues.map(value => value.onlineAsynchronous);
     const faceToFaceReductionAmount = getHourReductionAmount(
         faceToFaceValues,
@@ -2274,6 +2274,10 @@ function calculateWeeklyDistribution() {
     );
 
     faceToFaceValues = reduceHourValuesByAmount(faceToFaceValues, faceToFaceReductionAmount);
+    blendedOnlineSynchronousValues = reduceHourValuesByAmount(
+        blendedOnlineSynchronousValues,
+        faceToFaceReductionAmount
+    );
     blendedOnlineAsynchronousValues = reduceHourValuesByAmount(
         blendedOnlineAsynchronousValues,
         faceToFaceReductionAmount
