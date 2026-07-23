@@ -2103,8 +2103,28 @@ function reduceHoursToRequiredTotal(values, requiredTotal) {
 function reduceHourValuesToRequiredTotal(values, requiredTotalValue) {
     if (!hasHourSourceValue(requiredTotalValue)) return values;
 
+    return reduceHourValuesByAmount(values, getHourReductionAmount(values, requiredTotalValue));
+}
+
+function getHourReductionAmount(values, requiredTotalValue) {
+    if (!hasHourSourceValue(requiredTotalValue)) return 0;
+
     const requiredTotal = Math.ceil(Math.max(parseHourValue(requiredTotalValue), 0));
+    const currentTotal = values.reduce((total, value) => {
+        return total + Math.ceil(Math.max(parseHourValue(value), 0));
+    }, 0);
+
+    return Math.max(currentTotal - requiredTotal, 0);
+}
+
+function reduceHourValuesByAmount(values, reductionAmount) {
+    if (reductionAmount <= 0) return values;
+
     const wholeNumberValues = values.map(value => Math.ceil(Math.max(parseHourValue(value), 0)));
+    const requiredTotal = Math.max(
+        wholeNumberValues.reduce((total, value) => total + value, 0) - reductionAmount,
+        0
+    );
 
     return reduceHoursToRequiredTotal(wholeNumberValues, requiredTotal).map(value => String(value));
 }
@@ -2248,11 +2268,15 @@ function calculateWeeklyDistribution() {
     const blendedFaceToFaceValues = blendedValues.map(value => value.faceToFace);
     const blendedOnlineSynchronousValues = blendedValues.map(value => value.onlineSynchronous);
     let blendedOnlineAsynchronousValues = blendedValues.map(value => value.onlineAsynchronous);
-
-    faceToFaceValues = reduceHourValuesToRequiredTotal(faceToFaceValues, sourceValues.faceToFaceContact);
-    blendedOnlineAsynchronousValues = reduceHourValuesToRequiredTotal(
-        blendedOnlineAsynchronousValues,
+    const faceToFaceReductionAmount = getHourReductionAmount(
+        faceToFaceValues,
         sourceValues.faceToFaceContact
+    );
+
+    faceToFaceValues = reduceHourValuesByAmount(faceToFaceValues, faceToFaceReductionAmount);
+    blendedOnlineAsynchronousValues = reduceHourValuesByAmount(
+        blendedOnlineAsynchronousValues,
+        faceToFaceReductionAmount
     );
     eLearningValues = reduceHourValuesToRequiredTotal(eLearningValues, sourceValues.faceToFaceContact);
 
